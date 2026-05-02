@@ -148,7 +148,7 @@ cp .env.example .env
 | Variable | Description |
 |---|---|
 | `SUPABASE_URL` | Your Supabase project URL |
-| `SUPABASE_ANON_KEY` | Supabase anon key (safe to expose — protected by RLS) |
+| `SUPABASE_PUBLISHABLE_KEY` | Supabase publishable key (browser-safe; RLS enforces access) |
 | `BACKEND_URL` | Internal URL for `darwin-backend` (server-side only, never sent to browser) |
 | `APP_URL` | Public app URL for OAuth redirects |
 
