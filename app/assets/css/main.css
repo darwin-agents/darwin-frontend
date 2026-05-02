@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .darwin-btn-primary {
+    @apply px-4 py-2 rounded bg-violet-600 hover:bg-violet-500 text-white font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .darwin-btn-secondary {
+    @apply px-4 py-2 rounded bg-white/10 hover:bg-white/15 text-white font-medium transition-colors;
+  }
+  .darwin-btn-ghost {
+    @apply px-4 py-2 rounded hover:bg-white/5 text-slate-300 transition-colors;
+  }
+  .darwin-btn-danger {
+    @apply px-4 py-2 rounded bg-red-700 hover:bg-red-600 text-white font-medium transition-colors;
+  }
+  .darwin-input {
+    @apply bg-white/5 border border-white/10 rounded px-3 py-2 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-violet-500;
+  }
+}
+
+.trunk-active {
+  stroke: theme('colors.violet.500');
+  stroke-width: 2px;
+  filter: drop-shadow(0 0 4px theme('colors.violet.500'));
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.trunk-hibernating {
+  stroke: theme('colors.slate.600');
+  stroke-width: 1px;
+  stroke-dasharray: 6 4;
+}
+
+.trunk-terminated {
+  stroke: theme('colors.red.800');
+  stroke-width: 1px;
+  opacity: 0.4;
+}
+
+.lane-connector {
+  stroke: theme('colors.slate.500');
+  stroke-width: 1px;
+  stroke-dasharray: 4 4;
+  opacity: 0.6;
+}
+
+.lane-line-active {
+  stroke: theme('colors.sky.500');
+  stroke-width: 1px;
+  stroke-dasharray: 6 4;
+  opacity: 0.4;
+}
+
+.lane-line-completed {
+  stroke: theme('colors.green.500');
+  stroke-width: 1px;
+  stroke-dasharray: 6 4;
+  opacity: 0.4;
+}
+
+.lane-line-failed {
+  stroke: theme('colors.red.500');
+  stroke-width: 1px;
+  stroke-dasharray: 6 4;
+  opacity: 0.4;
+}
+
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: transform 0.2s ease-out;
+}
+.slide-right-enter-from,
+.slide-right-leave-to {
+  transform: translateX(100%);
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px #8b5cf6);
+  }
+  50% {
+    filter: drop-shadow(0 0 12px #8b5cf6);
+  }
+}
