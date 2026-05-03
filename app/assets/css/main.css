@@ -2,64 +2,117 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-  .darwin-btn-primary {
-    @apply px-4 py-2 rounded bg-violet-600 hover:bg-violet-500 text-white font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none;
+@layer base {
+  body {
+    @apply bg-darwin-bg text-slate-100 antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
-  .darwin-btn-secondary {
-    @apply px-4 py-2 rounded bg-white/10 hover:bg-white/15 text-white font-medium transition-colors;
+
+  ::selection {
+    @apply bg-violet-500/30;
   }
-  .darwin-btn-ghost {
-    @apply px-4 py-2 rounded hover:bg-white/5 text-slate-300 transition-colors;
+
+  ::-webkit-scrollbar {
+    @apply w-1.5;
   }
-  .darwin-btn-danger {
-    @apply px-4 py-2 rounded bg-red-700 hover:bg-red-600 text-white font-medium transition-colors;
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
   }
-  .darwin-input {
-    @apply bg-white/5 border border-white/10 rounded px-3 py-2 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-violet-500;
+  ::-webkit-scrollbar-thumb {
+    @apply bg-white/10 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-white/20;
   }
 }
 
+@layer components {
+  .darwin-btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           px-4 py-2.5 rounded-lg
+           bg-violet-600 hover:bg-violet-500 active:bg-violet-700
+           text-white text-sm font-medium
+           transition-all duration-150
+           disabled:opacity-40 disabled:pointer-events-none
+           shadow-lg shadow-violet-500/10 hover:shadow-violet-500/20;
+  }
+  .darwin-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+           px-4 py-2.5 rounded-lg
+           bg-white/[0.06] hover:bg-white/[0.10] active:bg-white/[0.04]
+           text-white text-sm font-medium
+           border border-white/[0.08]
+           transition-all duration-150;
+  }
+  .darwin-btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           px-4 py-2.5 rounded-lg
+           hover:bg-white/[0.06] active:bg-white/[0.03]
+           text-slate-400 hover:text-slate-200
+           text-sm transition-all duration-150;
+  }
+  .darwin-btn-danger {
+    @apply inline-flex items-center justify-center gap-2
+           px-4 py-2.5 rounded-lg
+           bg-red-600 hover:bg-red-500 active:bg-red-700
+           text-white text-sm font-medium
+           transition-all duration-150;
+  }
+  .darwin-input {
+    @apply w-full bg-white/[0.04] border border-white/[0.08] rounded-lg
+           px-3.5 py-2.5 text-sm text-white
+           placeholder:text-slate-600
+           focus:outline-none focus:ring-2 focus:ring-violet-500/40 focus:border-violet-500/50
+           transition-all duration-150;
+  }
+  .darwin-card {
+    @apply rounded-xl border border-white/[0.06] bg-darwin-surface/80
+           backdrop-blur-sm overflow-hidden;
+  }
+  .darwin-badge {
+    @apply inline-flex items-center px-2 py-0.5
+           text-[10px] font-medium uppercase tracking-wider
+           rounded-md border;
+  }
+}
+
+/* Canvas trunk states */
 .trunk-active {
   stroke: theme('colors.violet.500');
   stroke-width: 2px;
   filter: drop-shadow(0 0 4px theme('colors.violet.500'));
   animation: pulse-glow 2s ease-in-out infinite;
 }
-
 .trunk-hibernating {
   stroke: theme('colors.slate.600');
   stroke-width: 1px;
   stroke-dasharray: 6 4;
 }
-
 .trunk-terminated {
   stroke: theme('colors.red.800');
   stroke-width: 1px;
   opacity: 0.4;
 }
 
+/* Canvas lane styles */
 .lane-connector {
   stroke: theme('colors.slate.500');
   stroke-width: 1px;
   stroke-dasharray: 4 4;
   opacity: 0.6;
 }
-
 .lane-line-active {
   stroke: theme('colors.sky.500');
   stroke-width: 1px;
   stroke-dasharray: 6 4;
   opacity: 0.4;
 }
-
 .lane-line-completed {
   stroke: theme('colors.green.500');
   stroke-width: 1px;
   stroke-dasharray: 6 4;
   opacity: 0.4;
 }
-
 .lane-line-failed {
   stroke: theme('colors.red.500');
   stroke-width: 1px;
@@ -67,6 +120,7 @@
   opacity: 0.4;
 }
 
+/* Panel slide transitions */
 .slide-right-enter-active,
 .slide-right-leave-active {
   transition: transform 0.2s ease-out;
@@ -77,11 +131,6 @@
 }
 
 @keyframes pulse-glow {
-  0%,
-  100% {
-    filter: drop-shadow(0 0 4px #8b5cf6);
-  }
-  50% {
-    filter: drop-shadow(0 0 12px #8b5cf6);
-  }
+  0%, 100% { filter: drop-shadow(0 0 4px #8b5cf6); }
+  50%      { filter: drop-shadow(0 0 12px #8b5cf6); }
 }
