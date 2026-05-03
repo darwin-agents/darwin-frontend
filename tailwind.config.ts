@@ -21,6 +21,11 @@ export default {
         active: '#8b5cf6',
         hibernating: '#475569',
         terminated: '#7f1d1d',
+        'model-opus':     { DEFAULT: '#185FA5', light: '#E6F1FB' },
+        'model-sonnet':   { DEFAULT: '#534AB7', light: '#EEEDFE' },
+        'model-haiku':    { DEFAULT: '#3B6D11', light: '#EAF3DE' },
+        'model-gpt4o':    { DEFAULT: '#0F6E56', light: '#E1F5EE' },
+        'model-gpt4omini':{ DEFAULT: '#854F0B', light: '#FAEEDA' },
       },
       fontFamily: {
         mono: ['JetBrains Mono', 'monospace'],

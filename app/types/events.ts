@@ -55,6 +55,7 @@ export interface DarwinEvent {
 export interface ThoughtPayload {
   content: string
   model: string
+  model_reason?: string
   prompt_tokens: number
   completion_tokens: number
   latency_ms: number
@@ -79,6 +80,8 @@ export interface NeuronSpawnedPayload {
   neuron_id: string
   task: string
   parent_event_id: string
+  model: string
+  model_reason?: string
 }
 
 export interface SynapticIntegrationPayload {
