@@ -8,7 +8,7 @@ const loading = ref(false)
 const form = reactive({
   name: '',
   directive: '',
-  model: 'claude-sonnet',
+  model: 'claude-sonnet-4-6',
   budget: 50,
   tools: {
     browser: true,
@@ -18,10 +18,11 @@ const form = reactive({
 })
 
 const models = [
-  { id: 'claude-sonnet', label: 'Claude Sonnet' },
-  { id: 'claude-haiku', label: 'Claude Haiku' },
-  { id: 'gpt-4o', label: 'GPT-4o' },
-  { id: 'gpt-4o-mini', label: 'GPT-4o Mini' },
+  { id: 'claude-sonnet-4-6', label: 'Claude Sonnet 4.6', note: 'Balanced · recommended' },
+  { id: 'claude-haiku-4-5', label: 'Claude Haiku 4.5', note: 'Fast · cheapest' },
+  { id: 'claude-opus-4-6', label: 'Claude Opus 4.6', note: 'Highest intelligence · most expensive' },
+  { id: 'gpt-4o', label: 'GPT-4o', note: 'Best vision capabilities' },
+  { id: 'gpt-4o-mini', label: 'GPT-4o Mini', note: 'Fast vision · low cost' },
 ]
 
 const promptPreview = computed(() => form.directive.slice(0, 400))
@@ -66,11 +67,19 @@ async function deploy() {
       <input v-model="form.name" placeholder="Agent name" class="darwin-input w-full" />
       <textarea v-model="form.directive" placeholder="Mission directive" class="darwin-input w-full min-h-[160px]" />
       <div class="space-y-2">
-        <p class="text-xs text-slate-500">Model</p>
-        <label v-for="m in models" :key="m.id" class="flex items-center gap-2 text-sm text-slate-300">
+        <p class="text-xs text-slate-500">LLM model (trunk default)</p>
+        <label
+          v-for="m in models"
+          :key="m.id"
+          class="flex items-center gap-2 text-sm text-slate-300"
+        >
           <input v-model="form.model" type="radio" :value="m.id" class="accent-violet-600" />
-          {{ m.label }}
+          <span>{{ m.label }}</span>
+          <span class="text-xs text-slate-500">— {{ m.note }}</span>
         </label>
+        <p class="text-xs text-slate-500 mt-1 pl-5">
+          ℹ The agent may upgrade or downgrade this model autonomously per neuron or per thought based on task complexity.
+        </p>
       </div>
       <button type="button" class="darwin-btn-primary" @click="step = 2">Continue</button>
     </div>
