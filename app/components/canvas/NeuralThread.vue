@@ -36,6 +36,25 @@ const laneLineClass = computed(() => {
 })
 
 const lineEnd = computed(() => endX.value ?? totalWidthPx.value)
+
+const spawnModel = computed(() => {
+  const spawnEvent = props.lane.events.find(e => e.event_type === 'NEURON_SPAWNED')
+  const m = (spawnEvent?.payload?.model as string | undefined) ?? ''
+  if (m.includes('opus'))    return 'opus'
+  if (m.includes('sonnet'))  return 'sonnet'
+  if (m.includes('haiku'))   return 'haiku'
+  if (m.includes('4o-mini')) return 'gpt-4o-mini'
+  if (m.includes('4o'))      return 'gpt-4o'
+  return m.split('-')[0] || '—'
+})
+
+const modelSwitched = computed(() => {
+  const models = props.lane.events
+    .filter(e => e.event_type === 'THOUGHT')
+    .map(e => e.payload.model as string | undefined)
+    .filter(Boolean)
+  return new Set(models).size > 1
+})
 </script>
 
 <template>
@@ -47,6 +66,16 @@ const lineEnd = computed(() => endX.value ?? totalWidthPx.value)
     :y2="laneY"
     :class="laneLineClass"
   />
+  <!-- Lane label: neuron_id + spawn model + switch indicator -->
+  <text
+    :x="branchX + 88"
+    :y="laneY - 10"
+    class="lane-label fill-slate-400 font-mono text-[9px]"
+  >
+    {{ lane.neuron_id }}
+    <tspan v-if="spawnModel !== '—'" class="fill-slate-300"> [{{ spawnModel }}]</tspan>
+    <tspan v-if="modelSwitched" class="fill-amber-400"> ↔</tspan>
+  </text>
   <CanvasNode
     v-for="event in visibleEvents"
     :key="event.id"

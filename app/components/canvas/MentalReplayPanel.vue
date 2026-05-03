@@ -47,6 +47,15 @@ function close() {
 function relativeTime(iso: string | undefined) {
   return formatRelativeTime(iso)
 }
+
+function modelTagClass(model: string): string {
+  if (model.includes('opus'))    return 'model-tag--opus'
+  if (model.includes('sonnet'))  return 'model-tag--sonnet'
+  if (model.includes('haiku'))   return 'model-tag--haiku'
+  if (model.includes('4o-mini')) return 'model-tag--gpt4omini'
+  if (model.includes('4o'))      return 'model-tag--gpt4o'
+  return 'model-tag--unknown'
+}
 </script>
 
 <template>
@@ -97,10 +106,33 @@ function relativeTime(iso: string | undefined) {
           <p v-else class="text-xs text-slate-600">No trace data.</p>
         </div>
       </div>
-      <div class="p-3 border-t border-white/10 flex gap-4 text-xs text-slate-400 shrink-0">
+      <div class="p-3 border-t border-white/10 flex flex-wrap gap-4 text-xs text-slate-400 shrink-0">
+        <span v-if="(selectedEvent?.payload as { model?: string })?.model">
+          Model:
+          <span :class="['model-tag-inline', modelTagClass((selectedEvent?.payload as { model: string }).model)]">
+            {{ (selectedEvent?.payload as { model: string }).model }}
+          </span>
+        </span>
         <span>Token cost: ${{ selectedEvent?.token_cost?.toFixed(5) ?? '—' }}</span>
         <span>Infra cost: ${{ selectedEvent?.fiat_cost?.toFixed(5) ?? '—' }}</span>
       </div>
     </div>
   </Transition>
 </template>
+
+<style scoped>
+.model-tag-inline {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  border-radius: 3px;
+  padding: 1px 5px;
+  margin-left: 4px;
+}
+.model-tag--opus     { background: #E6F1FB; color: #185FA5; border: 1px solid #185FA5; }
+.model-tag--sonnet   { background: #EEEDFE; color: #534AB7; border: 1px solid #534AB7; }
+.model-tag--haiku    { background: #EAF3DE; color: #3B6D11; border: 1px solid #3B6D11; }
+.model-tag--gpt4o    { background: #E1F5EE; color: #0F6E56; border: 1px solid #0F6E56; }
+.model-tag--gpt4omini{ background: #FAEEDA; color: #854F0B; border: 1px solid #854F0B; }
+.model-tag--unknown  { background: #1f2937; color: #9ca3af; border: 1px solid #374151; }
+</style>
