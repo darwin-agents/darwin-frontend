@@ -12,14 +12,14 @@ export const useAuthStore = defineStore('auth', () => {
   async function loginWithMagicLink(email: string) {
     return supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+      options: { emailRedirectTo: `${window.location.origin}/confirm` },
     })
   }
 
   async function loginWithGoogle() {
     return supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/dashboard` },
+      options: { redirectTo: `${window.location.origin}/confirm` },
     })
   }
 

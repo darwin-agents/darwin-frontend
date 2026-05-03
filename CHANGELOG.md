@@ -69,7 +69,7 @@ _Canvas_
 - `BudgetGauge` — animated horizontal progress bar (green → amber → red as balance depletes)
 - `HeartbeatBar` — live mini-sparkline of `tokens_burned_last_30s` (last 10 samples)
 - `InterventionBanner` — amber sticky banner strip for pending human interventions
-- `MentalReplayPanel` — 640px slide-over; EYES column (screenshot / content) + MIND column (LangSmith trace); lazy-fetched on node click
+- `MentalReplayPanel` — 640px slide-over; EYES column (screenshot / content) + MIND column (thought trace from `GET /darwins/{id}/logs`); lazy-fetched on node click
 - `CanvasTopBar` — agent name, FSM badge, budget gauge, heartbeat, panel toggle buttons
 
 _Command Console_
