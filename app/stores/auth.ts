@@ -9,11 +9,28 @@ export const useAuthStore = defineStore('auth', () => {
   const accessToken = computed(() => session.value?.access_token ?? null)
   const isAuthenticated = computed(() => !!session.value?.access_token)
 
-  async function loginWithMagicLink(email: string) {
-    return supabase.auth.signInWithOtp({
+  async function loginWithPassword(email: string, password: string) {
+    return supabase.auth.signInWithPassword({ email, password })
+  }
+
+  async function signUpWithPassword(email: string, password: string) {
+    return supabase.auth.signUp({
       email,
-      options: { emailRedirectTo: `${window.location.origin}/confirm` },
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+      },
     })
+  }
+
+  async function resetPassword(email: string) {
+    return supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
+  }
+
+  async function updatePassword(newPassword: string) {
+    return supabase.auth.updateUser({ password: newPassword })
   }
 
   async function loginWithGoogle() {
@@ -28,5 +45,9 @@ export const useAuthStore = defineStore('auth', () => {
     await navigateTo('/login')
   }
 
-  return { session, userId, accessToken, isAuthenticated, loginWithMagicLink, loginWithGoogle, logout }
+  return {
+    session, userId, accessToken, isAuthenticated,
+    loginWithPassword, signUpWithPassword, resetPassword, updatePassword,
+    loginWithGoogle, logout,
+  }
 })
