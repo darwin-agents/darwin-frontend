@@ -5,7 +5,13 @@ export const useAuthStore = defineStore('auth', () => {
   const user = useSupabaseUser()
   const session = useSupabaseSession()
 
-  const userId = computed(() => user.value?.id ?? null)
+  /** Prefer session.user; JWT claims from useSupabaseUser use `sub`, not `id`. */
+  const userId = computed(
+    () => session.value?.user?.id
+      ?? (user.value as { sub?: string; id?: string } | null)?.sub
+      ?? (user.value as { id?: string } | null)?.id
+      ?? null,
+  )
   const accessToken = computed(() => session.value?.access_token ?? null)
   const isAuthenticated = computed(() => !!session.value?.access_token)
 

@@ -20,7 +20,7 @@ const checking = ref(true)
 
 let unsub: { unsubscribe: () => void } | undefined
 
-onMounted(() => {
+function setupRecoveryListener() {
   const markReady = () => {
     ready.value = true
     checking.value = false
@@ -33,7 +33,12 @@ onMounted(() => {
     }
     if (event === 'INITIAL_SESSION' && session) {
       const hash = typeof window !== 'undefined' ? window.location.hash : ''
-      if (hash.includes('type=recovery') || hash.includes('recovery')) {
+      const search = typeof window !== 'undefined' ? window.location.search : ''
+      if (
+        hash.includes('type=recovery')
+        || hash.includes('recovery')
+        || search.includes('type=recovery')
+      ) {
         markReady()
       }
     }
@@ -46,7 +51,7 @@ onMounted(() => {
       markReady()
       return
     }
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < 40; i++) {
       await new Promise((r) => setTimeout(r, 80))
       const { data: d } = await supabase.auth.getSession()
       if (d.session) {
@@ -59,6 +64,12 @@ onMounted(() => {
       error.value = 'This link is invalid or has expired. Request a new reset from the sign-in page.'
     }
   })()
+}
+
+onBeforeMount(() => {
+  if (import.meta.client) {
+    setupRecoveryListener()
+  }
 })
 
 onUnmounted(() => {
