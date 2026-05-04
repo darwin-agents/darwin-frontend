@@ -152,6 +152,8 @@ cp .env.example .env
 | `BACKEND_URL` | Internal URL for `darwin-backend` (server-side only, never sent to browser) |
 | `APP_URL` | Public app URL for OAuth redirects |
 
+In the Supabase dashboard (**Authentication → URL configuration**), add each environment’s reset URL to **Redirect URLs** (for example `http://localhost:3000/reset-password` and your production origin with the same path) so emailed password-reset links land on this app.
+
 ### Development
 
 ```bash

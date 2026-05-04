@@ -17,6 +17,9 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Supabase auth** — `useSsrCookies: false` in `nuxt.config.ts` so the browser client uses implicit flow; password-recovery links (tokens in the URL hash) work with `reset-password` again (`@supabase/ssr`’s `createBrowserClient` forces PKCE and rejects those callbacks)
+- **`stores/auth`** — `userId` resolves from `session.user.id` and JWT `sub` so it stays in sync with `useSupabaseUser()` claims (fixes spawn and API calls when signed in)
+- **`reset-password`** — listen for recovery in `onBeforeMount` (earlier than `onMounted`), accept `type=recovery` in query or hash, slightly longer session polling
 - **Theme** — Warm sand / ember palette in Tailwind and `main.css`; Inter Tight + JetBrains Mono via `nuxt.config` head links
 - **UI primitives** — `DarwinBadge`, `DarwinCard`, `DarwinModal`, and `DarwinToast` tuned for the new surface colours
 - **App pages** — `dashboard`, `spawn`, and `stores/auth` aligned with the new theme and auth behaviour
