@@ -38,6 +38,10 @@ export default defineNuxtConfig({
     url: process.env.SUPABASE_URL,
     key: process.env.SUPABASE_PUBLISHABLE_KEY,
     types: '~/types/database.types.ts',
+    // createBrowserClient (@supabase/ssr) forces flowType "pkce", which rejects
+    // password-recovery redirects (implicit grant tokens in the URL hash).
+    // Plain createClient keeps implicit flow so reset links establish a session.
+    useSsrCookies: false,
     redirectOptions: {
       login: '/login',
       callback: '/dashboard',
