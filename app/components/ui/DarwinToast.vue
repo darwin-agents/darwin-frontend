@@ -14,10 +14,10 @@ function dismiss(id: string) {
 }
 
 function typeClass(type: Toast['type']) {
-  if (type === 'success') return 'border-green-500/40 bg-green-900/20 text-green-200'
-  if (type === 'error') return 'border-red-500/40 bg-red-900/20 text-red-200'
-  if (type === 'warning') return 'border-amber-500/40 bg-amber-900/20 text-amber-200'
-  return 'border-white/10 bg-darwin-surface text-slate-200'
+  if (type === 'success') return 'border-green-600/30 bg-green-50 text-green-800'
+  if (type === 'error')   return 'border-red-600/30 bg-red-50 text-red-800'
+  if (type === 'warning') return 'border-amber-600/30 bg-amber-50 text-amber-800'
+  return 'text-darwin-ink-soft'
 }
 </script>
 
@@ -28,11 +28,11 @@ function typeClass(type: Toast['type']) {
         <div
           v-for="t in toasts"
           :key="t.id"
-          class="flex items-start justify-between gap-2 px-3 py-2.5 rounded border text-sm shadow-xl pointer-events-auto"
+          class="darwin-card flex items-start justify-between gap-2 px-3 py-2.5 text-sm shadow-xl pointer-events-auto"
           :class="typeClass(t.type)"
         >
           <span>{{ t.message }}</span>
-          <button type="button" class="shrink-0 opacity-60 hover:opacity-100 mt-0.5" @click="dismiss(t.id)">
+          <button type="button" class="shrink-0 opacity-50 hover:opacity-100 mt-0.5" @click="dismiss(t.id)">
             <X :size="14" />
           </button>
         </div>

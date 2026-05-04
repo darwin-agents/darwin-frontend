@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-darwin-surface border border-white/10 rounded-lg shadow-sm">
+  <div class="darwin-card">
     <slot />
   </div>
 </template>
