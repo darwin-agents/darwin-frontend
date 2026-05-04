@@ -9,6 +9,18 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- **Landing v2** — Three.js-backed `DnaHelix` and `MoleculeCloud` components, rebuilt marketing home (`index.vue`), and `imported/` reference assets from the V2 design export
+- **Auth** — `reset-password` page (Supabase recovery), route rules and redirect excludes, and sign-in flow updates on `login`
+- **Dependencies** — `three` and `@types/three` for landing 3D visuals
+
+### Changed
+
+- **Theme** — Warm sand / ember palette in Tailwind and `main.css`; Inter Tight + JetBrains Mono via `nuxt.config` head links
+- **UI primitives** — `DarwinBadge`, `DarwinCard`, `DarwinModal`, and `DarwinToast` tuned for the new surface colours
+- **App pages** — `dashboard`, `spawn`, and `stores/auth` aligned with the new theme and auth behaviour
+
 ---
 
 ## [0.2.0] — 2026-05-02
