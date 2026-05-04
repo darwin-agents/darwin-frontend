@@ -13,13 +13,19 @@ export default {
     extend: {
       colors: {
         darwin: {
-          bg:      '#090c12',
-          surface: '#111827',
-          border:  '#1f2937',
-          muted:   '#374151',
+          bg:       '#f3eee2',
+          'bg-2':   '#e9e2cf',
+          'bg-3':   '#ddd4bd',
+          ink:      '#0a0a0a',
+          'ink-soft': '#3d3a32',
+          muted:    '#8a857a',
+          'muted-2': '#b5b0a3',
+          border:   'rgba(10,10,10,0.12)',
+          accent:   '#ff5b1f',
+          'accent-deep': '#c93f0a',
         },
-        active:      '#8b5cf6',
-        hibernating: '#475569',
+        active:      '#ff5b1f',
+        hibernating: '#8a857a',
         terminated:  '#7f1d1d',
         'model-opus':      { DEFAULT: '#185FA5', light: '#E6F1FB' },
         'model-sonnet':    { DEFAULT: '#534AB7', light: '#EEEDFE' },
@@ -28,7 +34,7 @@ export default {
         'model-gpt4omini': { DEFAULT: '#854F0B', light: '#FAEEDA' },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Inter Tight', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       animation: {
@@ -39,8 +45,8 @@ export default {
       },
       keyframes: {
         'pulse-glow': {
-          '0%, 100%': { filter: 'drop-shadow(0 0 4px #8b5cf6)' },
-          '50%':       { filter: 'drop-shadow(0 0 12px #8b5cf6)' },
+          '0%, 100%': { filter: 'drop-shadow(0 0 4px #ff5b1f)' },
+          '50%':       { filter: 'drop-shadow(0 0 12px #ff5b1f)' },
         },
         'slide-right': {
           from: { transform: 'translateX(100%)' },

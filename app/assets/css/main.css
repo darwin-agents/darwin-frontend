@@ -2,73 +2,139 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   DESIGN TOKENS  — single source of truth for the entire app
+   ───────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Surfaces */
+  --darwin-bg:          #f3eee2;
+  --darwin-bg-2:        #e9e2cf;
+  --darwin-bg-3:        #ddd4bd;
+
+  /* Text */
+  --darwin-ink:         #0a0a0a;
+  --darwin-ink-soft:    #3d3a32;
+  --darwin-muted:       #8a857a;
+  --darwin-muted-2:     #b5b0a3;
+
+  /* Borders */
+  --darwin-border:      rgba(10, 10, 10, 0.12);
+  --darwin-border-soft: rgba(10, 10, 10, 0.06);
+
+  /* Accent — ember */
+  --darwin-accent:      #ff5b1f;
+  --darwin-accent-deep: #c93f0a;
+
+  /* Fonts */
+  --darwin-font-sans:   'Inter Tight', system-ui, sans-serif;
+  --darwin-font-mono:   'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BASE
+   ───────────────────────────────────────────────────────────────────────────── */
 @layer base {
-  body {
-    @apply bg-darwin-bg text-slate-100 antialiased;
+  html, body {
+    background-color: var(--darwin-bg);
+    color: var(--darwin-ink);
+    font-family: var(--darwin-font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
 
   ::selection {
-    @apply bg-violet-500/30;
+    background: var(--darwin-accent);
+    color: var(--darwin-bg);
   }
 
-  ::-webkit-scrollbar {
-    @apply w-1.5;
-  }
-  ::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
+  ::-webkit-scrollbar       { @apply w-1.5; }
+  ::-webkit-scrollbar-track { background: var(--darwin-bg-2); }
   ::-webkit-scrollbar-thumb {
-    @apply bg-white/10 rounded-full;
+    background: var(--darwin-ink-soft);
+    border-radius: 9999px;
   }
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-white/20;
-  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--darwin-ink); }
+
+  a { color: inherit; }
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   COMPONENT CLASSES
+   ───────────────────────────────────────────────────────────────────────────── */
 @layer components {
+
+  /* ── Buttons ─────────────────────────────────────────────────────────────── */
   .darwin-btn-primary {
     @apply inline-flex items-center justify-center gap-2
-           px-4 py-2.5 rounded-lg
-           bg-violet-600 hover:bg-violet-500 active:bg-violet-700
-           text-white text-sm font-medium
-           transition-all duration-150
-           disabled:opacity-40 disabled:pointer-events-none
-           shadow-lg shadow-violet-500/10 hover:shadow-violet-500/20;
+           px-4 py-2.5 rounded-full
+           text-darwin-bg text-sm font-medium
+           transition-all duration-200
+           disabled:opacity-40 disabled:pointer-events-none;
+    background: var(--darwin-accent);
+    box-shadow: 0 2px 16px -4px rgba(255, 91, 31, 0.35);
   }
+  .darwin-btn-primary:hover {
+    background: var(--darwin-accent-deep);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px -4px rgba(255, 91, 31, 0.45);
+  }
+  .darwin-btn-primary:active { transform: translateY(0); }
+
   .darwin-btn-secondary {
     @apply inline-flex items-center justify-center gap-2
-           px-4 py-2.5 rounded-lg
-           bg-white/[0.06] hover:bg-white/[0.10] active:bg-white/[0.04]
-           text-white text-sm font-medium
-           border border-white/[0.08]
-           transition-all duration-150;
+           px-4 py-2.5 rounded-full
+           bg-transparent text-darwin-ink text-sm font-medium
+           transition-all duration-200;
+    border: 1px solid var(--darwin-border);
   }
+  .darwin-btn-secondary:hover {
+    background: var(--darwin-bg-2);
+    border-color: var(--darwin-ink-soft);
+  }
+
   .darwin-btn-ghost {
     @apply inline-flex items-center justify-center gap-2
-           px-4 py-2.5 rounded-lg
-           hover:bg-white/[0.06] active:bg-white/[0.03]
-           text-slate-400 hover:text-slate-200
-           text-sm transition-all duration-150;
+           px-4 py-2.5 rounded-full
+           text-darwin-muted text-sm
+           transition-all duration-200;
   }
+  .darwin-btn-ghost:hover {
+    background: var(--darwin-bg-2);
+    color: var(--darwin-ink);
+  }
+
   .darwin-btn-danger {
     @apply inline-flex items-center justify-center gap-2
-           px-4 py-2.5 rounded-lg
+           px-4 py-2.5 rounded-full
            bg-red-600 hover:bg-red-500 active:bg-red-700
            text-white text-sm font-medium
            transition-all duration-150;
   }
+
+  /* ── Input ───────────────────────────────────────────────────────────────── */
   .darwin-input {
-    @apply w-full bg-white/[0.04] border border-white/[0.08] rounded-lg
-           px-3.5 py-2.5 text-sm text-white
-           placeholder:text-slate-600
-           focus:outline-none focus:ring-2 focus:ring-violet-500/40 focus:border-violet-500/50
+    @apply w-full rounded-lg px-3.5 py-2.5 text-sm
            transition-all duration-150;
+    background: var(--darwin-bg-2);
+    color: var(--darwin-ink);
+    border: 1px solid var(--darwin-border);
   }
+  .darwin-input::placeholder { color: var(--darwin-muted); }
+  .darwin-input:focus {
+    outline: none;
+    border-color: var(--darwin-accent);
+    box-shadow: 0 0 0 3px rgba(255, 91, 31, 0.15);
+  }
+
+  /* ── Card ────────────────────────────────────────────────────────────────── */
   .darwin-card {
-    @apply rounded-xl border border-white/[0.06] bg-darwin-surface/80
-           backdrop-blur-sm overflow-hidden;
+    @apply rounded-xl overflow-hidden;
+    background: var(--darwin-bg-2);
+    border: 1px solid var(--darwin-border);
   }
+
+  /* ── Badge ───────────────────────────────────────────────────────────────── */
   .darwin-badge {
     @apply inline-flex items-center px-2 py-0.5
            text-[10px] font-medium uppercase tracking-wider
@@ -76,39 +142,40 @@
   }
 }
 
-/* Canvas trunk states */
+/* ─────────────────────────────────────────────────────────────────────────────
+   CANVAS — trunk & lane SVG states
+   ───────────────────────────────────────────────────────────────────────────── */
 .trunk-active {
-  stroke: theme('colors.violet.500');
+  stroke: var(--darwin-accent);
   stroke-width: 2px;
-  filter: drop-shadow(0 0 4px theme('colors.violet.500'));
+  filter: drop-shadow(0 0 4px var(--darwin-accent));
   animation: pulse-glow 2s ease-in-out infinite;
 }
 .trunk-hibernating {
-  stroke: theme('colors.slate.600');
+  stroke: var(--darwin-muted);
   stroke-width: 1px;
   stroke-dasharray: 6 4;
 }
 .trunk-terminated {
-  stroke: theme('colors.red.800');
+  stroke: theme('colors.red.700');
   stroke-width: 1px;
   opacity: 0.4;
 }
 
-/* Canvas lane styles */
 .lane-connector {
-  stroke: theme('colors.slate.500');
+  stroke: var(--darwin-muted);
   stroke-width: 1px;
   stroke-dasharray: 4 4;
   opacity: 0.6;
 }
 .lane-line-active {
-  stroke: theme('colors.sky.500');
+  stroke: var(--darwin-accent);
   stroke-width: 1px;
   stroke-dasharray: 6 4;
-  opacity: 0.4;
+  opacity: 0.5;
 }
 .lane-line-completed {
-  stroke: theme('colors.green.500');
+  stroke: theme('colors.green.600');
   stroke-width: 1px;
   stroke-dasharray: 6 4;
   opacity: 0.4;
@@ -120,7 +187,9 @@
   opacity: 0.4;
 }
 
-/* Panel slide transitions */
+/* ─────────────────────────────────────────────────────────────────────────────
+   PANEL TRANSITIONS
+   ───────────────────────────────────────────────────────────────────────────── */
 .slide-right-enter-active,
 .slide-right-leave-active {
   transition: transform 0.2s ease-out;
@@ -130,7 +199,10 @@
   transform: translateX(100%);
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   KEYFRAMES
+   ───────────────────────────────────────────────────────────────────────────── */
 @keyframes pulse-glow {
-  0%, 100% { filter: drop-shadow(0 0 4px #8b5cf6); }
-  50%      { filter: drop-shadow(0 0 12px #8b5cf6); }
+  0%, 100% { filter: drop-shadow(0 0 4px var(--darwin-accent)); }
+  50%      { filter: drop-shadow(0 0 12px var(--darwin-accent)); }
 }
