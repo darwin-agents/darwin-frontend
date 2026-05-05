@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { DarwinEvent } from '~/types/events'
 import { useCanvasStore } from '~/stores/canvas'
-import { useCanvasLayout } from '~/composables/useCanvasLayout'
+import { eventTypeHasCanvasNode, useCanvasLayout } from '~/composables/useCanvasLayout'
 import CanvasNode from '~/components/canvas/CanvasNode.vue'
 
 defineProps<{
@@ -10,7 +10,7 @@ defineProps<{
 }>()
 
 const canvas = useCanvasStore()
-const { timestampToX, totalWidthPx, trunkY } = useCanvasLayout()
+const { timestampToX, trunkY } = useCanvasLayout()
 
 const agent = useAgentStore()
 
@@ -19,12 +19,29 @@ const trunkClass = computed(() => ({
   'trunk-hibernating': agent.isHibernating,
   'trunk-terminated': agent.isTerminated,
 }))
+
+/** Segments only between consecutive trunk nodes (no timeline spine across empty space). */
+const trunkSegments = computed(() => {
+  const sorted = [...canvas.trunkEvents]
+    .filter((e) => eventTypeHasCanvasNode(e.event_type))
+    .sort((a, b) => a.timestamp_ms - b.timestamp_ms)
+  const out: { x1: number; x2: number }[] = []
+  for (let i = 0; i < sorted.length - 1; i++) {
+    const x1 = timestampToX(sorted[i].timestamp_ms)
+    const x2 = timestampToX(sorted[i + 1].timestamp_ms)
+    if (Math.abs(x2 - x1) < 0.5) continue
+    out.push({ x1, x2 })
+  }
+  return out
+})
 </script>
 
 <template>
   <line
-    :x1="0"
-    :x2="totalWidthPx"
+    v-for="(seg, i) in trunkSegments"
+    :key="`trunk-${i}`"
+    :x1="seg.x1"
+    :x2="seg.x2"
     :y1="trunkY"
     :y2="trunkY"
     stroke-linecap="round"
