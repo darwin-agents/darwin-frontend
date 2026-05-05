@@ -14,6 +14,7 @@ export default {
       colors: {
         darwin: {
           bg:       '#f3eee2',
+          surface:  '#e9e2cf',
           'bg-2':   '#e9e2cf',
           'bg-3':   '#ddd4bd',
           ink:      '#0a0a0a',

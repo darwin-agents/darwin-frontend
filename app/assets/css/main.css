@@ -147,44 +147,88 @@
    ───────────────────────────────────────────────────────────────────────────── */
 .trunk-active {
   stroke: var(--darwin-accent);
-  stroke-width: 2px;
-  filter: drop-shadow(0 0 4px var(--darwin-accent));
+  stroke-width: 2.5px;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgba(255, 91, 31, 0.35));
   animation: pulse-glow 2s ease-in-out infinite;
 }
 .trunk-hibernating {
   stroke: var(--darwin-muted);
-  stroke-width: 1px;
-  stroke-dasharray: 6 4;
+  stroke-width: 1.5px;
+  stroke-dasharray: 8 6;
+  stroke-linecap: round;
 }
 .trunk-terminated {
-  stroke: theme('colors.red.700');
-  stroke-width: 1px;
-  opacity: 0.4;
+  stroke: #991b1b;
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+  opacity: 0.45;
 }
 
 .lane-connector {
-  stroke: var(--darwin-muted);
+  stroke: var(--darwin-muted-2);
   stroke-width: 1px;
-  stroke-dasharray: 4 4;
-  opacity: 0.6;
+  stroke-dasharray: 5 5;
+  stroke-linecap: round;
+  opacity: 0.55;
 }
 .lane-line-active {
-  stroke: var(--darwin-accent);
-  stroke-width: 1px;
-  stroke-dasharray: 6 4;
-  opacity: 0.5;
+  stroke: var(--darwin-accent-deep);
+  stroke-width: 1.5px;
+  stroke-dasharray: 8 5;
+  stroke-linecap: round;
+  opacity: 0.65;
 }
 .lane-line-completed {
-  stroke: theme('colors.green.600');
-  stroke-width: 1px;
-  stroke-dasharray: 6 4;
-  opacity: 0.4;
+  stroke: #2f6f4e;
+  stroke-width: 1.25px;
+  stroke-dasharray: 8 5;
+  stroke-linecap: round;
+  opacity: 0.55;
 }
 .lane-line-failed {
-  stroke: theme('colors.red.500');
-  stroke-width: 1px;
-  stroke-dasharray: 6 4;
-  opacity: 0.4;
+  stroke: #b42318;
+  stroke-width: 1.25px;
+  stroke-dasharray: 8 5;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+
+/* Neural lane labels (SVG <text>) */
+.lane-label {
+  fill: var(--darwin-muted);
+  font-family: var(--darwin-font-mono);
+  font-size: 9px;
+  letter-spacing: -0.02em;
+}
+.lane-label-detail {
+  fill: var(--darwin-ink-soft);
+}
+.lane-label-warn {
+  fill: var(--darwin-accent-deep);
+}
+
+/* Canvas node typography inside SVG */
+.canvas-node-title {
+  fill: var(--darwin-ink);
+  font-family: var(--darwin-font-mono);
+}
+.canvas-node-cost {
+  fill: var(--darwin-muted);
+  font-family: var(--darwin-font-mono);
+}
+
+.canvas-node-selection-ring {
+  animation: canvas-selection-pulse 2.4s ease-in-out infinite;
+}
+@keyframes canvas-selection-pulse {
+  0%, 100% { stroke-opacity: 0.28; }
+  50%      { stroke-opacity: 0.55; }
+}
+
+.canvas-node-root:hover .canvas-node-shell > circle:first-child {
+  stroke-width: 1.6;
+  filter: brightness(1.03);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
