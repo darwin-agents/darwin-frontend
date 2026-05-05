@@ -49,15 +49,15 @@ onUnmounted(() => {
 <template>
   <div class="h-screen w-screen overflow-hidden bg-darwin-bg flex flex-col">
     <CanvasTopBar :darwin-id="darwinId" />
-    <InterventionBanner />
+    <CanvasInterventionBanner />
     <CanvasViewport :darwin-id="darwinId" class="flex-1 min-h-0" />
     <Teleport to="body">
-      <CommandConsole :darwin-id="darwinId" />
-      <EntityPanel />
-      <SkillsPanel />
-      <LedgerPanel />
-      <MentalReplayPanel :darwin-id="darwinId" />
-      <AssetsPanel />
+      <ConsoleCommandConsole :darwin-id="darwinId" />
+      <CanvasMentalReplayPanel :darwin-id="darwinId" />
+      <PanelsEntityPanel />
+      <PanelsSkillsPanel />
+      <PanelsLedgerPanel />
+      <PanelsAssetsPanel />
     </Teleport>
   </div>
 </template>

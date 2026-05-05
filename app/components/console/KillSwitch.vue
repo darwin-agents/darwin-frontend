@@ -29,7 +29,7 @@ async function confirmTerminate() {
       <Skull :size="14" />
       Terminate Agent
     </button>
-    <DarwinModal v-model="showKillConfirm" title="Terminate Agent">
+    <UiDarwinModal v-model="showKillConfirm" title="Terminate Agent">
       <p class="text-sm text-slate-300 leading-relaxed">
         This is permanent. The container will be stopped, the VCC frozen,
         and the session archived. The agent cannot be revived.
@@ -41,6 +41,6 @@ async function confirmTerminate() {
           Terminate
         </button>
       </template>
-    </DarwinModal>
+    </UiDarwinModal>
   </div>
 </template>

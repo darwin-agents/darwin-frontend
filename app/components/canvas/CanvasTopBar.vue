@@ -54,10 +54,10 @@ const panelButtons = [
     </div>
 
     <!-- Budget gauge -->
-    <BudgetGauge class="border-0 flex-1 min-w-0" />
+    <CanvasBudgetGauge class="border-0 flex-1 min-w-0" />
 
     <!-- Heartbeat sparkline -->
-    <HeartbeatBar />
+    <CanvasHeartbeatBar />
 
     <div class="h-4 w-px bg-white/[0.06]" />
 

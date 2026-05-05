@@ -9,6 +9,10 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+---
+
+## [0.3.0] — 2026-05-05
+
 ### Added
 
 - **Landing v2** — Three.js-backed `DnaHelix` and `MoleculeCloud` components, rebuilt marketing home (`index.vue`), and `imported/` reference assets from the V2 design export
@@ -19,6 +23,8 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - **Landing anatomy** — specimen canvas uses organ-specific Three.js sculptures (torus‑knot field, jittered lattice, ring stack, crystal cloud, branching fork graph) keyed to each hover row; anatomy card no longer reuses `DnaHelix`/`MoleculeCloud`
 - **`SpawnForm`** — `POST /darwins/spawn` body matches backend `SpawnRequest` (`initial_budget`, `vcc_ref`, `llm_model`, `tool_set`, `requires_approval`); reads `darwin_id` from `SpawnResponse` for navigation (owner comes from the JWT, not the body)
+- **Canvas agent loading** — `stores/agent.fetchAgent()` now tolerates both backend `/darwins/{id}/state` payload variants (`budget_remaining_usd` or legacy `ledger_balance`, etc.), preventing false redirects/empty canvas when backend and frontend schema versions differ.
+- **Canvas component resolution** — `pages/canvas/[id].vue` now explicitly imports `CanvasTopBar`, `CanvasViewport`, `InterventionBanner`, `CommandConsole`, `EntityPanel`, `SkillsPanel`, and `LedgerPanel` to avoid unresolved-component warnings in environments where Nuxt auto-import is not picking nested component dirs reliably.
 - **Supabase auth** — `useSsrCookies: false` in `nuxt.config.ts` so the browser client uses implicit flow; password-recovery links (tokens in the URL hash) work with `reset-password` again (`@supabase/ssr`’s `createBrowserClient` forces PKCE and rejects those callbacks)
 - **`stores/auth`** — `userId` resolves from `session.user.id` and JWT `sub` so it stays in sync with `useSupabaseUser()` claims (fixes spawn and API calls when signed in)
 - **`reset-password`** — listen for recovery in `onBeforeMount` (earlier than `onMounted`), accept `type=recovery` in query or hash, slightly longer session polling
@@ -143,6 +149,7 @@ _Config_
 
 ---
 
-[Unreleased]: https://github.com/darwin-agents/darwin-frontend/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/darwin-agents/darwin-frontend/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/darwin-agents/darwin-frontend/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/darwin-agents/darwin-frontend/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/darwin-agents/darwin-frontend/releases/tag/v0.1.0

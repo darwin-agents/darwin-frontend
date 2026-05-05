@@ -64,21 +64,33 @@ export const useAgentStore = defineStore('agent', () => {
       burn_rate_usd_per_hour: number
       last_active_at: string | null
       next_wake_at: string | null
+      // Backward-compatible backend shape (legacy /state response)
+      ledger_balance?: number
+      burn_rate_per_hour?: number
+      current_session_id?: string | null
+      last_event_at?: string | null
     }>(`/darwins/${darwinId}/state`)
 
+    const agentId = data.agent_id ?? darwinId
+    const budgetRemaining = data.budget_remaining_usd ?? data.ledger_balance ?? 0
+    const burnPerHour = data.burn_rate_usd_per_hour ?? data.burn_rate_per_hour ?? 0
+    const derivedName = data.name ?? `Darwin ${agentId.slice(0, 8)}`
+
     agent.value = {
-      id: data.agent_id,
-      name: data.name,
+      id: agentId,
+      name: derivedName,
       initial_budget:
         pendingInitialBudget.value ??
         (agent.value?.initial_budget && agent.value.initial_budget > 0
           ? agent.value.initial_budget
-          : Math.max(data.budget_remaining_usd, 1)),
+          : Math.max(budgetRemaining, 1)),
     }
     pendingInitialBudget.value = null
     state.value = data.state
-    balance.value = data.budget_remaining_usd
-    burnRatePerHour.value = data.burn_rate_usd_per_hour
+    balance.value = budgetRemaining
+    burnRatePerHour.value = burnPerHour
+    sessionId.value = data.current_session_id ?? sessionId.value
+    lastEventAt.value = data.last_event_at ?? data.last_active_at ?? lastEventAt.value
   }
 
   function setInitialBudgetFromSpawn(initialBudget: number) {

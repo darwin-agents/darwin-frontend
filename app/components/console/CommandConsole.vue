@@ -61,14 +61,14 @@ function toggle(id: string) {
             v-if="openSection === s.id"
             class="px-4 pb-4 pt-2 border-t border-white/[0.04]"
           >
-            <CognitiveUplink v-if="s.id === 'uplink'" :darwin-id="darwinId" />
-            <SecretsVault v-if="s.id === 'vault'" :darwin-id="darwinId" />
-            <MetabolicInjection v-if="s.id === 'budget'" :darwin-id="darwinId" />
-            <AutonomyToggle v-if="s.id === 'auto'" :darwin-id="darwinId" />
+            <ConsoleCognitiveUplink v-if="s.id === 'uplink'" :darwin-id="darwinId" />
+            <ConsoleSecretsVault v-if="s.id === 'vault'" :darwin-id="darwinId" />
+            <ConsoleMetabolicInjection v-if="s.id === 'budget'" :darwin-id="darwinId" />
+            <ConsoleAutonomyToggle v-if="s.id === 'auto'" :darwin-id="darwinId" />
           </div>
         </section>
 
-        <KillSwitch :darwin-id="darwinId" />
+        <ConsoleKillSwitch :darwin-id="darwinId" />
       </div>
     </div>
   </Transition>
