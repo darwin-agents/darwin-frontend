@@ -9,6 +9,18 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- **Canvas viewport layout** — timeline SVG height follows the visible pane (`ResizeObserver`) so the dotted canvas fills the area below the header; page shell uses `h-dvh` for reliable full-viewport height. Genesis timeline adds `CANVAS_ORIGIN_PAD_X` horizontal inset so the first event node is not clipped at the left edge.
+- **Canvas visuals** — viewport uses a soft vertical gradient, vignette, and dot grid; trunk/lane strokes use rounded caps and warmer “paper” palette greens/reds; nodes gained a light rim, darwin-token label colors, selection ring, and hover emphasis; neural lane labels use shared SVG typography; intervention banner and inline approve/deny controls align with light-theme darwin surfaces.
+- **`useCanvasPanels` visibility** — return value is now `reactive()` so `show*` flags unwrap correctly in templates; previously plain-object `ComputedRef`s made `v-if="panels.showCommandConsole"` always truthy, so the command console (and other panels) could appear stuck open while state was actually closed.
+- **Canvas panel behavior** — right-side overlays now use a single shared `activePanel` state (console/entities/skills/ledger/assets), making panel visibility mutually exclusive and eliminating overlap races; canvas page load/unmount also resets panel state to prevent stale slide-overs leaking across sessions.
+- **Canvas surface token** — restored Tailwind `darwin.surface` color used by `bg-darwin-surface` in canvas/panel containers; overlays render opaque again instead of transparent bleed-through.
+- **Canvas/console theme alignment** — top bar, command console, and side panels now use `darwin-*` palette tokens (ink/muted/border/accent/bg) instead of dark `slate/white/violet` utility styling, matching the landing page visual language.
+- **Console close reliability** — panel close handlers now reset `activePanel` unconditionally, and the command console close button uses `closeAllPanels()` for deterministic close behavior.
+- **Console interaction hardening** — command console now supports close via overlay click and `Escape`, and the close icon uses a dedicated `stop+prevent` handler to avoid click re-trigger edge cases.
+- **Console click-through fix** — close controls now handle `pointerdown` with `stop+prevent`, and top-bar panel toggles also stop propagation; this prevents close clicks from falling through and instantly reopening the console.
+
 ---
 
 ## [0.3.0] — 2026-05-05
