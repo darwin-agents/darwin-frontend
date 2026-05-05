@@ -1,44 +1,55 @@
 export function useCanvasPanels() {
-  const showCommandConsole = useState('canvas-panels-console', () => false)
-  const showEntityPanel = useState('canvas-panels-entity', () => false)
-  const showSkillsPanel = useState('canvas-panels-skills', () => false)
-  const showLedgerPanel = useState('canvas-panels-ledger', () => false)
-  const showAssetsPanel = useState('canvas-panels-assets', () => false)
+  type CanvasPanel = 'console' | 'entity' | 'skills' | 'ledger' | 'assets'
+  const activePanel = useState<CanvasPanel | null>('canvas-panels-active', () => null)
 
-  function toggleConsole() { showCommandConsole.value = !showCommandConsole.value }
-  function closeConsole() { showCommandConsole.value = false }
-  function toggleEntityPanel() { showEntityPanel.value = !showEntityPanel.value }
-  function closeEntityPanel() { showEntityPanel.value = false }
-  function toggleSkillsPanel() { showSkillsPanel.value = !showSkillsPanel.value }
-  function closeSkillsPanel() { showSkillsPanel.value = false }
-  function toggleLedgerPanel() { showLedgerPanel.value = !showLedgerPanel.value }
-  function closeLedgerPanel() { showLedgerPanel.value = false }
-  function toggleAssetsPanel() { showAssetsPanel.value = !showAssetsPanel.value }
-  function closeAssetsPanel() { showAssetsPanel.value = false }
+  // Wrap in reactive so nested computed refs unwrap in templates (`v-if="panels.showX"`).
+  // A plain object would leave `panels.showX` as the ref object, always truthy.
+  return reactive({
+    activePanel,
 
-  function closeAllSidePanels() {
-    showEntityPanel.value = false
-    showSkillsPanel.value = false
-    showLedgerPanel.value = false
-    showAssetsPanel.value = false
-  }
+    showCommandConsole: computed(() => activePanel.value === 'console'),
+    showEntityPanel: computed(() => activePanel.value === 'entity'),
+    showSkillsPanel: computed(() => activePanel.value === 'skills'),
+    showLedgerPanel: computed(() => activePanel.value === 'ledger'),
+    showAssetsPanel: computed(() => activePanel.value === 'assets'),
 
-  return {
-    showCommandConsole,
-    showEntityPanel,
-    showSkillsPanel,
-    showLedgerPanel,
-    showAssetsPanel,
-    toggleConsole,
-    closeConsole,
-    toggleEntityPanel,
-    closeEntityPanel,
-    toggleSkillsPanel,
-    closeSkillsPanel,
-    toggleLedgerPanel,
-    closeLedgerPanel,
-    toggleAssetsPanel,
-    closeAssetsPanel,
-    closeAllSidePanels,
-  }
+    closeAllPanels() {
+      activePanel.value = null
+    },
+
+    toggleConsole() {
+      activePanel.value = activePanel.value === 'console' ? null : 'console'
+    },
+    closeConsole() {
+      activePanel.value = null
+    },
+    toggleEntityPanel() {
+      activePanel.value = activePanel.value === 'entity' ? null : 'entity'
+    },
+    closeEntityPanel() {
+      activePanel.value = null
+    },
+    toggleSkillsPanel() {
+      activePanel.value = activePanel.value === 'skills' ? null : 'skills'
+    },
+    closeSkillsPanel() {
+      activePanel.value = null
+    },
+    toggleLedgerPanel() {
+      activePanel.value = activePanel.value === 'ledger' ? null : 'ledger'
+    },
+    closeLedgerPanel() {
+      activePanel.value = null
+    },
+    toggleAssetsPanel() {
+      activePanel.value = activePanel.value === 'assets' ? null : 'assets'
+    },
+    closeAssetsPanel() {
+      activePanel.value = null
+    },
+
+    closeAllSidePanels() {
+      if (activePanel.value !== 'console') activePanel.value = null
+    },
+  })
 }

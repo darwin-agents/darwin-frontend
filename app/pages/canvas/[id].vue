@@ -8,9 +8,11 @@ const canvas = useCanvasStore()
 const agent = useAgentStore()
 const realtime = useRealtimeCanvas(darwinId)
 const api = useApi()
+const panels = useCanvasPanels()
 
 async function loadCanvas(id: string) {
   canvas.reset()
+  panels.closeAllPanels()
   try {
     await agent.fetchAgent(id)
   } catch {
@@ -42,12 +44,13 @@ watch(
 
 onUnmounted(() => {
   realtime.unsubscribe()
+  panels.closeAllPanels()
   canvas.reset()
 })
 </script>
 
 <template>
-  <div class="h-screen w-screen overflow-hidden bg-darwin-bg flex flex-col">
+  <div class="h-dvh min-h-0 w-screen overflow-hidden bg-darwin-bg flex flex-col">
     <CanvasTopBar :darwin-id="darwinId" />
     <CanvasInterventionBanner />
     <CanvasViewport :darwin-id="darwinId" class="flex-1 min-h-0" />
