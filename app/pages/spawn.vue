@@ -21,7 +21,7 @@ const auth = useAuthStore()
     </header>
 
     <main class="py-8">
-      <SpawnForm v-if="auth.userId" :owner-id="auth.userId" />
+      <SpawnForm v-if="auth.userId" />
       <div v-else class="text-center py-20">
         <p class="text-sm text-darwin-muted">Sign in to spawn an agent.</p>
         <NuxtLink to="/login" class="darwin-btn-primary mt-4 text-sm">Sign in</NuxtLink>

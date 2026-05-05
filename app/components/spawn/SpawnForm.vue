@@ -4,8 +4,6 @@ import {
   Loader2, Check, Info,
 } from 'lucide-vue-next'
 
-const props = defineProps<{ ownerId: string }>()
-
 const api = useApi()
 const step = ref(1)
 const loading = ref(false)
@@ -59,16 +57,22 @@ async function deploy() {
   loading.value = true
   errorMsg.value = ''
   try {
-    const res = await api.post<{ agent_id: string }>('/darwins/spawn', {
-      name: form.name,
-      directive: form.directive,
-      budget_usd: form.budget,
-      owner_id: props.ownerId,
-      tags: enabledTools.value,
-    })
+    const res = await api.post<{ darwin_id: string; session_id: string; state: string }>(
+      '/darwins/spawn',
+      {
+        name: form.name.trim(),
+        directive: form.directive.trim(),
+        llm_model: form.model,
+        initial_budget: form.budget,
+        /** Opaque vault ref; replace when POST /users/{id}/vault is wired in the UI */
+        vcc_ref: '__unprovisioned__',
+        tool_set: enabledTools.value,
+        requires_approval: true,
+      },
+    )
     const agentStore = useAgentStore()
     agentStore.setInitialBudgetFromSpawn(form.budget)
-    if (res.agent_id) await navigateTo(`/canvas/${res.agent_id}`)
+    if (res.darwin_id) await navigateTo(`/canvas/${res.darwin_id}`)
   } catch (e) {
     errorMsg.value = e instanceof Error ? e.message : 'Spawn failed'
   } finally {

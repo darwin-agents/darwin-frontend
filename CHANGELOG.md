@@ -17,6 +17,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **`SpawnForm`** — `POST /darwins/spawn` body matches backend `SpawnRequest` (`initial_budget`, `vcc_ref`, `llm_model`, `tool_set`, `requires_approval`); reads `darwin_id` from `SpawnResponse` for navigation (owner comes from the JWT, not the body)
 - **Supabase auth** — `useSsrCookies: false` in `nuxt.config.ts` so the browser client uses implicit flow; password-recovery links (tokens in the URL hash) work with `reset-password` again (`@supabase/ssr`’s `createBrowserClient` forces PKCE and rejects those callbacks)
 - **`stores/auth`** — `userId` resolves from `session.user.id` and JWT `sub` so it stays in sync with `useSupabaseUser()` claims (fixes spawn and API calls when signed in)
 - **`reset-password`** — listen for recovery in `onBeforeMount` (earlier than `onMounted`), accept `type=recovery` in query or hash, slightly longer session polling
