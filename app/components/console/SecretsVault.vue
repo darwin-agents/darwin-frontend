@@ -44,12 +44,12 @@ async function saveSecret() {
     <div
       v-for="secret in savedSecrets"
       :key="secret.ref"
-      class="flex items-center justify-between text-xs bg-white/5 rounded p-2"
+      class="flex items-center justify-between text-xs bg-darwin-bg/60 border border-darwin-border rounded p-2"
     >
-      <span class="font-mono text-slate-300">{{ maskRef(secret.ref) }}</span>
-      <span class="text-slate-500">{{ secret.type }} · ${{ secret.spend_limit ?? '—' }} limit</span>
+      <span class="font-mono text-darwin-ink-soft">{{ maskRef(secret.ref) }}</span>
+      <span class="text-darwin-muted">{{ secret.type }} · ${{ secret.spend_limit ?? '—' }} limit</span>
     </div>
-    <div class="space-y-2 border-t border-white/10 pt-3">
+    <div class="space-y-2 border-t border-darwin-border pt-3">
       <select v-model="form.secret_type" class="darwin-input w-full text-sm">
         <option value="vcc">Virtual Credit Card</option>
         <option value="stripe_key">Stripe API Key</option>

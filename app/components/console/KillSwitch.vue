@@ -22,7 +22,7 @@ async function confirmTerminate() {
   <div class="pt-2">
     <button
       type="button"
-      class="w-full py-2.5 rounded-lg text-sm font-medium bg-red-500/[0.08] hover:bg-red-500/[0.15] text-red-400 border border-red-500/20 transition-all flex items-center justify-center gap-2"
+      class="w-full py-2.5 rounded-lg text-sm font-medium bg-red-100 hover:bg-red-200 text-red-700 border border-red-300 transition-all flex items-center justify-center gap-2"
       :disabled="agent.isTerminated"
       @click="showKillConfirm = true"
     >
@@ -30,7 +30,7 @@ async function confirmTerminate() {
       Terminate Agent
     </button>
     <UiDarwinModal v-model="showKillConfirm" title="Terminate Agent">
-      <p class="text-sm text-slate-300 leading-relaxed">
+      <p class="text-sm text-darwin-ink-soft leading-relaxed">
         This is permanent. The container will be stopped, the VCC frozen,
         and the session archived. The agent cannot be revived.
       </p>
