@@ -84,6 +84,19 @@ const anatomyItems: { i: string; t: string; d: string }[] = [
   { i: 'V',   t: 'Reproductive Layer',  d: 'Profitable agents fork with mutations. Unprofitable lineages return their stake to the substrate pool.' },
 ]
 const activeItem = computed(() => anatomyItems[anatomyActive.value] ?? anatomyItems[0]!)
+interface AnatomyVisual {
+  accent: string
+  hue: string
+  hint: string
+}
+const anatomyVisuals: AnatomyVisual[] = [
+  { accent: '#ff5b1f', hue: '#f3eee2', hint: 'Attractor trajectory' },
+  { accent: '#0a0a0a', hue: '#ff8a5b', hint: 'Open-web topology' },
+  { accent: '#c93f0a', hue: '#f3eee2', hint: 'Stacked settlements' },
+  { accent: '#f3eee2', hue: '#ff7f45', hint: 'Crystallizing recall' },
+  { accent: '#ff5b1f', hue: '#ffb08a', hint: 'Forking lineages' },
+]
+const activeVisual = computed(() => anatomyVisuals[anatomyActive.value] ?? anatomyVisuals[0]!)
 
 // ── CTA ───────────────────────────────────────────────────────────────────────
 const ctaEmail = ref('')
@@ -257,10 +270,22 @@ onMounted(() => {
           <div style="position: sticky; top: 60px">
             <div class="lp-specimen-card">
               <ClientOnly>
-                <div style="position: absolute; inset: 0">
-                  <LandingDnaHelix color="#ff5b1f" :density="28" :twist="1.4" />
+                <div class="lp-specimen-visual">
+                  <div class="lp-specimen-grid-glow" :style="{ '--lp-specimen-hue': activeVisual.hue }" />
+                  <Transition name="lp-specimen-fade" mode="out-in">
+                    <div :key="`specimen-${anatomyActive}`" class="lp-specimen-object">
+                      <LandingAnatomyOrganScene
+                        :organ-index="anatomyActive"
+                        :accent="activeVisual.accent"
+                        :hue="activeVisual.hue"
+                      />
+                    </div>
+                  </Transition>
                 </div>
               </ClientOnly>
+              <div class="lp-specimen-orbit" :style="{ '--lp-specimen-hue': activeVisual.hue }">
+                <span v-for="n in 3" :key="`${activeItem.i}-${n}`" class="lp-specimen-orbit-ring" :style="{ animationDelay: `${n * -2.2}s` }" />
+              </div>
               <div class="lp-specimen-top">
                 <span class="upper" style="color: var(--darwin-ink)">Specimen · DRW-{{ String(847 + anatomyActive).padStart(4, '0') }}</span>
                 <span class="upper dim">organ · {{ activeItem.i }}</span>
@@ -268,6 +293,7 @@ onMounted(() => {
               <div class="lp-specimen-bottom">
                 <div class="upper dim" style="margin-bottom: 6px">Active organ</div>
                 <div style="font-size: 32px; font-style: italic; font-weight: 400; letter-spacing: -0.02em">{{ activeItem.t }}</div>
+                <div class="mono lp-specimen-hint">{{ activeVisual.hint }}</div>
               </div>
             </div>
           </div>
@@ -723,6 +749,58 @@ onMounted(() => {
 .lp-specimen-card {
   position: relative; aspect-ratio: 4/5;
   background: var(--darwin-bg-2); border: 1px solid var(--darwin-border); overflow: hidden;
+}
+.lp-specimen-visual {
+  position: absolute; inset: 0;
+}
+.lp-specimen-object {
+  position: absolute; inset: 0;
+}
+.lp-specimen-layer {
+  position: absolute; inset: 0;
+}
+.lp-specimen-grid-glow {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(rgba(10, 10, 10, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 10, 10, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 45% 35%, color-mix(in srgb, var(--lp-specimen-hue) 24%, transparent), transparent 58%);
+  background-size: 32px 32px, 32px 32px, 100% 100%;
+  opacity: 0.65;
+}
+.lp-specimen-fade-enter-active, .lp-specimen-fade-leave-active {
+  transition: opacity 280ms ease, transform 280ms ease;
+}
+.lp-specimen-fade-enter-from, .lp-specimen-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.985);
+}
+.lp-specimen-orbit {
+  position: absolute; inset: 0; pointer-events: none; z-index: 1;
+}
+.lp-specimen-orbit-ring {
+  position: absolute; width: 58%; aspect-ratio: 1 / 1;
+  border: 1px solid color-mix(in srgb, var(--lp-specimen-hue) 38%, transparent);
+  border-radius: 999px; left: 50%; top: 50%;
+  transform: translate(-50%, -50%) rotate(18deg);
+  animation: lp-orbit-spin 10s linear infinite;
+}
+.lp-specimen-orbit-ring:nth-child(2) {
+  width: 76%;
+  transform: translate(-50%, -50%) rotate(-24deg);
+}
+.lp-specimen-orbit-ring:nth-child(3) {
+  width: 92%;
+  transform: translate(-50%, -50%) rotate(42deg);
+}
+.lp-specimen-hint {
+  margin-top: 14px; font-size: 11px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--darwin-muted);
+}
+@keyframes lp-orbit-spin {
+  from { rotate: 0deg; opacity: 0.45; }
+  50% { opacity: 0.16; }
+  to { rotate: 360deg; opacity: 0.45; }
 }
 .lp-specimen-top {
   position: absolute; top: 24px; left: 24px; right: 24px;
