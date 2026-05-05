@@ -8,9 +8,9 @@ defineProps<{ event: DarwinEvent }>()
 
 <template>
   <g>
-    <NodeShell :event="event" accent="#6366f1" label="Synthesis" />
+    <NodeShell :event="event" accent="#185FA5" label="Synthesis" />
     <foreignObject x="-10" y="-10" width="20" height="20">
-      <GitMerge class="text-indigo-400" :size="14" style="display: block; margin: auto" />
+      <GitMerge :size="14" style="display: block; margin: auto; color: #134b84" />
     </foreignObject>
   </g>
 </template>

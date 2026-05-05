@@ -61,7 +61,17 @@ function onClick() {
 </script>
 
 <template>
-  <g v-if="nodeComponent" :transform="`translate(${x}, ${y})`" class="cursor-pointer" @click="onClick">
+  <g v-if="nodeComponent" :transform="`translate(${x}, ${y})`" class="cursor-pointer canvas-node-root" @click="onClick">
+    <circle
+      v-if="canvas.selectedEventId === event.id"
+      r="29"
+      cx="0"
+      cy="0"
+      fill="none"
+      stroke="var(--darwin-accent)"
+      stroke-width="2"
+      class="pointer-events-none canvas-node-selection-ring"
+    />
     <component :is="nodeComponent" :event="event" :darwin-id="darwinId" />
   </g>
 </template>

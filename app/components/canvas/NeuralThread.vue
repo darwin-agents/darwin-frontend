@@ -64,17 +64,14 @@ const modelSwitched = computed(() => {
     :x2="lineEnd"
     :y1="laneY"
     :y2="laneY"
+    stroke-linecap="round"
     :class="laneLineClass"
   />
   <!-- Lane label: neuron_id + spawn model + switch indicator -->
-  <text
-    :x="branchX + 88"
-    :y="laneY - 10"
-    class="lane-label fill-slate-400 font-mono text-[9px]"
-  >
+  <text :x="branchX + 88" :y="laneY - 10" class="lane-label">
     {{ lane.neuron_id }}
-    <tspan v-if="spawnModel !== '—'" class="fill-slate-300"> [{{ spawnModel }}]</tspan>
-    <tspan v-if="modelSwitched" class="fill-amber-400"> ↔</tspan>
+    <tspan v-if="spawnModel !== '—'" class="lane-label-detail"> [{{ spawnModel }}]</tspan>
+    <tspan v-if="modelSwitched" class="lane-label-warn"> ↔</tspan>
   </text>
   <CanvasNode
     v-for="event in visibleEvents"

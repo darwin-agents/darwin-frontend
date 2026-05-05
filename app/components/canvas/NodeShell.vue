@@ -16,18 +16,20 @@ const cost = computed(() => {
 </script>
 
 <template>
-  <g class="select-none">
+  <g class="select-none canvas-node-shell">
     <circle
-      r="18"
+      r="20"
       :class="pulse ? 'animate-pulse' : ''"
-      :fill="`${accent}33`"
+      :fill="`${accent}26`"
       :stroke="accent"
-      stroke-width="1.5"
+      stroke-width="1.25"
+      class="transition-[r,stroke-width] duration-200 ease-out"
     />
-    <text x="0" y="4" text-anchor="middle" class="fill-slate-200 font-mono text-[9px]">
+    <circle r="20" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="1" pointer-events="none" />
+    <text x="0" y="4" text-anchor="middle" class="canvas-node-title text-[9px] font-medium">
       {{ label }}
     </text>
-    <text v-if="cost" x="0" y="28" text-anchor="middle" class="fill-slate-500 font-mono text-[8px]">
+    <text v-if="cost" x="0" y="29" text-anchor="middle" class="canvas-node-cost text-[8px]">
       {{ cost }}
     </text>
   </g>

@@ -31,9 +31,9 @@ const modelClass = computed(() => {
 
 <template>
   <g>
-    <NodeShell :event="event" accent="#8b5cf6" label="Thought" />
+    <NodeShell :event="event" accent="#534AB7" label="Thought" />
     <foreignObject x="-10" y="-10" width="20" height="20">
-      <Brain class="text-violet-400" :size="14" style="display: block; margin: auto" />
+      <Brain :size="14" style="display: block; margin: auto; color: #4338a8" />
     </foreignObject>
     <foreignObject v-if="shortModel" x="-28" y="22" width="56" height="16">
       <span :class="['model-tag', modelClass]">{{ shortModel }}</span>
@@ -59,5 +59,5 @@ const modelClass = computed(() => {
 .model-tag--haiku    { background: #EAF3DE; color: #3B6D11; border: 1px solid #3B6D11; }
 .model-tag--gpt4o    { background: #E1F5EE; color: #0F6E56; border: 1px solid #0F6E56; }
 .model-tag--gpt4omini{ background: #FAEEDA; color: #854F0B; border: 1px solid #854F0B; }
-.model-tag--unknown  { background: #1f2937; color: #9ca3af; border: 1px solid #374151; }
+.model-tag--unknown  { background: #ddd4bd; color: #3d3a32; border: 1px solid rgba(10,10,10,0.12); }
 </style>

@@ -17,10 +17,10 @@ const stateIcon = computed(() => {
 })
 
 const stateClass = computed(() => {
-  if (agent.isActive)      return 'text-violet-300 bg-violet-500/10 border-violet-500/30'
-  if (agent.isHibernating) return 'text-slate-400 bg-slate-500/10 border-slate-500/30'
-  if (agent.isTerminated)  return 'text-red-400 bg-red-500/10 border-red-500/30'
-  return 'text-amber-300 bg-amber-500/10 border-amber-500/30'
+  if (agent.isActive)      return 'text-darwin-accent bg-darwin-accent/10 border-darwin-accent/30'
+  if (agent.isHibernating) return 'text-darwin-muted bg-darwin-bg-3 border-darwin-border'
+  if (agent.isTerminated)  return 'text-red-700 bg-red-100 border-red-200'
+  return 'text-darwin-ink-soft bg-darwin-bg-3 border-darwin-border'
 })
 
 const panelButtons = [
@@ -33,19 +33,19 @@ const panelButtons = [
 </script>
 
 <template>
-  <header class="shrink-0 border-b border-white/[0.06] bg-darwin-surface/80 backdrop-blur-xl flex items-center gap-3 px-3 py-2.5 z-30">
+  <header class="shrink-0 border-b border-darwin-border bg-darwin-surface/90 backdrop-blur-xl flex items-center gap-3 px-3 py-2.5 z-30">
     <!-- Back -->
-    <NuxtLink to="/dashboard" class="text-slate-500 hover:text-slate-300 transition-colors p-1">
+    <NuxtLink to="/dashboard" class="text-darwin-muted hover:text-darwin-ink transition-colors p-1">
       <ChevronLeft :size="16" />
     </NuxtLink>
 
-    <div class="h-4 w-px bg-white/[0.06]" />
+    <div class="h-4 w-px bg-darwin-border" />
 
     <!-- Agent info -->
     <div class="min-w-0 flex items-center gap-2.5">
       <div class="min-w-0">
-        <p class="text-sm font-medium text-white truncate leading-tight">{{ agent.agent?.name ?? 'Agent' }}</p>
-        <p class="text-[10px] text-slate-600 font-mono truncate">{{ darwinId.slice(0, 12) }}…</p>
+        <p class="text-sm font-medium text-darwin-ink truncate leading-tight">{{ agent.agent?.name ?? 'Agent' }}</p>
+        <p class="text-[10px] text-darwin-muted font-mono truncate">{{ darwinId.slice(0, 12) }}…</p>
       </div>
       <span class="darwin-badge border" :class="stateClass">
         <component :is="stateIcon" :size="10" class="mr-1" :class="agent.state === 'PROVISIONING' ? 'animate-spin' : ''" />
@@ -59,7 +59,7 @@ const panelButtons = [
     <!-- Heartbeat sparkline -->
     <CanvasHeartbeatBar />
 
-    <div class="h-4 w-px bg-white/[0.06]" />
+    <div class="h-4 w-px bg-darwin-border" />
 
     <!-- Panel toggles -->
     <div class="flex items-center gap-1">
@@ -68,10 +68,10 @@ const panelButtons = [
         :key="pb.label"
         type="button"
         class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs transition-all"
-        :class="pb.active.value
-          ? 'bg-violet-500/10 text-violet-300 border border-violet-500/20'
-          : 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.04]'"
-        @click="pb.toggle()"
+        :class="pb.active
+          ? 'bg-darwin-accent/10 text-darwin-accent border border-darwin-accent/25'
+          : 'text-darwin-muted hover:text-darwin-ink hover:bg-darwin-bg-3'"
+        @click.stop.prevent="pb.toggle()"
       >
         <component :is="pb.icon" :size="13" />
         <span class="hidden lg:inline">{{ pb.label }}</span>

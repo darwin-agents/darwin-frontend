@@ -8,9 +8,9 @@ defineProps<{ event: DarwinEvent }>()
 
 <template>
   <g>
-    <NodeShell :event="event" accent="#06b6d4" label="Entity" />
+    <NodeShell :event="event" accent="#0f766e" label="Entity" />
     <foreignObject x="-10" y="-10" width="20" height="20">
-      <Database class="text-cyan-400" :size="14" style="display: block; margin: auto" />
+      <Database :size="14" style="display: block; margin: auto; color: #0d5c56" />
     </foreignObject>
   </g>
 </template>

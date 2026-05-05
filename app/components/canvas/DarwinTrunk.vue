@@ -27,6 +27,7 @@ const trunkClass = computed(() => ({
     :x2="totalWidthPx"
     :y1="trunkY"
     :y2="trunkY"
+    stroke-linecap="round"
     :class="trunkClass"
   />
   <CanvasNode
