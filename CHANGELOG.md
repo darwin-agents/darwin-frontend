@@ -11,6 +11,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Spawn form validation UX** — frontend now enforces backend `SpawnRequest` constraints at input time (directive min length **10**, name max **100**) and surfaces FastAPI 422 details (`detail[0].loc/msg`) as a readable inline message instead of a generic spawn failure.
 - **Canvas viewport layout** — timeline SVG height follows the visible pane (`ResizeObserver`) so the dotted canvas fills the area below the header; page shell uses `h-dvh` for reliable full-viewport height. Genesis timeline adds `CANVAS_ORIGIN_PAD_X` horizontal inset so the first event node is not clipped at the left edge.
 - **Canvas “Latest” control** — floating button on the chart pans scroll so the newest event sits near the right edge (clamped to content); it appears when you’ve panned away from the tail and ignores drag capture (`mousedown` stopped).
 - **Canvas time ruler** — fixed strip above the timeline shows absolute clock ticks aligned to scroll/zoom; tick spacing uses “nice” intervals from `pickTimelineTickStepMs(zoom, viewportWidth)` so ultra-wide views cap at ~10 labels across the ruler, plus subsampling for minimum label gap; day-scale zoom uses short dates (`May 5`) instead of full locale strings; zoom/scroll read via `storeToRefs` for reliable numeric zoom.
@@ -36,6 +37,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Spawn form validation UX** — frontend now enforces backend `SpawnRequest` constraints at input time (directive min length **10**, name max **100**) and surfaces FastAPI 422 details (`detail[0].loc/msg`) as a readable inline message instead of a generic spawn failure.
 - **Landing anatomy** — specimen canvas uses organ-specific Three.js sculptures (torus‑knot field, jittered lattice, ring stack, crystal cloud, branching fork graph) keyed to each hover row; anatomy card no longer reuses `DnaHelix`/`MoleculeCloud`
 - **`SpawnForm`** — `POST /darwins/spawn` body matches backend `SpawnRequest` (`initial_budget`, `vcc_ref`, `llm_model`, `tool_set`, `requires_approval`); reads `darwin_id` from `SpawnResponse` for navigation (owner comes from the JWT, not the body)
 - **Canvas agent loading** — `stores/agent.fetchAgent()` now tolerates both backend `/darwins/{id}/state` payload variants (`budget_remaining_usd` or legacy `ledger_balance`, etc.), preventing false redirects/empty canvas when backend and frontend schema versions differ.
@@ -54,12 +56,14 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 **Nuxt 4 directory layout migration**
+
 - Moved all Vue app source (`app.vue`, `assets/`, `components/`, `composables/`, `middleware/`, `pages/`, `stores/`, `types/`, `utils/`) into the `app/` srcDir per [Nuxt 4 conventions](https://nuxt.com/docs/4.x/directory-structure)
 - `server/` stays at project root (Nitro is separate from the Vue app)
 - Updated `tailwind.config.ts` content paths to `./app/**/*`
 - Added `stores` to `imports.dirs` in `nuxt.config.ts` for Pinia auto-import
 
 **Missing spec components implemented**
+
 - `components/ui/DarwinButton.vue` — generic button atom wrapping all variant classes
 - `components/ui/DarwinBadge.vue` — colour-coded badge for agent states and skill labels
 - `components/ui/DarwinCard.vue` — standard surface card wrapper
@@ -70,6 +74,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `.env.example` — documented environment variables
 
 **TypeScript fixes**
+
 - Refactored `useCanvasPanels` to expose explicit `toggle*` / `close*` methods, eliminating `boolean → Ref<boolean>` assignment errors in all panel and console templates
 - Removed non-existent `session.value.user` access in `stores/auth.ts` (`@nuxtjs/supabase` v2 strips `.user` from the session object; use `useSupabaseUser()` instead)
 - Added undefined-guard for `neuronLanes[event.neuron_id]` access in `stores/canvas.ts`
@@ -84,6 +89,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 **Full Phase 1 MVP scaffold**
 
 _Routing & pages_
+
 - `pages/index.vue` — public landing page (ISR, 60s revalidation)
 - `pages/login.vue` — passwordless auth: magic link + Google OAuth
 - `pages/dashboard.vue` — agent list with FSM state badges, budget gauges, and canvas links
@@ -92,12 +98,14 @@ _Routing & pages_
 - `pages/resolve.vue` — mobile interstitial for Telegram deep-link JWT flows
 
 _Pinia stores_
+
 - `stores/agent.ts` — FSM state, live balance, burn rate, `fetchAgent`, `postUplink`, `patchConfig`, `terminate`
 - `stores/canvas.ts` — ordered event list, neuron lane map, scroll/zoom state, heartbeat samples, deduplication
 - `stores/notification.ts` — pending intervention queue; resolve-by-type correlation
 - `stores/auth.ts` — thin wrapper around `useSupabaseClient` / `useSupabaseUser` / `useSupabaseSession`
 
 _Canvas_
+
 - `CanvasViewport` — pan (mouse drag) + zoom (scroll wheel), virtual SVG coordinate space
 - `DarwinTrunk` — horizontal trunk line with animated metabolic state classes (`trunk-active`, `trunk-hibernating`, `trunk-terminated`)
 - `NeuralThread` — branching lane with cubic bezier connectors at branch and merge points
@@ -111,6 +119,7 @@ _Canvas_
 - `CanvasTopBar` — agent name, FSM badge, budget gauge, heartbeat, panel toggle buttons
 
 _Command Console_
+
 - `CommandConsole` — right-side slide-over with five collapsible sections
 - `CognitiveUplink` — mid-lifecycle directive injection → `POST /darwins/{id}/uplink`
 - `SecretsVault` — VCC + API key submission; raw digits cleared immediately after POST; only masked references stored in component state
@@ -119,21 +128,25 @@ _Command Console_
 - `KillSwitch` — termination with confirmation modal
 
 _Side panels_
+
 - `EntityPanel` — entity map derived from `ENTITY_CREATED` / `ENTITY_UPDATED` events; grouped by `entity_type`; expandable JSON view
 - `SkillsPanel` — skill documents from `SKILL_CREATED` events; markdown content preview
 - `LedgerPanel` — full transaction history; revenue / burned summary
 - `AssetsPanel` — placeholder for uploaded file assets
 
 _Mobile interstitial_
+
 - `MobileInterstitial` — three variants rendered by `pages/resolve.vue`:
   - `2fa` — numeric code input with countdown timer
   - `captcha` — full-screen iframe relay to live Browserbase session
   - `approval` — amount + justification display with Approve / Deny buttons
 
 _Shared UI_
+
 - `DarwinModal` — Teleport-based modal with backdrop, header, body, and footer slots
 
 _Composables_
+
 - `useRealtimeCanvas` — Supabase `postgres_changes` subscription; routes events to canvas / agent / notification stores
 - `useCanvasLayout` — `timestampToX()`, total canvas dimensions, lane geometry
 - `useVirtualScroll` — filters events to visible viewport ± 200px buffer; reactive to window resize
@@ -142,21 +155,25 @@ _Composables_
 - `useApi` — auth-header wrapper around `$fetch`; all backend calls use `/api/v1/*` prefix (proxied server-side)
 
 _Server_
+
 - `server/routes/api/v1/[...path].ts` — transparent proxy to `darwin-backend`; keeps the Railway URL server-side only
 
 _Types_
+
 - `types/events.ts` — `DarwinEvent` interface + all payload shapes (`ThoughtPayload`, `ToolResultPayload`, `LedgerPayload`, `NeuronSpawnedPayload`, `SynapticIntegrationPayload`, `AskHumanPayload`, `ApprovalPayload`, `EntityPayload`)
 - `types/agent.ts` — `AgentState`, `DarwinAgent`, `AgentStateApi`, `SpawnAgentBody`, `SpawnAgentResponse`
 - `types/canvas.ts` — `NeuronLane`, `CanvasLayout`, `TraceNode`
 - `types/finance.ts` — `VaultRef`
 
 _Utils_
+
 - `utils/eventColor.ts` — Tailwind class + hex accent colour per `event_type`
 - `utils/formatCost.ts` — `$0.042` formatting
 - `utils/formatDuration.ts` — `8h 22m` + relative time
 - `utils/tokenRoi.ts` — token ROI stub
 
 _Config_
+
 - `nuxt.config.ts` — route rules (ISR for public, CSR for canvas), `@pinia/nuxt`, `@nuxtjs/supabase`, `@nuxtjs/tailwindcss`, backend proxy runtime config, Supabase typed client
 - `tailwind.config.ts` — `darwin-*` colour tokens, metabolic state colours, `pulse-glow` keyframe, JetBrains Mono font
 - `assets/css/main.css` — Tailwind base + `darwin-btn-*`, `darwin-input`, trunk state SVG classes, lane line classes, `slide-right` transition

@@ -49,19 +49,34 @@ const enabledTools = computed(() =>
 )
 
 const canProceed = computed(() => {
-  if (step.value === 1) return form.name.trim().length > 0 && form.directive.trim().length > 0
+  if (step.value === 1) {
+    const name = form.name.trim()
+    const directive = form.directive.trim()
+    return name.length >= 1 && name.length <= 100 && directive.length >= 10
+  }
   return true
 })
 
 async function deploy() {
+  const name = form.name.trim()
+  const directive = form.directive.trim()
+  if (name.length < 1 || name.length > 100) {
+    errorMsg.value = 'Agent name must be between 1 and 100 characters.'
+    return
+  }
+  if (directive.length < 10) {
+    errorMsg.value = 'Directive must be at least 10 characters.'
+    return
+  }
+
   loading.value = true
   errorMsg.value = ''
   try {
     const res = await api.post<{ darwin_id: string; session_id: string; state: string }>(
       '/darwins/spawn',
       {
-        name: form.name.trim(),
-        directive: form.directive.trim(),
+        name,
+        directive,
         llm_model: form.model,
         initial_budget: form.budget,
         /** Opaque vault ref; replace when POST /users/{id}/vault is wired in the UI */
@@ -73,8 +88,16 @@ async function deploy() {
     const agentStore = useAgentStore()
     agentStore.setInitialBudgetFromSpawn(form.budget)
     if (res.darwin_id) await navigateTo(`/canvas/${res.darwin_id}`)
-  } catch (e) {
-    errorMsg.value = e instanceof Error ? e.message : 'Spawn failed'
+  } catch (e: any) {
+    const detail = e?.data?.detail
+    if (Array.isArray(detail) && detail.length) {
+      const first = detail[0]
+      const field = Array.isArray(first?.loc) ? String(first.loc[first.loc.length - 1]) : 'field'
+      const msg = typeof first?.msg === 'string' ? first.msg : 'invalid value'
+      errorMsg.value = `Spawn validation failed: ${field} ${msg}`
+    } else {
+      errorMsg.value = e instanceof Error ? e.message : 'Spawn failed'
+    }
   } finally {
     loading.value = false
   }
@@ -133,7 +156,7 @@ async function deploy() {
           class="darwin-input min-h-[160px] resize-y"
         />
         <p class="text-[11px] text-slate-600 mt-1.5">
-          This becomes the seed of the agent's system prompt. Be specific about goals and constraints.
+          This becomes the seed of the agent's system prompt. Be specific about goals and constraints (minimum 10 characters).
         </p>
       </div>
 
