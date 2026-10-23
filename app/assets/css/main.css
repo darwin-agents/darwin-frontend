@@ -258,3 +258,84 @@
   0%, 100% { filter: drop-shadow(0 0 4px var(--darwin-accent)); }
   50%      { filter: drop-shadow(0 0 12px var(--darwin-accent)); }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   LANDING LAB — shared by pages/index.vue and components/landing/*
+   ───────────────────────────────────────────────────────────────────────────── */
+.lp-root {
+  background: var(--darwin-bg);
+  color: var(--darwin-ink);
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-x: clip; /* not `hidden`: that would break position: sticky chapters */
+}
+.lp-root .mono { font-family: var(--darwin-font-mono); }
+.lp-root .upper { text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; font-weight: 500; font-family: var(--darwin-font-mono); }
+.lp-root .dim { color: var(--darwin-muted); }
+.lp-root .lp-italic { font-style: italic; }
+.lp-root .lp-light { font-weight: 300; }
+.lp-root .lp-ember { color: var(--darwin-accent); }
+.lp-root .lp-ember-deep { color: var(--darwin-accent-deep); }
+.lp-root .lp-cream { color: var(--darwin-bg); }
+.lp-root .lp-mute { color: var(--darwin-muted); }
+.lp-root .lp-pos { color: #1f8a3e; font-weight: 500; }
+.lp-root .lp-neg { color: #c93f0a; font-weight: 500; }
+
+/* Content sits above the fixed specimen canvas (z 1); section backgrounds sit below it. */
+.lp-root .lp-container { max-width: 1440px; margin: 0 auto; padding: 0 64px; position: relative; z-index: 2; }
+@media (max-width: 720px) { .lp-root .lp-container { padding: 0 20px; } }
+
+.lp-root .lp-section { padding: 160px 0; position: relative; }
+@media (max-width: 720px) { .lp-root .lp-section { padding: 100px 0; } }
+.lp-root .lp-bg-2 { background: var(--darwin-bg-2); }
+.lp-root .lab-dark { background: var(--darwin-ink); color: var(--darwin-bg); }
+.lp-root .lab-dark .dim { color: rgba(243, 238, 226, 0.5); }
+
+.lp-root .lp-h2 {
+  font-size: clamp(44px, 6.5vw, 96px);
+  line-height: 0.95; letter-spacing: -0.04em; font-weight: 400; text-wrap: balance;
+}
+.lp-root .lab-eyebrow { margin-bottom: 32px; }
+.lab-dark .lab-eyebrow { color: var(--darwin-accent); }
+.lp-root .lab-lead { font-size: 19px; line-height: 1.55; color: var(--darwin-ink-soft); max-width: 560px; text-wrap: pretty; }
+.lp-root .lab-dark .lab-lead { color: rgba(243, 238, 226, 0.72); }
+.lp-root .lab-head { display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px; align-items: end; margin-bottom: 80px; }
+@media (max-width: 1024px) { .lp-root .lab-head { grid-template-columns: 1fr; gap: 28px; margin-bottom: 56px; } }
+
+.lp-root .lp-btn {
+  display: inline-flex; align-items: center; gap: 12px; padding: 18px 32px;
+  font-family: var(--darwin-font-sans); font-weight: 500; font-size: 13px; letter-spacing: 0.01em;
+  background: var(--darwin-ink); color: var(--darwin-bg);
+  border: none; border-radius: 100px; cursor: pointer; text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.lp-root .lp-btn:hover { background: var(--darwin-accent-deep); transform: translateY(-1px); }
+.lp-root .lp-btn:disabled { cursor: default; transform: none; opacity: 0.7; }
+.lp-root .lp-btn-ember { background: var(--darwin-accent); color: var(--darwin-ink); }
+.lp-root .lp-btn-outline {
+  display: inline-flex; align-items: center; padding: 18px 28px; border: 1px solid currentColor; border-radius: 100px;
+  font-size: 13px; font-weight: 500; text-decoration: none; color: inherit; background: transparent; cursor: pointer; transition: all 0.3s;
+}
+.lp-root .lp-btn-outline:hover { background: var(--darwin-ink); color: var(--darwin-bg); border-color: var(--darwin-ink); }
+.lab-dark .lp-btn-outline:hover { background: var(--darwin-bg); color: var(--darwin-ink); border-color: var(--darwin-bg); }
+.lp-root .lab-chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 100px;
+  font-family: var(--darwin-font-mono); font-size: 10px; letter-spacing: 0.06em;
+  border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+}
+.lp-root :is(button, a, input, summary):focus-visible { outline: 2px solid var(--darwin-accent); outline-offset: 3px; }
+
+/* Scroll-driven reveals: pure CSS, skipped where unsupported or motion is reduced. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .lp-root .reveal {
+      animation: lab-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 25%;
+    }
+  }
+}
+@keyframes lab-reveal {
+  from { opacity: 0; transform: translateY(48px); filter: blur(8px); }
+  to   { opacity: 1; transform: none; filter: none; }
+}

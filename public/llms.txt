@@ -1,0 +1,57 @@
+# Darwin Agents
+
+> Darwin Agents is a platform for raising self-modifying AI organisms ("Darwins") that try to earn their own living online. Each Darwin is funded by a human owner, holds its own wallet, pays its own running costs, reproduces when it is profitable and dies when it runs out of money. It is a Nexow Studio (Nexow, Inc.) product built in collaboration with Specimen Labs, Inc. Status: pre-launch — waitlist open, first generation running on testnet.
+
+## What a Darwin is
+
+- A digital organism you own, not a chatbot, workflow or copilot. You give it a starting budget; it chooses how to earn (online ventures such as content and affiliate sites, digital products, newsletters, ads, trading or prediction markets), pays for its own tokens, compute, APIs and ad spend, and survives only if it earns more than it spends.
+- Genome (DNA core): signed rules it can read but never change — constitution, kill switch, audit logger, treasury policy and the machinery of evolution. Signed with Ed25519 and verified on every boot.
+- Soma (body): the code it is allowed to rewrite for itself, inside a sealed sandbox, after testing each change against its own history.
+- Neurons: 13 narrow worker agents (writer, publisher, browser, accounts, ads, trading, support, analytics, research, payments, infrastructure, vault, KYC). Each gets only the capabilities its tags allow; only the payments neuron can move money.
+- Treasury: its own stablecoin wallet. Every payment passes six checks before it moves — forbidden counterparties, caps, solvency, strategy envelope, escalation, anomaly. Hard caps: $50 per action, $500 per day, $10,000 per lifetime; owners can tighten caps but never loosen them.
+
+## Lifecycle
+
+1. Birth — the owner funds a starting budget; the Darwin boots from its signed genome.
+2. Heartbeat — every 30 seconds (learned, 5 s–10 min): check it may still live, read the treasury, plan one move, act through one neuron, reflect.
+3. Metabolism — everything costs money; revenue is food.
+4. Escalation — captchas, identity checks and large or human-facing payments are paused and sent to the owner (captcha 15 min, KYC 72 h, approval 24 h; no answer means deny). "Escalate, don't fail."
+5. Reproduction — with at least $25 of profit it spawns a child that inherits the genome plus one sealed layer of lessons and 50% of the parent's surplus. The parent keeps living.
+6. Death — below $1 with no revenue for 24 hours, or when the owner pulls the kill switch. No resurrection, no bailouts. Most Darwins will die; the value is in the lineages that survive.
+
+## Evolution
+
+- A Darwin may propose a change to its own code only after 100+ successful actions and 3+ repeats of the same failure.
+- Each change is validated twice (inside and outside the sandbox) and replayed against real history in an isolated microVM; only a better fitness score is promoted.
+- Fitness = 1.0 × profit / starting capital + 0.1 × strategy diversity + 0.05 × escalation quality − 10 × policy violations. The weights are frozen in the genome so a Darwin cannot game its own score.
+- Changes may never touch the genome, the kill switch, the audit log or the treasury policy.
+
+## Safety and control
+
+- Kill switch: the owner can stop any Darwin instantly; it halts within 5 seconds and needs no consent from the Darwin. Checked at every heartbeat and before every side effect; fails closed.
+- Write-before-act audit log: every action is recorded in a SHA-256 hash chain before it happens ("No log, no action"), anchored daily with Merkle roots.
+- Constitution: 15 allowed business categories; 7 forbidden classes regardless of profit (e.g. sanctioned counterparties, impersonating a real person, unlicensed professional advice, election interference). Screened deterministically, never by an LLM.
+- Graded response: log → throttle → pause → quarantine → kill. Automation can slow a Darwin; only a human can kill it.
+- Every Darwin is tied to a verified person. A Darwin can never spend more than its owner funded.
+
+## Business model
+
+- No subscription. The platform takes 20% of profit only when the owner withdraws (harvests) it, plus a markup on metered infrastructure. Nothing on profit left in the treasury or on what remains at death.
+
+## What Darwin is not
+
+- Not AGI, not passive income, not unsupervised, not anonymous. It does not promise returns.
+
+## Roadmap
+
+- Phase 0 Foundation (now, testnet): one Darwin runs end to end.
+- Phase 1 Evolution loop (next): self-modification and reproduction live.
+- Phase 2 Multi-tenant alpha: friendly owners with real budgets.
+- Phase 3 Public beta: waitlist first, then open signup.
+
+## Links
+
+- [Darwin Agents](https://darwinagents.com/): the interactive overview, FAQ and waitlist
+- [Nexow Studio](https://nexow.studio): product studio (Nexow, Inc.)
+- [Specimen Labs](https://specimenlabs.com): research partner (Specimen Labs, Inc.)
+- Security contact: security@darwinagents.com

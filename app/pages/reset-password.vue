@@ -115,10 +115,7 @@ async function submit() {
             class="w-12 h-12 rounded-xl flex items-center justify-center"
             style="background: var(--darwin-ink)"
           >
-            <svg width="20" height="20" viewBox="0 0 22 22">
-              <circle cx="11" cy="11" r="10" fill="none" stroke="#f3eee2" stroke-width="1.4" />
-              <circle cx="11" cy="11" r="3.5" fill="#ff5b1f" />
-            </svg>
+            <UiDarwinLogo :size="30" style="color: #f3eee2" />
           </div>
         </div>
 
