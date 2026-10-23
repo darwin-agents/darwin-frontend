@@ -2,6 +2,7 @@
 import { Lock, Loader2, Eye, EyeOff, CheckCircle } from 'lucide-vue-next'
 
 definePageMeta({ layout: false })
+useHead({ title: 'Reset password' })
 
 const auth = useAuthStore()
 const supabase = useSupabaseClient()

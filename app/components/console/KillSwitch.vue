@@ -4,6 +4,7 @@ import { Skull, Loader2 } from 'lucide-vue-next'
 const props = defineProps<{ darwinId: string }>()
 
 const agent = useAgentStore()
+const toast = useToast()
 const showKillConfirm = ref(false)
 const terminating = ref(false)
 
@@ -11,6 +12,8 @@ async function confirmTerminate() {
   terminating.value = true
   try {
     await agent.terminate(props.darwinId)
+  } catch {
+    toast('Termination failed. The agent is still running.', 'error')
   } finally {
     terminating.value = false
     showKillConfirm.value = false

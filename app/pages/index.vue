@@ -1,6 +1,17 @@
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
+const seoDescription =
+  'Darwin Agents are autonomous economic organisms: a budget, a goal and a survival imperative. They earn, spend, reproduce or perish.'
+useSeoMeta({
+  title: 'The autonomous economic engine',
+  description: seoDescription,
+  ogTitle: 'Darwin Agents — the autonomous economic engine',
+  ogDescription: seoDescription,
+  ogType: 'website',
+  twitterCard: 'summary',
+})
+
 // ── Live Ledger (Hero) ──────────────────────────────────────────────────────
 interface LedgerRow {
   id: string
@@ -72,7 +83,8 @@ function randEvent(): FeedEvent {
   }
 }
 
-const canvasFeed = ref<FeedEvent[]>(Array.from({ length: 12 }, () => randEvent()))
+// Seeded on mount: random rows rendered during SSR would never match the client.
+const canvasFeed = ref<FeedEvent[]>([])
 
 // ── Anatomy ──────────────────────────────────────────────────────────────────
 const anatomyActive = ref(0)
@@ -99,15 +111,30 @@ const anatomyVisuals: AnatomyVisual[] = [
 const activeVisual = computed(() => anatomyVisuals[anatomyActive.value] ?? anatomyVisuals[0]!)
 
 // ── CTA ───────────────────────────────────────────────────────────────────────
+const supabase = useSupabaseClient()
 const ctaEmail = ref('')
 const ctaSubmitted = ref(false)
-function submitCta(e: Event) {
-  e.preventDefault()
+const ctaSending = ref(false)
+const ctaError = ref('')
+async function submitCta() {
+  ctaSending.value = true
+  ctaError.value = ''
+  // ponytail: anon insert has no rate limit; move behind a Nitro route with a service key if spam shows up
+  const { error } = await supabase
+    .from('waitlist')
+    .insert({ email: ctaEmail.value.trim().toLowerCase(), source: 'landing' })
+  ctaSending.value = false
+  // 23505 = unique violation: already on the list, which is success for the visitor
+  if (error && error.code !== '23505') {
+    ctaError.value = 'Could not join the list. Please try again.'
+    return
+  }
   ctaSubmitted.value = true
 }
 
 // ── Intervals ─────────────────────────────────────────────────────────────────
 onMounted(() => {
+  canvasFeed.value = Array.from({ length: 12 }, () => randEvent())
   const ledgerTimer = setInterval(() => {
     ledgerRows.value = [genRow(), ...ledgerRows.value].slice(0, 6)
     stats.value = {
@@ -141,7 +168,7 @@ onMounted(() => {
             <circle cx="11" cy="11" r="3.5" fill="#ff5b1f" />
           </svg>
           <span class="lp-logo-name">Darwin</span>
-          <span class="upper dim" style="margin-left: 8px">Agents · v0.4</span>
+          <span class="upper dim lp-logo-tag">Agents · v0.4</span>
         </div>
         <nav class="lp-navlinks">
           <a href="#anatomy">Anatomy</a>
@@ -221,7 +248,7 @@ onMounted(() => {
               </div>
             </div>
             <div class="lp-ledger-stats">
-              <div v-for="[k, v] in [['Alive', stats.alive.toLocaleString()], ['Revenue', '$' + (stats.revenue / 1000).toFixed(1) + 'k'], ['Perished', stats.perished.toLocaleString()]]" :key="k">
+              <div v-for="[k, v] in [['Alive', stats.alive.toLocaleString('en-US')], ['Revenue', '$' + (stats.revenue / 1000).toFixed(1) + 'k'], ['Perished', stats.perished.toLocaleString('en-US')]]" :key="k">
                 <div class="upper dim" style="margin-bottom: 4px; font-size: 10px">{{ k }}</div>
                 <div style="font-size: 18px; font-style: italic">{{ v }}</div>
               </div>
@@ -363,9 +390,9 @@ onMounted(() => {
           >
             <div style="font-size: 22px; font-style: italic; font-weight: 400; letter-spacing: -0.01em">{{ r[0] }}</div>
             <div style="font-size: 15px; color: var(--darwin-ink-soft)">{{ r[1] }}</div>
-            <div class="mono" style="font-size: 14px; text-align: right">{{ r[2] }}</div>
-            <div class="mono" :style="{ fontSize: '14px', textAlign: 'right', color: (r[3] ?? '').startsWith('+') ? '#1f8a3e' : 'var(--darwin-muted)' }">{{ r[3] }}</div>
-            <div class="mono" style="font-size: 14px; text-align: right">{{ r[4] }}</div>
+            <div class="mono lp-ops-num" data-label="Revenue (90d)">{{ r[2] }}</div>
+            <div class="mono lp-ops-num" data-label="Δ Net" :style="{ color: (r[3] ?? '').startsWith('+') ? '#1f8a3e' : 'var(--darwin-muted)' }">{{ r[3] }}</div>
+            <div class="mono lp-ops-num" data-label="Specimens">{{ r[4] }}</div>
             <div>
               <span
                 class="lp-status-badge mono"
@@ -528,19 +555,23 @@ onMounted(() => {
           Bring a problem.<br />We'll <em style="color: var(--darwin-accent)">grow</em> the answer.
         </h2>
 
-        <form class="lp-cta-form" @submit="submitCta">
+        <form class="lp-cta-form" @submit.prevent="submitCta">
           <input
             v-model="ctaEmail"
             type="email"
             placeholder="researcher@lab.org"
-            :disabled="ctaSubmitted"
+            aria-label="Email address"
+            autocomplete="email"
+            maxlength="254"
+            :disabled="ctaSubmitted || ctaSending"
             required
             class="lp-cta-input"
           />
-          <button type="submit" class="lp-btn lp-btn-ember">
-            {{ ctaSubmitted ? 'On the list ✓' : 'Apply →' }}
+          <button type="submit" class="lp-btn lp-btn-ember" :disabled="ctaSubmitted || ctaSending">
+            {{ ctaSubmitted ? 'On the list ✓' : ctaSending ? 'Sending…' : 'Apply →' }}
           </button>
         </form>
+        <p v-if="ctaError" role="alert" class="lp-cta-error">{{ ctaError }}</p>
         <p style="font-size: 13px; color: var(--darwin-muted-2)">~30 partners admitted per quarter. We answer every email personally.</p>
       </div>
 
@@ -554,10 +585,10 @@ onMounted(() => {
           <span style="font-size: 14px">Darwin · A field study by Specimen Labs</span>
         </div>
         <div class="lp-footer-links">
-          <a href="#">Manifesto</a>
-          <a href="#">Research</a>
-          <a href="#">Careers</a>
-          <a href="#">Press</a>
+          <a href="#anatomy">Anatomy</a>
+          <a href="#trust">Trust</a>
+          <a href="#roadmap">Roadmap</a>
+          <NuxtLink to="/login">Sign in</NuxtLink>
         </div>
         <div class="mono" style="font-size: 11px; color: var(--darwin-muted)">© MMXXVI · est. on a small island</div>
       </div>
@@ -658,6 +689,7 @@ onMounted(() => {
 }
 .lp-logo { display: flex; align-items: center; gap: 12px; }
 .lp-logo-name { font-weight: 500; letter-spacing: -0.01em; font-size: 15px; }
+.lp-logo-tag { margin-left: 8px; }
 .lp-navlinks { display: flex; gap: 36px; font-size: 13px; }
 .lp-navlinks a { text-decoration: none; color: var(--darwin-ink); transition: color 0.2s; }
 .lp-navlinks a:hover { color: var(--darwin-accent); }
@@ -826,6 +858,7 @@ onMounted(() => {
 }
 .lp-ops-header { border-bottom: 1px solid var(--darwin-border); }
 .lp-ops-data { padding: 28px 0; }
+.lp-ops-num { font-size: 14px; text-align: right; }
 .lp-status-badge {
   display: inline-block; font-size: 10px;
   text-transform: uppercase; letter-spacing: 0.12em; padding: 3px 10px;
@@ -894,6 +927,8 @@ onMounted(() => {
 }
 .lp-cta-input::placeholder { color: rgba(243,238,226,0.4); }
 .lp-cta-input:disabled { opacity: 0.6; }
+.lp-btn:disabled { cursor: default; transform: none; }
+.lp-cta-error { margin: -20px 0 24px; font-size: 13px; color: #ff8a5b; }
 
 /* ── Footer ──────────────────────────────────────────────────────────────── */
 .lp-footer {
@@ -914,11 +949,19 @@ onMounted(() => {
   .lp-roadmap-grid { grid-template-columns: repeat(2, 1fr); }
   .lp-trust-grid { grid-template-columns: 1fr; }
   .lp-ops-row { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .lp-ops-header { display: none; }
+  .lp-ops-num { text-align: left; }
+  .lp-ops-num::before {
+    content: attr(data-label); display: block; margin-bottom: 4px;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--darwin-muted);
+  }
   .lp-section-header { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 720px) {
-  .lp-navlinks { display: none; }
+  .lp-navlinks, .lp-logo-tag { display: none; }
+  .lp-hero-dna { opacity: 0.22; }
+  .lp-nav-actions .lp-btn { padding: 10px 18px; }
   .lp-meta-strip { grid-template-columns: 1fr; gap: 32px; }
   .lp-wiinot-grid { grid-template-columns: 1fr; }
   .lp-roadmap-grid { grid-template-columns: 1fr; }

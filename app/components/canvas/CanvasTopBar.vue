@@ -23,13 +23,13 @@ const stateClass = computed(() => {
   return 'text-darwin-ink-soft bg-darwin-bg-3 border-darwin-border'
 })
 
-const panelButtons = [
+const panelButtons = computed(() => [
   { label: 'Console',  icon: Terminal, toggle: () => panels.toggleConsole(),     active: panels.showCommandConsole },
   { label: 'Entities', icon: Database, toggle: () => panels.toggleEntityPanel(), active: panels.showEntityPanel },
   { label: 'Skills',   icon: Star,     toggle: () => panels.toggleSkillsPanel(), active: panels.showSkillsPanel },
   { label: 'Ledger',   icon: Receipt,  toggle: () => panels.toggleLedgerPanel(), active: panels.showLedgerPanel },
   { label: 'Assets',   icon: FileBox,  toggle: () => panels.toggleAssetsPanel(), active: panels.showAssetsPanel },
-]
+])
 </script>
 
 <template>
@@ -67,6 +67,8 @@ const panelButtons = [
         v-for="pb in panelButtons"
         :key="pb.label"
         type="button"
+        :aria-label="pb.label"
+        :aria-pressed="pb.active"
         class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs transition-all"
         :class="pb.active
           ? 'bg-darwin-accent/10 text-darwin-accent border border-darwin-accent/25'

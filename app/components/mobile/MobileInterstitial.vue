@@ -44,9 +44,9 @@ const sessionId = computed(() => decoded.value?.session_id ?? '')
 
 <template>
   <!-- Expired -->
-  <div v-if="isExpired" class="min-h-screen bg-darwin-bg flex flex-col items-center justify-center p-6">
-    <Dna :size="32" class="text-slate-700 mb-4" />
-    <p class="text-sm text-slate-400">This link has expired.</p>
+  <div v-if="decoded && isExpired" class="min-h-screen bg-darwin-bg flex flex-col items-center justify-center p-6">
+    <Dna :size="32" class="text-darwin-muted mb-4" />
+    <p class="text-sm text-darwin-ink-soft">This link has expired.</p>
   </div>
 
   <template v-else-if="decoded">
@@ -54,11 +54,11 @@ const sessionId = computed(() => decoded.value?.session_id ?? '')
     <div v-if="purpose === '2fa'" class="min-h-screen bg-darwin-bg flex flex-col items-center justify-center p-6">
       <div class="w-full max-w-sm space-y-5">
         <div class="text-center">
-          <div class="w-14 h-14 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center mx-auto mb-4">
-            <Lock :size="24" class="text-violet-400" />
+          <div class="w-14 h-14 rounded-2xl bg-darwin-accent/10 border border-darwin-accent/20 flex items-center justify-center mx-auto mb-4">
+            <Lock :size="24" class="text-darwin-accent-deep" />
           </div>
-          <h1 class="text-lg font-semibold text-white">2FA Code Required</h1>
-          <p class="text-sm text-slate-500 mt-1">Enter the code from your authenticator</p>
+          <h1 class="text-lg font-semibold text-darwin-ink">2FA Code Required</h1>
+          <p class="text-sm text-darwin-muted mt-1">Enter the code from your authenticator</p>
         </div>
         <input
           v-model="code"
@@ -68,7 +68,7 @@ const sessionId = computed(() => decoded.value?.session_id ?? '')
           class="darwin-input text-center text-3xl font-mono tracking-[0.3em] h-16"
           inputmode="numeric"
         />
-        <div class="flex items-center gap-2 text-xs text-slate-500 justify-center">
+        <div class="flex items-center gap-2 text-xs text-darwin-muted justify-center">
           <Timer :size="12" />
           <span>Expires in {{ countdown }}s</span>
         </div>
@@ -80,16 +80,16 @@ const sessionId = computed(() => decoded.value?.session_id ?? '')
 
     <!-- CAPTCHA variant -->
     <div v-else-if="purpose === 'captcha'" class="min-h-screen bg-darwin-bg flex flex-col">
-      <div class="px-5 py-4 flex items-center gap-3 border-b border-white/[0.06]">
-        <ScanFace :size="20" class="text-orange-400" />
-        <h1 class="text-sm font-semibold text-white">Solve CAPTCHA</h1>
+      <div class="px-5 py-4 flex items-center gap-3 border-b border-darwin-border">
+        <ScanFace :size="20" class="text-orange-700" />
+        <h1 class="text-sm font-semibold text-darwin-ink">Solve CAPTCHA</h1>
       </div>
       <iframe
         :src="`/sessions/${sessionId}/stream`"
         class="flex-1 border-0 min-h-[50vh]"
         title="Captcha session"
       />
-      <div class="px-5 py-4 border-t border-white/[0.06]">
+      <div class="px-5 py-4 border-t border-darwin-border">
         <button type="button" class="darwin-btn-primary w-full" @click="resumeAgent">
           CAPTCHA Solved — Resume Agent
         </button>
@@ -101,25 +101,25 @@ const sessionId = computed(() => decoded.value?.session_id ?? '')
       <div class="w-full max-w-sm space-y-5">
         <div class="text-center">
           <div class="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-4">
-            <ShieldQuestion :size="24" class="text-amber-400" />
+            <ShieldQuestion :size="24" class="text-amber-700" />
           </div>
-          <h1 class="text-lg font-semibold text-white">Approval Required</h1>
+          <h1 class="text-lg font-semibold text-darwin-ink">Approval Required</h1>
         </div>
         <div class="darwin-card p-5 space-y-3">
           <div>
-            <p class="text-[10px] text-slate-500 uppercase tracking-wider">Amount</p>
-            <p class="text-2xl font-semibold text-white font-mono mt-1">${{ approvalDetails.amount.toFixed(2) }}</p>
+            <p class="text-[10px] text-darwin-muted uppercase tracking-wider">Amount</p>
+            <p class="text-2xl font-semibold text-darwin-ink font-mono mt-1">${{ approvalDetails.amount.toFixed(2) }}</p>
           </div>
           <div v-if="approvalDetails.justification">
-            <p class="text-[10px] text-slate-500 uppercase tracking-wider">Justification</p>
-            <p class="text-sm text-slate-200 mt-1 leading-relaxed">{{ approvalDetails.justification }}</p>
+            <p class="text-[10px] text-darwin-muted uppercase tracking-wider">Justification</p>
+            <p class="text-sm text-darwin-ink-soft mt-1 leading-relaxed">{{ approvalDetails.justification }}</p>
           </div>
-          <p v-if="approvalDetails.token_roi_estimate" class="text-xs text-violet-400 mt-2">
+          <p v-if="approvalDetails.token_roi_estimate" class="text-xs text-darwin-accent-deep mt-2">
             {{ approvalDetails.token_roi_estimate }}
           </p>
         </div>
         <div class="grid grid-cols-2 gap-3">
-          <button type="button" class="darwin-btn-ghost h-14 text-red-400 border border-red-500/20" @click="deny">
+          <button type="button" class="darwin-btn-ghost h-14 text-red-700 border border-red-500/20" @click="deny">
             Deny
           </button>
           <button type="button" class="darwin-btn-primary h-14 bg-green-600 hover:bg-green-500" @click="approve">
@@ -132,7 +132,7 @@ const sessionId = computed(() => decoded.value?.session_id ?? '')
 
   <!-- No token -->
   <div v-else class="min-h-screen bg-darwin-bg flex flex-col items-center justify-center p-6">
-    <Dna :size="32" class="text-slate-700 mb-4" />
-    <p class="text-sm text-slate-500">Missing or invalid token.</p>
+    <Dna :size="32" class="text-darwin-muted mb-4" />
+    <p class="text-sm text-darwin-muted">Missing or invalid token.</p>
   </div>
 </template>

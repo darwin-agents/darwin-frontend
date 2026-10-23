@@ -62,20 +62,20 @@ function modelTagClass(model: string): string {
   <Transition name="slide-right">
     <div
       v-if="isOpen"
-      class="fixed right-0 top-0 h-screen w-full max-w-[640px] bg-darwin-surface border-l border-white/[0.06] flex flex-col z-50 shadow-2xl"
+      class="fixed right-0 top-0 h-screen w-full max-w-[640px] bg-darwin-surface border-l border-darwin-border flex flex-col z-50 shadow-2xl"
     >
       <!-- Header -->
-      <div class="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] shrink-0">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-darwin-border shrink-0">
         <div>
-          <h2 class="text-sm font-semibold text-white flex items-center gap-2">
-            <Brain :size="14" class="text-violet-400" />
+          <h2 class="text-sm font-semibold text-darwin-ink flex items-center gap-2">
+            <Brain :size="14" class="text-darwin-accent-deep" />
             Mental Replay
           </h2>
-          <p class="text-[11px] text-slate-500 mt-0.5">
+          <p class="text-[11px] text-darwin-muted mt-0.5">
             {{ selectedEvent?.event_type }} · {{ relativeTime(selectedEvent?.created_at) }}
           </p>
         </div>
-        <button type="button" class="text-slate-500 hover:text-white p-1.5 rounded-md hover:bg-white/[0.06] transition-all" aria-label="Close" @click="close">
+        <button type="button" class="text-darwin-muted hover:text-darwin-ink p-1.5 rounded-md hover:bg-darwin-bg-3 transition-all" aria-label="Close" @click="close">
           <X :size="16" />
         </button>
       </div>
@@ -83,31 +83,31 @@ function modelTagClass(model: string): string {
       <!-- Content: two-panel layout -->
       <div class="flex-1 grid grid-cols-2 gap-0 overflow-hidden min-h-0">
         <!-- Left: EYES -->
-        <div class="border-r border-white/[0.06] overflow-auto p-4">
-          <div class="flex items-center gap-1.5 text-[10px] text-slate-500 uppercase tracking-wider mb-3">
+        <div class="border-r border-darwin-border overflow-auto p-4">
+          <div class="flex items-center gap-1.5 text-[10px] text-darwin-muted uppercase tracking-wider mb-3">
             <Eye :size="10" />
             Eyes
           </div>
           <img
             v-if="(selectedEvent?.payload as { screenshot_url?: string })?.screenshot_url"
             :src="(selectedEvent?.payload as { screenshot_url: string }).screenshot_url"
-            class="w-full rounded-lg border border-white/[0.06]"
+            class="w-full rounded-lg border border-darwin-border"
             alt="Browser screenshot"
           />
           <pre
             v-else-if="(selectedEvent?.payload as { content?: string })?.content"
-            class="text-xs text-slate-300 whitespace-pre-wrap leading-relaxed bg-white/[0.02] rounded-lg p-3 border border-white/[0.04]"
+            class="text-xs text-darwin-ink-soft whitespace-pre-wrap leading-relaxed bg-darwin-bg-2 rounded-lg p-3 border border-darwin-border"
           >{{ (selectedEvent?.payload as { content: string }).content }}</pre>
-          <p v-else class="text-xs text-slate-600 italic">No visual data for this event</p>
+          <p v-else class="text-xs text-darwin-muted italic">No visual data for this event</p>
         </div>
 
         <!-- Right: MIND -->
         <div class="overflow-auto p-4 min-h-0">
-          <div class="flex items-center gap-1.5 text-[10px] text-slate-500 uppercase tracking-wider mb-3">
+          <div class="flex items-center gap-1.5 text-[10px] text-darwin-muted uppercase tracking-wider mb-3">
             <Brain :size="10" />
             Mind
           </div>
-          <div v-if="isLoading" class="flex items-center gap-2 text-xs text-slate-500 py-8 justify-center">
+          <div v-if="isLoading" class="flex items-center gap-2 text-xs text-darwin-muted py-8 justify-center">
             <Loader2 :size="14" class="animate-spin" />
             Loading trace…
           </div>
@@ -115,22 +115,22 @@ function modelTagClass(model: string): string {
             <div
               v-for="node in trace"
               :key="node.node_id"
-              class="text-xs bg-white/[0.03] rounded-lg p-3 border border-white/[0.04]"
+              class="text-xs bg-darwin-bg-2 rounded-lg p-3 border border-darwin-border"
             >
-              <span class="text-violet-400 font-mono text-[10px]">{{ node.type }}</span>
-              <p class="mt-1.5 text-slate-300 leading-relaxed">{{ node.content }}</p>
-              <div class="flex gap-3 mt-2 text-[10px] text-slate-600">
+              <span class="text-darwin-accent-deep font-mono text-[10px]">{{ node.type }}</span>
+              <p class="mt-1.5 text-darwin-ink-soft leading-relaxed">{{ node.content }}</p>
+              <div class="flex gap-3 mt-2 text-[10px] text-darwin-muted">
                 <span v-if="node.token_cost">${{ node.token_cost.toFixed(5) }}</span>
                 <span v-if="node.latency_ms">{{ node.latency_ms }}ms</span>
               </div>
             </div>
           </div>
-          <p v-else class="text-xs text-slate-600 py-8 text-center">No trace data available.</p>
+          <p v-else class="text-xs text-darwin-muted py-8 text-center">No trace data available.</p>
         </div>
       </div>
 
       <!-- Footer -->
-      <div class="px-5 py-3 border-t border-white/[0.06] flex flex-wrap gap-4 text-xs text-slate-500 shrink-0">
+      <div class="px-5 py-3 border-t border-darwin-border flex flex-wrap gap-4 text-xs text-darwin-muted shrink-0">
         <span v-if="(selectedEvent?.payload as { model?: string })?.model">
           Model:
           <span :class="['model-tag-inline', modelTagClass((selectedEvent?.payload as { model: string }).model)]">
@@ -153,10 +153,10 @@ function modelTagClass(model: string): string {
   padding: 1px 6px;
   margin-left: 4px;
 }
-.model-tag--opus     { background: #185FA520; color: #7cb3e0; border: 1px solid #185FA540; }
-.model-tag--sonnet   { background: #534AB720; color: #a89fe0; border: 1px solid #534AB740; }
-.model-tag--haiku    { background: #3B6D1120; color: #8abf60; border: 1px solid #3B6D1140; }
-.model-tag--gpt4o    { background: #0F6E5620; color: #5ac0a0; border: 1px solid #0F6E5640; }
-.model-tag--gpt4omini{ background: #854F0B20; color: #c89040; border: 1px solid #854F0B40; }
-.model-tag--unknown  { background: #1f293740; color: #9ca3af; border: 1px solid #37415140; }
+.model-tag--opus     { background: #E6F1FB; color: #185FA5; border: 1px solid #185FA5; }
+.model-tag--sonnet   { background: #EEEDFE; color: #534AB7; border: 1px solid #534AB7; }
+.model-tag--haiku    { background: #EAF3DE; color: #3B6D11; border: 1px solid #3B6D11; }
+.model-tag--gpt4o    { background: #E1F5EE; color: #0F6E56; border: 1px solid #0F6E56; }
+.model-tag--gpt4omini{ background: #FAEEDA; color: #854F0B; border: 1px solid #854F0B; }
+.model-tag--unknown  { background: #ddd4bd; color: #3d3a32; border: 1px solid rgba(10,10,10,0.12); }
 </style>

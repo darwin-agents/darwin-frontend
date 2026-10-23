@@ -11,11 +11,11 @@ const barColor = computed(() => {
 
 <template>
   <div class="flex items-center gap-3 px-4 py-2 flex-1 min-w-0">
-    <span class="text-xs text-slate-400 whitespace-nowrap font-mono">${{ agent.balance.toFixed(2) }}</span>
-    <div class="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden min-w-[80px]">
+    <span class="text-xs text-darwin-ink-soft whitespace-nowrap font-mono">${{ agent.balance.toFixed(2) }}</span>
+    <div class="flex-1 h-1.5 bg-darwin-bg-3 rounded-full overflow-hidden min-w-[80px]">
       <div class="h-full rounded-full transition-all duration-500" :class="barColor" :style="{ width: barWidth }" />
     </div>
-    <span class="text-xs text-slate-400 whitespace-nowrap font-mono">
+    <span class="text-xs text-darwin-ink-soft whitespace-nowrap font-mono">
       ${{ (agent.agent?.initial_budget ?? agent.balance).toFixed(2) }}
     </span>
   </div>

@@ -16,26 +16,3 @@ export interface AgentStateApi {
   last_active_at: string | null
   next_wake_at: string | null
 }
-
-export interface AgentListApi {
-  agents: AgentStateApi[]
-  total: number
-}
-
-export interface SpawnAgentBody {
-  name: string
-  directive: string
-  budget_usd: number
-  wake_up_cron?: string | null
-  owner_id: string
-  swarm_id?: string | null
-  tags?: string[]
-}
-
-export interface SpawnAgentResponse {
-  agent_id: string
-  state: AgentState
-  modal_container_id: string | null
-  created_at: string
-  vcc_ref: string
-}

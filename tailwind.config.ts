@@ -22,6 +22,7 @@ export default {
           muted:    '#8a857a',
           'muted-2': '#b5b0a3',
           border:   'rgba(10,10,10,0.12)',
+          'border-soft': 'rgba(10,10,10,0.06)',
           accent:   '#ff5b1f',
           'accent-deep': '#c93f0a',
         },

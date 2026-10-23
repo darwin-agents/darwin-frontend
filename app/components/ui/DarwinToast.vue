@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { X } from 'lucide-vue-next'
-
-export interface Toast {
-  id: string
-  message: string
-  type?: 'info' | 'success' | 'error' | 'warning'
-}
+import type { Toast } from '~/composables/useToast'
 
 const toasts = useState<Toast[]>('darwin-toasts', () => [])
 

@@ -9,6 +9,11 @@ export default defineNuxtConfig({
 
   app: {
     head: {
+      htmlAttrs: { lang: 'en' },
+      titleTemplate: (title) => (title ? `${title} · Darwin Agents` : 'Darwin Agents'),
+      meta: [
+        { name: 'description', content: 'Autonomous economic organisms that earn, spend, reproduce or perish.' },
+      ],
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
@@ -27,6 +32,7 @@ export default defineNuxtConfig({
     '/spawn': { ssr: false },
     '/canvas/**': { ssr: false },
     '/resolve': { ssr: false },
+    '/confirm': { ssr: false },
     '/reset-password': { ssr: false },
   },
 
@@ -44,7 +50,7 @@ export default defineNuxtConfig({
     useSsrCookies: false,
     redirectOptions: {
       login: '/login',
-      callback: '/dashboard',
+      callback: '/confirm',
       exclude: ['/', '/login', '/confirm', '/resolve', '/reset-password'],
     },
   },

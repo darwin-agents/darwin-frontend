@@ -2,12 +2,18 @@
 const props = defineProps<{ darwinId: string }>()
 
 const agent = useAgentStore()
+const toast = useToast()
 const injectionAmount = ref(50)
 
 async function injectBudget() {
   const n = Number(injectionAmount.value)
   if (!n || n < 1) return
-  await agent.patchConfig(props.darwinId, { budget_injection: n })
+  try {
+    await agent.patchConfig(props.darwinId, { budget_injection: n })
+    toast(`Injected $${n}.`, 'success')
+  } catch {
+    toast('Budget injection failed.', 'error')
+  }
 }
 </script>
 
