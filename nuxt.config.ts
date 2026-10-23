@@ -14,7 +14,6 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'en' },
-      titleTemplate: (title) => (title ? `${title} · Darwin Agents` : 'Darwin Agents'),
       meta: [
         { name: 'description', content: 'Raise a digital organism that earns its own living.' },
         { name: 'theme-color', content: '#f3eee2' },
