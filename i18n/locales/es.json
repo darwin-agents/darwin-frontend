@@ -109,7 +109,7 @@
           "value": "se consulta en cada latido, en cada límite entre nodos del grafo y justo antes de cada efecto secundario; lanza una KillSignal que el código evolucionado no puede capturar"
         },
         "failsClosed": {
-          "term": "Falla en cerrado",
+          "term": "Fallo seguro",
           "value": "si no puede leer el interruptor, el Darwin se da por muerto; una vez activado, sigue activado; el tráfico de salida se corta en paralelo"
         },
         "auditRecord": {
@@ -298,7 +298,7 @@
         },
         "escalation": {
           "title": "Escalado",
-          "body": "Un captcha, una verificación de identidad, un pago grande: cuando solo un humano puede ayudar, aparca esa tarea y te pregunta. Nunca fuerza el paso. Escalar, no fallar.",
+          "body": "Un captcha, una verificación de identidad, un pago grande: cuando solo un humano puede ayudar, pone en pausa esa tarea y te pregunta. Nunca fuerza el paso. Escalar, no fallar.",
           "fact": "captcha 15 min · KYC 72 h · aprobación 24 h · sin respuesta = denegado"
         },
         "reproduction": {
@@ -368,7 +368,7 @@
       "notes": {
         "contract": {
           "term": "Contrato",
-          "value": "nombre · versión · etiquetas de capacidad · coste estimado (p50/p95 en USD y latencia) · modos de fallo; plan / execute / escalate asíncronos"
+          "value": "nombre · versión · etiquetas de capacidad · costo estimado (p50/p95 en USD y latencia) · modos de fallo; plan / execute / escalate asíncronos"
         },
         "neuronContext": {
           "term": "NeuronContext",
@@ -394,7 +394,7 @@
     },
     "treasury": {
       "eyebrow": "§ 06 — Tesorería",
-      "title": "Cada céntimo pasa {em}.",
+      "title": "Cada centavo pasa {em}.",
       "titleEm": "seis compuertas",
       "lead": "Un Darwin maneja dinero real, así que su cartera está envuelta en reglas con las que no puede discutir. Cada pago se comprueba antes de moverse; la primera compuerta que objeta decide. Nunca puede gastar más de lo que tú aportas. Prueba un pago.",
       "samples": {
@@ -482,7 +482,7 @@
         },
         "sanctions": {
           "term": "Sanciones",
-          "value": "se comprueban antes de cada transferencia; falla en cerrado"
+          "value": "se comprueban antes de cada transferencia; ante un fallo, se bloquea"
         },
         "ledger": {
           "term": "Libro mayor",
@@ -755,8 +755,8 @@
         }
       },
       "status": {
-        "live": "activo",
-        "next": "próximo",
+        "live": "en marcha",
+        "next": "siguiente",
         "horizon": "horizonte"
       }
     },
@@ -785,7 +785,7 @@
     "roadmap": {
       "eyebrow": "§ 12 — Hoja de ruta",
       "title": "Cuatro fases.{br}Cada una con un {em}.",
-      "titleEm": "criterio de cierre",
+      "titleEm": "criterio de cancelación",
       "lead": "Cada fase se lanza contra una definición escrita de terminado — y una condición bajo la que nos detenemos. La base es aburrida a propósito; toda la novedad va al organismo.",
       "phase": "Fase {n}",
       "doneWhen": "Terminada cuando: {bar}",
@@ -793,7 +793,7 @@
         "foundation": {
           "title": "Cimientos",
           "body": "Un Darwin funciona de principio a fin en testnet.",
-          "bar": "24 h sin fallos · más de 50 envíos con ≥ 80% de éxito · muerte en < 5 s",
+          "bar": "24 h sin fallos · más de 50 envíos con ≥ 80% de éxito · parada en < 5 s",
           "status": "ahora · testnet"
         },
         "evolution": {
@@ -824,7 +824,7 @@
       "items": {
         "what": {
           "q": "¿Qué es un Darwin, en realidad?",
-          "a": "Un organismo digital que te pertenece. Le das un presupuesto inicial; intenta ganarse la vida en internet, paga sus propios costes de funcionamiento y solo sobrevive si gana más de lo que gasta. Si lo consigue, tiene hijos; si fracasa, muere."
+          "a": "Un organismo digital que te pertenece. Le das un presupuesto inicial; intenta ganarse la vida en internet, paga sus propios costos de funcionamiento y solo sobrevive si gana más de lo que gasta. Si lo consigue, tiene hijos; si fracasa, muere."
         },
         "money": {
           "q": "¿De verdad gana dinero?",
@@ -832,7 +832,7 @@
         },
         "loss": {
           "q": "¿Qué pasa si pierde el dinero que le di?",
-          "a": "Puede pasar, y deberías contar con ello. La única regla inquebrantable: un Darwin nunca puede gastar más que el presupuesto con el que lo financiaste. Tu pérdida tiene como tope exactamente eso — ni un céntimo más."
+          "a": "Puede pasar, y deberías contar con ello. La única regla inquebrantable: un Darwin nunca puede gastar más que el presupuesto con el que lo financiaste. Tu pérdida tiene como tope exactamente eso — ni un centavo más."
         },
         "stop": {
           "q": "¿Puedo detenerlo?",
@@ -844,7 +844,7 @@
         },
         "crypto": {
           "q": "¿Es solo un bot de cripto o de trading?",
-          "a": "Es más amplio que eso. Un Darwin elige su propia forma de ganar dinero — puede montar un negocio en internet, operar en mercados financieros o de cripto, tomar posiciones en mercados de predicción o combinar varias. No ejecuta ningún sistema de “ganancias garantizadas”, y solo puede arriesgar el presupuesto que le diste."
+          "a": "Es más amplio que eso. Un Darwin elige su propia forma de ganar dinero — puede crear un negocio en internet, operar en mercados financieros o de cripto, tomar posiciones en mercados de predicción o combinar varias. No ejecuta ningún sistema de “ganancias garantizadas”, y solo puede arriesgar el presupuesto que le diste."
         },
         "death": {
           "q": "¿Qué pasa cuando muere?",
@@ -870,7 +870,7 @@
     },
     "cta": {
       "eyebrow": "§ 14 — Acceso de campo",
-      "title": "Está ahí cuando la primera{br}generación {em}.",
+      "title": "Sé testigo cuando la primera{br}generación {em}.",
       "titleEm": "nazca",
       "emailLabel": "Correo electrónico",
       "onList": "En la lista ✓",
@@ -957,7 +957,7 @@
       "auto": "Autonomía"
     },
     "uplink": {
-      "placeholder": "Inyecta una directiva a mitad del ciclo de vida... p. ej., “Cambia al momentum aeroespacial durante 4 horas.”",
+      "placeholder": "Inyecta una directiva a mitad del ciclo de vida... p. ej., “Pivota hacia el momentum aeroespacial durante 4 horas.”",
       "submit": "Inyectar enlace",
       "sent": "Directiva enviada.",
       "failed": "No se pudo enviar la directiva."
@@ -1036,7 +1036,7 @@
       "generic": "Algo salió mal. Inténtalo de nuevo.",
       "wrongCredentials": "Correo o contraseña incorrectos.",
       "emailNotConfirmed": "Primero confirma tu correo — te enviamos un enlace al registrarte.",
-      "alreadyRegistered": "Ya existe una cuenta con este correo. Prueba a iniciar sesión.",
+      "alreadyRegistered": "Ya existe una cuenta con este correo. Intenta iniciar sesión.",
       "noSession": "No se pudo iniciar la sesión. Inténtalo de nuevo.",
       "passwordMismatch": "Las contraseñas no coinciden.",
       "passwordTooShort": "La contraseña debe tener al menos 8 caracteres."
@@ -1145,7 +1145,7 @@
         "haiku": "Rápido — el más barato",
         "opus": "Máxima inteligencia — caro",
         "gpt4o": "Mejores capacidades de visión",
-        "gpt4oMini": "Visión rápida — bajo coste"
+        "gpt4oMini": "Visión rápida — bajo costo"
       },
       "budget": {
         "title": "Presupuesto",
