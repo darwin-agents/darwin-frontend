@@ -42,6 +42,7 @@ onMounted(() => {
     renderer.setSize(w, h, false)
     camera.aspect = w / h
     camera.updateProjectionMatrix()
+    renderer.render(scene, camera)
   }
   resize()
   const ro = new ResizeObserver(resize)
@@ -123,7 +124,6 @@ onMounted(() => {
   }
   window.addEventListener('mousemove', onMove)
 
-  let raf: number
   const t0 = performance.now()
   const tick = (now: number) => {
     const t = (now - t0) / 1000
@@ -138,12 +138,11 @@ onMounted(() => {
     group.rotation.y = tx * 0.4
     group.rotation.x = ty * 0.25
     renderer.render(scene, camera)
-    raf = requestAnimationFrame(tick)
   }
-  tick(t0)
+  const stopLoop = useRenderLoop(mount, tick)
 
   onUnmounted(() => {
-    cancelAnimationFrame(raf)
+    stopLoop()
     ro.disconnect()
     window.removeEventListener('mousemove', onMove)
     renderer.dispose()

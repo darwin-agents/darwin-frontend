@@ -325,6 +325,7 @@ onMounted(() => {
     renderer.setSize(w, h, false)
     camera.aspect = w / h
     camera.updateProjectionMatrix()
+    renderer.render(scene, camera)
   }
   resize()
   const ro = new ResizeObserver(resize)
@@ -345,7 +346,6 @@ onMounted(() => {
   }
   window.addEventListener('mousemove', onMove)
 
-  let raf: number
   const t0 = performance.now()
   const pitchBase = [-0.12, -0.2, -0.05, -0.16, -0.18][idx] ?? 0
   const yawSpeed = [0.32, 0.22, 0.41, 0.25, 0.2][idx] ?? 0.28
@@ -358,12 +358,11 @@ onMounted(() => {
     group.rotation.x = pitchBase + ty * 0.38 + Math.sin(t * 0.5) * 0.035
     group.position.y = Math.sin(t * 0.7 + idx * 0.65) * 0.065
     renderer.render(scene, camera)
-    raf = requestAnimationFrame(tick)
   }
-  tick(t0)
+  const stopLoop = useRenderLoop(mount, tick)
 
   onUnmounted(() => {
-    cancelAnimationFrame(raf)
+    stopLoop()
     ro.disconnect()
     window.removeEventListener('mousemove', onMove)
     disposeObject3D(group)
