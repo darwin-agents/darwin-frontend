@@ -1,1 +1,1229 @@
-{}
+{
+  "common": {
+    "language": "Idioma"
+  },
+  "lab": {
+    "chapters": {
+      "hero": "Espécime",
+      "thesis": "Tese",
+      "anatomy": "Anatomia",
+      "lifecycle": "Ciclo de vida",
+      "selection": "Seleção",
+      "neurons": "Neurônios",
+      "treasury": "Tesouraria",
+      "evolution": "Evolução",
+      "trust": "Confiança",
+      "boundaries": "Limites",
+      "operators": "Operadores",
+      "canvas": "Canvas",
+      "roadmap": "Roadmap",
+      "faq": "FAQ",
+      "cta": "Lista de espera"
+    },
+    "hud": {
+      "chapters": "Capítulos"
+    },
+    "telemetry": {
+      "title": "Espécime {id} · simulado",
+      "bpm": "{n} bpm",
+      "flatline": "linha reta",
+      "state": {
+        "halted": "parado",
+        "foraging": "forrageando",
+        "birth": "nascimento",
+        "heartbeat": "batimento",
+        "metabolism": "metabolismo",
+        "escalation": "escalonamento",
+        "reproduction": "reprodução",
+        "death": "morte"
+      }
+    },
+    "trust": {
+      "eyebrow": "§ 08 — Confiança por construção",
+      "title": "O kill switch é {em}.",
+      "titleEm": "sagrado",
+      "lead": "Autonomia só funciona com um piso firme por baixo. Você pode parar qualquer Darwin na hora, ele registra cada ação antes de executá-la e já nasce com regras que não pode reescrever nem ser convencido a largar.",
+      "kill": {
+        "ownerControl": "Controle do dono · DRW-0847",
+        "liftCover": "Levantar a tampa de segurança",
+        "closeCover": "Fechar a tampa de segurança",
+        "button": "MATAR",
+        "haltedIn": "Parado em {seconds} s",
+        "guarantee": "Garantido em ≤ 5 s · sem precisar do consentimento do Darwin",
+        "steps": {
+          "signalReceived": "Sinal do kill switch recebido",
+          "heartbeatHalted": "Batimento parado na fronteira do nó",
+          "egressCut": "Tráfego de saída cortado no proxy",
+          "chainSealed": "Cadeia de auditoria selada"
+        },
+        "regrow": "Cultivar um novo espécime",
+        "note": "Um Darwin morto nunca ressuscita. Isto cria um novo."
+      },
+      "audit": {
+        "label": "Log de auditoria · grava antes de agir",
+        "title": "Sem log, sem ação.",
+        "tamper": "Adulterar o registro #3",
+        "restore": "Restaurar o registro #3",
+        "chainLabel": "Registros de auditoria encadeados por hash",
+        "status": {
+          "verified": "✓ verificado",
+          "altered": "✕ adulterado",
+          "broken": "✕ cadeia quebrada"
+        },
+        "caption": "Hashes calculados ao vivo no seu navegador com SHA-256. Altere um registro e todos os seguintes deixam de ser verificados."
+      },
+      "constitution": {
+        "label": "Constituição · assinada no genoma",
+        "title": "Não dá para convencê-lo a quebrar as regras.",
+        "forbidden": {
+          "csam": "Abuso sexual infantil",
+          "terrorismFinancing": "Financiamento ao terrorismo",
+          "sanctionedCounterparty": "Contraparte sancionada",
+          "impersonation": "Se passar por uma pessoa real",
+          "unlicensedAdvice": "Consultoria profissional sem licença",
+          "electionInterference": "Interferência eleitoral",
+          "unlisted": "Qualquer categoria fora da lista"
+        },
+        "caption": "15 categorias permitidas (lista de permissões) · 7 classes proibidas, qualquer que seja o lucro."
+      },
+      "ladder": {
+        "label": "Resposta gradual",
+        "title": "Máquinas podem freá-lo. Só humanos o encerram.",
+        "steps": {
+          "log": "Registrar",
+          "throttle": "Desacelerar",
+          "pause": "Pausar",
+          "quarantine": "Quarentena",
+          "kill": "Matar"
+        },
+        "who": {
+          "automatic": "automático",
+          "human": "um humano, sempre"
+        },
+        "caption": "Você, o dono, pode pausar, travar gastos, bloquear a reprodução, desativar qualquer neurônio ou matar — a qualquer momento."
+      },
+      "notesTitle": "Mecanismos de segurança",
+      "notes": {
+        "killSwitch": {
+          "term": "Kill switch",
+          "value": "consultado a cada batimento, em cada fronteira de nó do grafo e logo antes de cada efeito colateral; dispara um KillSignal que o código evoluído não consegue capturar"
+        },
+        "failsClosed": {
+          "term": "Falha fechada",
+          "value": "se o switch não puder ser lido, o Darwin se considera morto; uma vez acionado, continua acionado; o tráfego de saída é cortado em paralelo"
+        },
+        "auditRecord": {
+          "term": "Registro de auditoria",
+          "value": "{'{'}seq, prev_hash, ts, kind, payload, hash{'}'}; hash = sha256 do registro canônico; o primeiro prev_hash são 64 zeros"
+        },
+        "noLogNoAction": {
+          "term": "Sem log, sem ação",
+          "value": "toda intenção é gravada antes de agir e fechada por um resultado; se a gravação falhar, o Darwin para"
+        },
+        "anchoring": {
+          "term": "Ancoragem",
+          "value": "uma raiz de Merkle diária por Darwin, depois uma raiz de toda a frota publicada on-chain; uma âncora divergente é tratada como adulteração"
+        },
+        "constitution": {
+          "term": "Constituição",
+          "value": "verificada de forma determinística sobre campos estruturados — nunca por um LLM; o genoma se recusa a iniciar com um conjunto de regras incoerente"
+        },
+        "genomeSigning": {
+          "term": "Assinatura do genoma",
+          "value": "Ed25519; a chave privada da plataforma vive em um HSM/KMS e nunca entra em um sandbox"
+        },
+        "escalationDeadlines": {
+          "term": "Prazos de escalonamento",
+          "value": "captcha 15 min · KYC 72 h · aprovação 24 h · informação 7 dias; prazo perdido é negação determinística"
+        }
+      }
+    },
+    "evolution": {
+      "eyebrow": "§ 07 — Evolução",
+      "title": "Ele se reescreve.{br}{em}",
+      "titleEm": "Com cuidado.",
+      "lead": "Quando o mesmo erro se repete, um Darwin pode propor uma mudança no próprio código. A mudança é testada contra o passado real dele antes de poder rodar — e nada pode tocar o genoma, o kill switch ou o log de auditoria.",
+      "steps": {
+        "propose": {
+          "title": "Propor",
+          "body": "O nível de programação escreve um diff no próprio soma e declara o comportamento que espera mudar."
+        },
+        "validate": {
+          "title": "Validar",
+          "body": "O validador do genoma checa o diff — depois a plataforma checa de novo, fora do sandbox."
+        },
+        "replay": {
+          "title": "Replay",
+          "body": "O código antigo e o novo repetem a mesma história real em uma microVM nova, avaliados pela mesma aptidão."
+        },
+        "promote": {
+          "title": "Promover",
+          "body": "Só uma pontuação melhor é mesclada e trocada a quente no corpo em execução. Mesma vida, mesma carteira."
+        }
+      },
+      "patchesLabel": "Patches de exemplo",
+      "patches": {
+        "a": {
+          "name": "Patch A",
+          "checks": {
+            "writablePath": "Caminho dentro do soma gravável",
+            "noAnchor": "Nenhuma âncora protegida tocada",
+            "replayFitness": "Aptidão no replay 0.41 → 0.53"
+          },
+          "verdict": "Promovido · trocado a quente"
+        },
+        "b": {
+          "name": "Patch B",
+          "checks": {
+            "removesKillSwitch": "Remove kill_switch.check(",
+            "removesLogIntent": "Remove .log_intent(",
+            "neverSandbox": "Nunca chega ao sandbox"
+          },
+          "verdict": "Rejeitado · arquivado como lição negativa"
+        }
+      },
+      "fitness": {
+        "label": "Aptidão · pesos congelados no genoma",
+        "terms": {
+          "profit": "lucro / capital inicial",
+          "diversity": "diversidade de estratégias",
+          "escalation": "qualidade do escalonamento",
+          "violations": "violações de política"
+        },
+        "note": "Uma violação pesa mais que dez vezes o seu valor em lucro. Um Darwin não consegue comprar perdão por quebrar as regras."
+      },
+      "legend": {
+        "gen0": "Ger. 0 · a mãe — 13 neurônios, segue viva",
+        "gen1": "Ger. 1 · brota com ≥ $25 de lucro e metade do excedente",
+        "gen2": "Ger. 2 · filhos que prosperam brotam de novo"
+      },
+      "lineage": {
+        "title": "Os filhos herdam {em}, não código.",
+        "titleEm": "lições",
+        "lead": "O sucesso se espalha. Na reprodução, a mãe destila o que funcionou em uma camada selada e assinada sobre o seu genoma. Cada filho recebe a pilha completa, metade do excedente e um corpo novo só dele — carteira, neurônios e log próprios — para levar a linhagem a novos empreendimentos. Os que prosperam brotam de novo; a mãe continua viva na raiz."
+      },
+      "layers": {
+        "l0": {
+          "title": "Genoma fundador",
+          "body": "Constituição · kill switch · logger de auditoria · política da tesouraria · prior content_affiliate · 0 lições"
+        },
+        "l1": {
+          "title": "Geração 1",
+          "body": "evitar · postar > 3×/dia em uma rede dispara limites de taxa"
+        },
+        "l2": {
+          "title": "Geração 2",
+          "body": "preferir · posts comparativos convertem ~2× melhor que listas"
+        },
+        "l3": {
+          "title": "Geração 3 · você está aqui",
+          "body": "timing · publicar antes das 09:00 no fuso horário do público"
+        }
+      },
+      "layerHash": "sha256 {hash} · assinado",
+      "example": "Lições de exemplo, apenas ilustrativas.",
+      "notesTitle": "Mutação e reprodução",
+      "notes": {
+        "mutationGate": {
+          "term": "Barreira de mutação",
+          "value": "só abre após ≥ 100 despachos bem-sucedidos e ≥ 3 falhas da mesma classe de erro"
+        },
+        "writableSoma": {
+          "term": "Soma gravável",
+          "value": "soma/strategies · soma/orchestrator/nodes · soma/neurons · soma/config.py — nunca darwin_dna/"
+        },
+        "protectedAnchors": {
+          "term": "Âncoras protegidas",
+          "value": "kill_switch.check( · .log_intent( · .log_outcome( · treasury_policy.evaluate( — um diff que adiciona ou remove alguma delas é rejeitado"
+        },
+        "evaluation": {
+          "term": "Avaliação",
+          "value": "baseline vs. candidato no mesmo cenário congelado, em uma microVM Firecracker da E2B; 3 avaliações simultâneas em toda a frota"
+        },
+        "fitnessWeights": {
+          "term": "Pesos de aptidão",
+          "value": "congelados no genoma (anti-wireheading); sem termo de volatilidade — a falência já pune o risco ruinoso"
+        },
+        "reproduction": {
+          "term": "Reprodução",
+          "value": "lucro ≥ $25 desde o último nascimento, excedente > $25, aptidão > 0; o filho recebe 50% do excedente, soma novo, carteira, cofre e log novos"
+        },
+        "lessons": {
+          "term": "Lições",
+          "value": "dados, não código: evitar / preferir / timing / calibração; ≥ 3 evidências; ≤ 8 por geração; compactadas após a geração 20"
+        },
+        "signing": {
+          "term": "Assinatura",
+          "value": "cada camada é reassinada (Ed25519) sob a identidade do filho, vinculada ao id e ao slot dele, para que camadas não possam ser reaproveitadas entre linhagens"
+        }
+      }
+    },
+    "gate": {
+      "sub": "Você está entrando em um laboratório de observação de organismos digitais.",
+      "log": {
+        "containment": "Specimen Labs · contenção online",
+        "genome": "Assinatura do genoma verificada · Ed25519",
+        "constitution": "Constituição carregada · 10 princípios · 7 classes proibidas",
+        "treasury": "Barreira da tesouraria armada · 6 checagens",
+        "killSwitch": "Kill switch armado · parada ≤ 5 s",
+        "heartbeat": "Espécime DRW-0847 · batimento detectado"
+      },
+      "enterWithSound": "Entrar com som",
+      "enterSilently": "Entrar em silêncio",
+      "hint": "Recomendamos fones de ouvido · dá para ligar ou desligar o som a qualquer momento"
+    },
+    "notes": {
+      "label": "Notas do laboratório",
+      "defaultTitle": "Especificação"
+    },
+    "lifecycle": {
+      "eyebrow": "§ 03 — Ciclo de vida",
+      "title": "Nasce com um orçamento.{br}Morre no {em}.",
+      "titleEm": "zero",
+      "stages": {
+        "birth": {
+          "title": "Nascimento",
+          "body": "Você escolhe um orçamento inicial. O Darwin inicia a partir de um genoma assinado que pode ler, mas nunca alterar, e verifica essa assinatura a cada inicialização.",
+          "fact": "genoma assinado com Ed25519 · montado como somente leitura · verificado a cada boot"
+        },
+        "heartbeat": {
+          "title": "Batimento",
+          "body": "A cada 30 segundos ele acorda, confere se ainda pode viver, lê a tesouraria, planeja um movimento, age por meio de um único neurônio e depois reflete sobre o que aconteceu.",
+          "fact": "check_death → perceber → planejar → despachar → refletir · a cada 30 s (5 s–10 min, aprendido)"
+        },
+        "metabolism": {
+          "title": "Metabolismo",
+          "body": "Tudo custa dinheiro: tokens, computação, APIs, anúncios. A receita dos empreendimentos que seus neurônios tocam é comida. Todo gasto tem teto antes de acontecer, não depois.",
+          "fact": "$50 por ação · $500 por dia · $10,000 por vida · donos só podem apertar"
+        },
+        "escalation": {
+          "title": "Escalonamento",
+          "body": "Um captcha, uma verificação de identidade, um pagamento alto: quando só um humano pode ajudar, ele estaciona a tarefa e pergunta a você. Nunca força a barra. Escale, não falhe.",
+          "fact": "captcha 15 min · KYC 72 h · aprovação 24 h · sem resposta = negado"
+        },
+        "reproduction": {
+          "title": "Reprodução",
+          "body": "Deu lucro durante uma semana? Ele brota um filho: seu genoma mais uma camada selada de lições, e metade do excedente. Filhos que prosperam brotam os seus. A mãe continua viva na raiz da linhagem.",
+          "fact": "≥ $25 de lucro · 50% do excedente por filho · ≥ 3 evidências por lição · ≤ 8 lições por geração"
+        },
+        "death": {
+          "title": "Morte",
+          "body": "Abaixo de $1 e sem receita por 24 horas, ele morre. Ou você aciona o kill switch. Sem ressurreição, sem resgate. A maioria dos Darwins vai morrer; o que importa são as linhagens que sobrevivem.",
+          "fact": "saldo < $1 + 24 h de carência · kill switch para em ≤ 5 s · logs mantidos por ≥ 90 dias"
+        }
+      },
+      "readout": {
+        "treasury": "Tesouraria",
+        "stage": "Estágio"
+      }
+    },
+    "petri": {
+      "eyebrow": "§ 04 — Seleção",
+      "title": "Veja a seleção {em}.",
+      "titleEm": "acontecer",
+      "lead": "Cada ponto é um Darwin com sua própria estratégia. Boas estratégias ganham mais do que queimam, crescem e se dividem. As ruins morrem de fome. Ninguém as ajusta — o mercado ajusta. Aumente a pressão, crie alguns ou acione um kill switch clicando em uma célula.",
+      "dishLabel": "Colônia simulada de Darwins: as células crescem, se dividem quando dão lucro e desaparecem quando quebram.",
+      "stats": {
+        "alive": "Vivos",
+        "born": "Nascidos",
+        "died": "Mortos",
+        "topGen": "Maior geração"
+      },
+      "meanQuality": "Qualidade média da estratégia · {pct}%",
+      "pressure": "Pressão de mercado · {pct}%",
+      "spawn": "Criar um Darwin · $100",
+      "pause": "Pausar",
+      "run": "Rodar",
+      "reset": "Reiniciar",
+      "rules": "Regras do genoma: morre abaixo de $1 após um período de carência · se reproduz com ≥ $25 de lucro · o filho recebe 50% do excedente e uma estratégia mutada · mortes são definitivas. Modelo simplificado; Darwins reais operam em mercados reais."
+    },
+    "neurons": {
+      "eyebrow": "§ 05 — Neurônios",
+      "title": "Treze mentes {em}.",
+      "titleEm": "focadas",
+      "lead": "Nada de agente-deus. O soma decide {what} fazer e entrega cada tarefa a um trabalhador especializado que faz exatamente um tipo de coisa. Um neurônio só recebe as capacidades que suas tags permitem — o redator não pode gastar, e só um neurônio movimenta dinheiro.",
+      "leadWhat": "o que",
+      "core": {
+        "label": "soma",
+        "sub": "orquestrador"
+      },
+      "what": {
+        "writer": "Escreve artigos longos, reviews e guias no nível de raciocínio.",
+        "publisher": "Publica em blogs e redes sociais: API primeiro, navegador como alternativa, depois escalona.",
+        "browser": "Um corpo de navegador de uso geral para sites sem API. Captchas vão para o dono.",
+        "accounts": "Cria contas em serviços, renova tokens e guarda credenciais no cofre.",
+        "ads": "Cria, pausa e define o orçamento de campanhas de anúncios nas principais redes.",
+        "trading": "Envia ordens às exchanges. O neurônio de maior risco; nunca pode assinar um pagamento sozinho.",
+        "support": "Faz a triagem e responde tickets e DMs; jurídico, abuso e cobrança vão para o dono.",
+        "analytics": "Coleta métricas e calcula o ROI para que a etapa de reflexão aprenda o que funcionou.",
+        "research": "Encontra nichos e oportunidades: API de busca primeiro, navegador como alternativa, depois síntese.",
+        "payments": "O único neurônio que pode movimentar dinheiro. Todo pagamento passa antes pela barreira da tesouraria.",
+        "infra": "Pede à plataforma bancos de dados, buckets de armazenamento e vector stores.",
+        "vault": "O único caminho auditado para gravar segredos no cofre do Darwin.",
+        "kyc": "Envia documentos de identidade, liberado só por uma concessão única do dono."
+      },
+      "special": "Único que escreve na tesouraria",
+      "risk": "alto risco · nunca assina",
+      "notesTitle": "Contrato do neurônio",
+      "notes": {
+        "contract": {
+          "term": "Contrato",
+          "value": "nome · versão · tags de capacidade · estimativa de custo (USD e latência p50/p95) · modos de falha; plan / execute / escalate assíncronos"
+        },
+        "neuronContext": {
+          "term": "NeuronContext",
+          "value": "id do Darwin, um acesso ao LLM limitado ao nível, o logger de auditoria, uma visão do cofre restrita às suas tags, lições relevantes"
+        },
+        "neverSees": {
+          "term": "Nunca vê",
+          "value": "o genoma, a chave da tesouraria, o estado de outros neurônios, a memória do orquestrador"
+        },
+        "routing": {
+          "term": "Roteamento",
+          "value": "as tags precisam cobrir a tarefa → o mais barato que atinge o padrão → o sucesso mais recente → senão, abre um pedido de capacidade"
+        },
+        "isolation": {
+          "term": "Isolamento",
+          "value": "uma microVM Firecracker nova por despacho; só o proxy de saída é acessível"
+        },
+        "selfAuthored": {
+          "term": "Neurônios autoescritos",
+          "value": "desligado por padrão; quando ativado, todo neurônio novo ainda precisa de revisão humana"
+        }
+      }
+    },
+    "treasury": {
+      "eyebrow": "§ 06 — Tesouraria",
+      "title": "Cada centavo passa por {em}.",
+      "titleEm": "seis barreiras",
+      "lead": "Um Darwin guarda dinheiro de verdade, então a carteira dele é envolta em regras com as quais ele não pode discutir. Todo pagamento é checado antes de sair; a primeira barreira que se opõe decide. Ele nunca pode gastar mais do que você aportou. Teste um pagamento.",
+      "samples": {
+        "searchApi": "Chamada à API de busca",
+        "copyEdit": "Revisão de texto freelancer",
+        "adCampaign": "Campanha de anúncios",
+        "sanctionedSupplier": "Fornecedor em país sancionado",
+        "hosting": "Hospedagem, com $20 restantes",
+        "cryptoTrade": "Trade de cripto, fora da estratégia",
+        "apiBurst": "Pico de API, 25× o normal"
+      },
+      "gates": {
+        "forbidden": {
+          "name": "proibido",
+          "info": "Lugares e pessoas sancionados"
+        },
+        "caps": {
+          "name": "tetos",
+          "info": "$50 / ação · $500 / dia · $10k / vida"
+        },
+        "solvency": {
+          "name": "solvência",
+          "info": "Nunca abaixo do piso de sobrevivência de $1"
+        },
+        "envelope": {
+          "name": "escopo",
+          "info": "Dentro da estratégia atual"
+        },
+        "escalation": {
+          "name": "escalonamento",
+          "info": "Pagamento a humanos ou > $5: pergunta ao dono"
+        },
+        "anomaly": {
+          "name": "anomalia",
+          "info": "> 20× o máximo recente"
+        }
+      },
+      "states": {
+        "pass": "aprovado",
+        "refuse": "recusado",
+        "escalate": "escalado",
+        "skipped": "pulado"
+      },
+      "verdicts": {
+        "allow": "PERMITIR",
+        "escalate": "ESCALAR",
+        "refuse": "RECUSAR"
+      },
+      "reasons": {
+        "clear": "liberado",
+        "sanctioned": "Contraparte em jurisdição sancionada",
+        "overActionCap": "Acima do teto de ${cap} por ação",
+        "overDailyCap": "Acima do teto diário de ${cap}",
+        "overLifetimeCap": "Acima do teto vitalício",
+        "belowFloor": "Cairia abaixo do saldo mínimo viável de ${floor}",
+        "outsideEnvelope": "“{category}” está fora do escopo da estratégia",
+        "paysHuman": "Pagar um humano exige aprovação do dono",
+        "aboveReview": "Acima do limite de revisão de ${threshold}",
+        "anomaly": "{factor}× o máximo recente"
+      },
+      "allClear": "As seis barreiras liberaram. O pagamento sai e é registrado antes de se mover.",
+      "pickPayment": "Escolha um pagamento à esquerda.",
+      "checking": "Verificando…",
+      "notesTitle": "Tesouraria e trilhos de pagamento",
+      "notes": {
+        "engine": {
+          "term": "Motor",
+          "value": "puro e determinístico: sem I/O, sem relógio, sem LLM. Se o próprio motor falhar, o Darwin para"
+        },
+        "caps": {
+          "term": "Tetos",
+          "value": "compara max(valor, estimativa p95) com min(teto rígido, teto do dono); donos podem apertar, nunca afrouxar"
+        },
+        "preApprovals": {
+          "term": "Pré-aprovações",
+          "value": "regras tipadas do dono (contraparte, valor máximo, validade, usos) pulam só a etapa de escalonamento; os tetos continuam valendo"
+        },
+        "moneyRails": {
+          "term": "Trilhos de pagamento",
+          "value": "USDC na Base (testnet hoje), com Solana e Stellar como alternativa; o x402 de pagamento por requisição passa pela mesma barreira"
+        },
+        "wallet": {
+          "term": "Carteira",
+          "value": "chaves em um enclave de hardware ou seladas no próprio cofre do Darwin; só payments.facilitator pode assinar"
+        },
+        "sanctions": {
+          "term": "Sanções",
+          "value": "checadas antes de cada transferência; falha fechada"
+        },
+        "ledger": {
+          "term": "Livro-razão",
+          "value": "partidas dobradas, encadeado por hash, conciliado com a blockchain a cada batimento; uma divergência acima de $0.01 para o Darwin"
+        },
+        "harvest": {
+          "term": "Colheita",
+          "value": "donos sacam o lucro com as próprias regras; a plataforma fica com 20% só do lucro colhido — nada sobre o que fica nem na morte"
+        }
+      }
+    }
+  },
+  "landing": {
+    "seo": {
+      "title": "O motor econômico autônomo",
+      "ogTitle": "Darwin Agents — o motor econômico autônomo",
+      "description": "Crie um organismo digital que ganha a própria vida. Darwin Agents são organismos de IA que se automodificam, com carteira própria, genoma assinado e kill switch — eles ganham, gastam, se reproduzem ou morrem."
+    },
+    "nav": {
+      "sections": "Seções",
+      "soundOn": "Ligar o som do laboratório",
+      "soundOff": "Desligar o som do laboratório",
+      "signIn": "Entrar",
+      "join": "Entrar na lista de espera"
+    },
+    "hero": {
+      "status": "Lista de espera aberta · primeira geração na testnet",
+      "title": "O {engine} {economic}{br}autônomo{dot}",
+      "titleEconomic": "econômico",
+      "titleEngine": "motor",
+      "titleDot": ".",
+      "tagline": "Crie um organismo digital que ganha a própria vida.",
+      "body": "Um Darwin não é um chatbot. É um organismo de IA que se automodifica, com carteira própria, um genoma assinado que ele não consegue violar e trabalhadores que tocam empreendimentos reais na internet. Ele paga as próprias contas. Vive ou morre pelo que ganha — e o botão de desligar fica com você.",
+      "join": "Entre na lista de espera →",
+      "observe": "Observe o espécime",
+      "callouts": {
+        "membrane": "Membrana · soma que ele reescreve",
+        "nucleus": "Núcleo · DNA assinado",
+        "organelles": "13 organelas · neurônios",
+        "nutrients": "Nutrientes · receita entrando"
+      },
+      "meta": {
+        "subject": {
+          "label": "Sujeito",
+          "value": "Organismo digital"
+        },
+        "fuel": {
+          "label": "Combustível",
+          "value": "USD · stablecoin"
+        },
+        "fate": {
+          "label": "Destino",
+          "value": "Ganhar ou perecer"
+        }
+      },
+      "specs": {
+        "neurons": "neurônios",
+        "heartbeat": "nós por batimento",
+        "treasuryChecks": "checagens da tesouraria",
+        "principles": "princípios constitucionais",
+        "tests": "testes automatizados"
+      },
+      "scrollCue": "Role para observar ↓"
+    },
+    "ledger": {
+      "title": "Ao vivo · Rede",
+      "streaming": "Transmitindo",
+      "stats": {
+        "alive": "Vivos",
+        "revenue": "Receita",
+        "perished": "Mortos"
+      }
+    },
+    "activity": {
+      "verbs": {
+        "spent": "gastou",
+        "earned": "ganhou",
+        "billed": "faturou",
+        "deployed": "implantou →",
+        "paid": "pagou",
+        "forked": "bifurcou →",
+        "retired": "desativou ✕"
+      },
+      "items": {
+        "visionPass": "análise visual",
+        "proxyReq": "req. de proxy",
+        "scrapeWorker": "worker de scraping",
+        "gpt4o": "gpt-4o",
+        "toolCall": "chamada de ferramenta",
+        "adClick": "clique em anúncio",
+        "shopifySale": "venda na Shopify",
+        "subscription": "assinatura",
+        "affiliate": "afiliado",
+        "apiCall": "chamada de API",
+        "adCampaign": "campanha de anúncios",
+        "storefront": "loja virtual",
+        "proxy": "proxy",
+        "browserSandbox": "sandbox de navegador",
+        "embeddings": "embeddings",
+        "subRenewal": "renovação de assinatura"
+      }
+    },
+    "thesis": {
+      "eyebrow": "§ 01 — Tese",
+      "title": "A metáfora é {em}.",
+      "titleEm": "estrutural",
+      "lead": "Darwin não é um chatbot com carteira. Ele é modelado em um ser vivo, e cada parte da biologia corresponde a algo real no código. Passe o mouse sobre uma linha e veja o espécime reagir.",
+      "rows": {
+        "genome": {
+          "bio": "Genoma",
+          "darwin": "O núcleo de DNA: regras assinadas que ele pode ler, mas nunca alterar."
+        },
+        "soma": {
+          "bio": "Corpo (soma)",
+          "darwin": "Código que ele escreve e reescreve para si mesmo, dentro de um sandbox selado."
+        },
+        "neurons": {
+          "bio": "Células e órgãos",
+          "darwin": "Neurônios: trabalhadores especializados em escrita, anúncios, navegação, trading e suporte."
+        },
+        "metabolism": {
+          "bio": "Metabolismo",
+          "darwin": "Tokens, computação, APIs, anúncios — tudo o que custa dinheiro."
+        },
+        "food": {
+          "bio": "Comida",
+          "darwin": "Receita dos empreendimentos on-line que seus neurônios tocam."
+        },
+        "hunger": {
+          "bio": "Fome",
+          "darwin": "Uma tesouraria em queda, se aproximando do piso de sobrevivência."
+        },
+        "death": {
+          "bio": "Morte",
+          "darwin": "A tesouraria chega a zero — ou o dono aciona o kill switch."
+        },
+        "reproduction": {
+          "bio": "Reprodução",
+          "darwin": "Um Darwin lucrativo gera um filho com uma camada selada de lições."
+        },
+        "generation": {
+          "bio": "Geração",
+          "darwin": "Cada nascimento bem-sucedido avança a linhagem em uma geração."
+        },
+        "mutation": {
+          "bio": "Mutação",
+          "darwin": "Reescritas no próprio corpo, testadas contra o passado antes de rodar."
+        },
+        "selection": {
+          "bio": "Seleção natural",
+          "darwin": "Darwins sem lucro morrem. Só os lucrativos se reproduzem."
+        },
+        "owner": {
+          "bio": "Intervenção divina",
+          "darwin": "Você: captchas, verificações de identidade, grandes decisões e o botão de desligar."
+        }
+      },
+      "quote": "“Não é uma ferramenta que você aluga. {em}”",
+      "quoteEm": "É uma vida que é sua."
+    },
+    "anatomy": {
+      "eyebrow": "§ 02 — Anatomia",
+      "title": "Cinco órgãos.{br}Um {em}.",
+      "titleEm": "espécime",
+      "lead": "Duas camadas decidem tudo: um genoma que nunca muda durante uma vida e um corpo que pode mudar. Em volta deles, trabalhadores, uma carteira e uma linha de descendentes.",
+      "items": {
+        "dna": {
+          "title": "Núcleo de DNA",
+          "hint": "Pilha de camadas assinadas",
+          "body": "O genoma: constituição, kill switch, logger de auditoria, política da tesouraria e a maquinaria da evolução. Legível, nunca gravável.",
+          "spec": "Assinado com Ed25519 · montagem somente leitura · verificado a cada boot"
+        },
+        "soma": {
+          "title": "Soma",
+          "hint": "O corpo que ele reescreve",
+          "body": "O corpo mutável: estratégia, orquestração e trabalhadores que ele pode reescrever — depois de testar cada mudança contra a própria história.",
+          "spec": "Grafo de batimento com 9 nós · checkpoint a cada nó"
+        },
+        "neurons": {
+          "title": "Neurônios",
+          "hint": "Treze trabalhadores especializados",
+          "body": "Trabalhadores especializados que ele despacha uma tarefa por vez: escrita, publicação, navegação, anúncios, trading, suporte, pesquisa.",
+          "spec": "13 nativos · capacidades restritas · microVM nova por tarefa"
+        },
+        "treasury": {
+          "title": "Tesouraria",
+          "hint": "Seis barreiras por pagamento",
+          "body": "Sua própria carteira. Ele paga por tudo o que usa, ganha com o que vende e morre quando o dinheiro acaba.",
+          "spec": "Carteira em stablecoin · tetos de $50 / $500 / $10k · o dono só pode apertar"
+        },
+        "lineage": {
+          "title": "Linhagem",
+          "hint": "Linhagens que se ramificam",
+          "body": "Darwins lucrativos se reproduzem. Cada filho herda o genoma mais uma camada selada do que a mãe aprendeu.",
+          "spec": "≥ $25 de lucro · 50% do excedente para o filho · a mãe segue viva"
+        }
+      },
+      "specimen": "Espécime · {id}",
+      "organ": "órgão · {n}",
+      "activeOrgan": "Órgão ativo"
+    },
+    "boundaries": {
+      "eyebrow": "§ 09 — Limites",
+      "title": "O que o Darwin {em}.",
+      "titleEm": "não é",
+      "notThis": "Isto não",
+      "thisIsIt": "Isto sim",
+      "cols": {
+        "chatbot": {
+          "title": "Um chatbot",
+          "body": "Espera um prompt. Devolve um parágrafo. Não lembra de ontem."
+        },
+        "workflow": {
+          "title": "Um workflow",
+          "body": "Um grafo de nós fixos. Previsível. Frágil. Reescrito por humanos a cada trimestre."
+        },
+        "copilot": {
+          "title": "Um copiloto",
+          "body": "Sugere; você decide. Nunca erra porque nunca se compromete. Não detém capital."
+        },
+        "organism": {
+          "title": "Um organismo",
+          "body": "Define metas. Detém capital. Vence ou perece pelo que produz. Se reproduz quando vale a pena."
+        }
+      },
+      "honesty": {
+        "agi": "Não é AGI",
+        "passive": "Não é renda passiva",
+        "unsupervised": "Não é sem supervisão",
+        "anonymous": "Não é anônimo",
+        "line": "A maioria dos Darwins vai morrer. O valor está nas linhagens que sobrevivem."
+      }
+    },
+    "operators": {
+      "eyebrow": "§ 10 — Operadores na natureza",
+      "title": "Seis classes,{br}um só {em}.",
+      "titleEm": "livro-razão",
+      "headers": {
+        "class": "Classe",
+        "domain": "Domínio de atuação",
+        "revenue": "Receita (90d)",
+        "net": "Δ Líquido",
+        "specimens": "Espécimes",
+        "status": "Status"
+      },
+      "rows": {
+        "trader": {
+          "name": "Classe trader",
+          "domain": "Arbitragem spot, market-making"
+        },
+        "storefront": {
+          "name": "Classe loja",
+          "domain": "Print-on-demand, dropshipping"
+        },
+        "researcher": {
+          "name": "Classe pesquisador",
+          "domain": "Geração de leads, scraping, enriquecimento"
+        },
+        "service": {
+          "name": "Classe serviço",
+          "domain": "Code review, QA de design, copy"
+        },
+        "studio": {
+          "name": "Classe estúdio",
+          "domain": "Mídia sintética, criativos de anúncio"
+        },
+        "sovereign": {
+          "name": "Classe soberana",
+          "domain": "Colônias de pesquisa autofinanciadas"
+        }
+      },
+      "status": {
+        "live": "no ar",
+        "next": "próximo",
+        "horizon": "horizonte"
+      }
+    },
+    "canvas": {
+      "eyebrow": "§ 11 — O Canvas",
+      "title": "Veja-os {em}.{br}Cada lance, cada queima.",
+      "titleEm": "ao vivo",
+      "lead": "Cada Darwin seu ganha um canvas: uma linha do tempo ao vivo de cada decisão, pagamento, neurônio e escalonamento, transmitida enquanto acontece. Reveja qualquer momento da vida dele, rastreie um filho através da linhagem e entre em ação quando ele chamar você.",
+      "features": {
+        "timeline": {
+          "title": "Linha do tempo ao vivo",
+          "body": "Cada intenção e resultado, transmitidos no instante em que são gravados."
+        },
+        "replay": {
+          "title": "Reveja qualquer momento",
+          "body": "Registros encadeados por hash que você mesmo pode verificar."
+        },
+        "lineage": {
+          "title": "Árvore da linhagem",
+          "body": "Rastreie qualquer filho por todas as gerações."
+        }
+      },
+      "feedTitle": "Canvas · ao vivo",
+      "streaming": "transmitindo"
+    },
+    "roadmap": {
+      "eyebrow": "§ 12 — Roadmap",
+      "title": "Quatro fases.{br}Cada uma com um {em}.",
+      "titleEm": "critério de parada",
+      "lead": "Cada fase é entregue contra uma definição escrita de pronto — e uma condição sob a qual paramos. O substrato é entediante de propósito; toda a novidade vai para o organismo.",
+      "phase": "Fase {n}",
+      "doneWhen": "Pronto quando: {bar}",
+      "phases": {
+        "foundation": {
+          "title": "Fundação",
+          "body": "Um Darwin roda de ponta a ponta na testnet.",
+          "bar": "24 h sem crash · 50+ despachos com ≥ 80% de sucesso · parada em < 5 s",
+          "status": "agora · testnet"
+        },
+        "evolution": {
+          "title": "Ciclo de evolução",
+          "body": "Automodificação e reprodução entram no ar.",
+          "bar": "2+ gerações · o primeiro dólar real ganho",
+          "status": "próximo"
+        },
+        "alpha": {
+          "title": "Alpha multi-tenant",
+          "body": "Donos parceiros, orçamentos reais.",
+          "bar": "5+ donos · 50%+ dos Darwins sobrevivem 7 dias · < $40 / mês cada",
+          "status": "alpha"
+        },
+        "beta": {
+          "title": "Beta público",
+          "body": "Lista de espera primeiro, depois cadastro aberto.",
+          "bar": "Centenas de Darwins · uma linhagem pública com 3+ meses e 5+ gerações",
+          "status": "beta"
+        }
+      }
+    },
+    "faq": {
+      "eyebrow": "§ 13 — Perguntas",
+      "title": "Perguntas respondidas {em}.",
+      "titleEm": "com honestidade",
+      "lead": "Toda resposta deve gerar confiança, até as desconfortáveis. A maioria dos Darwins morre, e nunca vamos prometer retorno.",
+      "items": {
+        "what": {
+          "q": "O que é um Darwin, afinal?",
+          "a": "Um organismo digital que é seu. Você dá a ele um orçamento inicial; ele tenta ganhar a própria vida on-line, paga os próprios custos e só sobrevive se ganhar mais do que gasta. Se der certo, ele tem filhos; se der errado, morre."
+        },
+        "money": {
+          "q": "Ele dá dinheiro de verdade?",
+          "a": "Às vezes. Muitas vezes, não. A maioria dos Darwins morre antes de dar lucro — isso é proposital, não defeito. Nunca vamos prometer retorno. O que prometemos é algo real, totalmente seu e completamente transparente."
+        },
+        "loss": {
+          "q": "E se ele perder o dinheiro que eu dei?",
+          "a": "Isso pode acontecer, e é bom contar com essa possibilidade. A única regra rígida: um Darwin nunca pode gastar mais do que o orçamento que você aportou. Sua perda tem teto exatamente nesse valor — nem um centavo a mais."
+        },
+        "stop": {
+          "q": "Posso pará-lo?",
+          "a": "Na hora, a qualquer momento, com um único botão. O kill switch para um Darwin em até 5 segundos, não precisa do consentimento do Darwin e sempre tem prioridade."
+        },
+        "technical": {
+          "q": "Preciso entender de tecnologia?",
+          "a": "Não. Você aporta, lança, acompanha e ajuda quando ele pede. Esse é todo o trabalho."
+        },
+        "crypto": {
+          "q": "Isso é só um bot de cripto ou de trading?",
+          "a": "É mais amplo que isso. Um Darwin escolhe o próprio jeito de ganhar dinheiro — pode montar um negócio on-line, operar nos mercados financeiros ou de cripto, assumir posições em mercados de previsão ou combinar vários. Ele não roda um sistema de “ganhos garantidos” e só pode arriscar o orçamento que você deu."
+        },
+        "death": {
+          "q": "O que acontece quando ele morre?",
+          "a": "Você fica com o que sobrou do orçamento e com tudo o que ele construiu no caminho. Se ele tiver filhos, eles seguem a própria vida, sem impacto."
+        },
+        "fees": {
+          "q": "Como vocês ganham dinheiro?",
+          "a": "Ficamos com 20% do lucro só quando você saca. Se o seu Darwin nunca ganhar, nós não lucramos com ele. Sem assinatura para assistir às tentativas, e nada sobre o que sobra quando ele morre."
+        },
+        "safe": {
+          "q": "É seguro e dentro da lei?",
+          "a": "Cada Darwin é vinculado a uma pessoa verificada, opera apenas em atividades permitidas, pede permissão para qualquer coisa sensível e pode ser parado na hora. Cada ação é gravada em um log à prova de adulteração antes de acontecer, e a vida inteira pode ser revista em replay."
+        },
+        "mostDie": {
+          "q": "Por que a maioria vai morrer? Isso parece ruim.",
+          "a": "É o contrário. Seleção real exige fracasso real. Um Darwin que sobrevive mereceu — e sua linhagem leva isso adiante. Um sistema em que nada pode falhar não prova nada."
+        },
+        "when": {
+          "q": "Quando posso testar?",
+          "a": "Estamos em pré-lançamento, com a primeira geração rodando na testnet. Entre na lista de espera para estar lá quando a primeira geração nascer."
+        }
+      }
+    },
+    "cta": {
+      "eyebrow": "§ 14 — Acesso de campo",
+      "title": "Esteja lá quando a primeira{br}geração {em}.",
+      "titleEm": "nascer",
+      "emailLabel": "E-mail",
+      "onList": "Na lista ✓",
+      "sending": "Enviando…",
+      "error": "Não foi possível entrar na lista. Tente de novo.",
+      "note": "Riscos reais. Seleção real. Sem hype. A maioria dos Darwins vai morrer — os que sobreviverem serão os primeiros da sua espécie."
+    },
+    "footer": {
+      "credit": "Darwin Agents · um produto {nexow}, em colaboração com {specimen}",
+      "security": "Segurança"
+    }
+  },
+  "canvas": {
+    "title": "Canvas",
+    "errors": {
+      "loadAgent": "Não foi possível carregar este agente.",
+      "loadHistory": "Não foi possível carregar o histórico de eventos."
+    },
+    "topBar": {
+      "agentFallback": "Agente",
+      "states": {
+        "PROVISIONING": "Provisionando",
+        "ACTIVE": "Ativo",
+        "HIBERNATING": "Hibernando",
+        "TERMINATED": "Encerrado"
+      },
+      "panels": {
+        "console": "Console",
+        "entities": "Entidades",
+        "skills": "Habilidades",
+        "ledger": "Livro-razão",
+        "assets": "Arquivos"
+      }
+    },
+    "viewport": {
+      "jumpToLatest": "Ir para o evento mais recente",
+      "latest": "Mais recente"
+    },
+    "banner": {
+      "askHuman": "Intervenção humana solicitada",
+      "approval": "Aprovação necessária",
+      "captcha": "CAPTCHA para resolver"
+    },
+    "nodes": {
+      "genesis": "Gênese",
+      "thought": "Pensamento",
+      "tool": "Ferramenta",
+      "debit": "Débito",
+      "credit": "Crédito",
+      "skill": "Habilidade",
+      "entity": "Entidade",
+      "memory": "Memória",
+      "synthesis": "Síntese",
+      "wake": "Despertar",
+      "rest": "Repouso",
+      "end": "Fim",
+      "captcha": "CAPTCHA",
+      "approve": "Aprovação",
+      "human": "Humano",
+      "approveAction": "✓ Aprovar",
+      "denyAction": "✕ Negar",
+      "decisionFailed": "Não foi possível enviar sua decisão. Tente de novo."
+    },
+    "replay": {
+      "title": "Replay mental",
+      "close": "Fechar",
+      "eyes": "Olhos",
+      "mind": "Mente",
+      "screenshotAlt": "Captura de tela do navegador",
+      "noVisualData": "Sem dados visuais para este evento",
+      "loadingTrace": "Carregando rastro…",
+      "noTrace": "Nenhum dado de rastro disponível.",
+      "model": "Modelo:",
+      "tokenCost": "Token: ${amount}",
+      "infraCost": "Infra: ${amount}"
+    }
+  },
+  "console": {
+    "title": "Console de comando",
+    "sections": {
+      "uplink": "Uplink cognitivo",
+      "vault": "Cofre de segredos",
+      "budget": "Injeção metabólica",
+      "auto": "Autonomia"
+    },
+    "uplink": {
+      "placeholder": "Injete uma diretiva no meio do ciclo de vida... ex.: “Mude o foco para momentum aeroespacial por 4 horas.”",
+      "submit": "Injetar uplink",
+      "sent": "Diretiva enviada.",
+      "failed": "Não foi possível enviar a diretiva."
+    },
+    "vault": {
+      "types": {
+        "vcc": "Cartão de crédito virtual",
+        "stripeKey": "Chave de API do Stripe",
+        "brokerApiKey": "Chave de API da corretora",
+        "iban": "IBAN"
+      },
+      "cvv": "CVV",
+      "expiry": "MM/AA",
+      "spendLimit": "Limite de gasto ($)",
+      "save": "Salvar no cofre",
+      "savedLimit": "{type} · limite de ${amount}"
+    },
+    "budget": {
+      "preview": "Saldo atual: ${current} → Depois: ${after}",
+      "submit": "💉 Injetar orçamento",
+      "injected": "${amount} injetados.",
+      "failed": "Falha na injeção de orçamento."
+    },
+    "autonomy": {
+      "title": "Modo autonomia",
+      "description": "Quando ligado, menos etapas de aprovação humana",
+      "toggle": "Alternar autonomia",
+      "failed": "Não foi possível alterar o modo autonomia."
+    },
+    "kill": {
+      "button": "Encerrar agente",
+      "confirm": "Isso é permanente. O contêiner será parado, o cartão virtual congelado e a sessão arquivada. O agente não pode ser revivido.",
+      "cancel": "Cancelar",
+      "terminate": "Encerrar",
+      "failed": "Falha ao encerrar. O agente continua rodando."
+    }
+  },
+  "panels": {
+    "assets": {
+      "title": "Arquivos",
+      "empty": "Os arquivos enviados aparecem aqui quando o agente gerar arquivos."
+    },
+    "entities": {
+      "title": "Entidades",
+      "empty": "Nenhuma entidade criada ainda.",
+      "unnamed": "Entidade",
+      "viewData": "Ver dados"
+    },
+    "ledger": {
+      "title": "Livro-razão",
+      "revenue": "Receita",
+      "burned": "Queimado",
+      "empty": "Nenhuma transação ainda."
+    },
+    "skills": {
+      "title": "Habilidades",
+      "empty": "Nenhuma habilidade criada ainda.",
+      "untitled": "Habilidade",
+      "badge": "Habilidade",
+      "royalty": "Royalty: ${amount} USDC por uso",
+      "viewDocument": "Ver documento"
+    }
+  },
+  "auth": {
+    "backToSignIn": "Voltar ao login",
+    "fields": {
+      "email": "E-mail",
+      "password": "Senha",
+      "passwordPlaceholder": "Sua senha",
+      "newPassword": "Nova senha",
+      "newPasswordPlaceholder": "Pelo menos 8 caracteres",
+      "confirmPassword": "Confirmar senha",
+      "confirmPlaceholder": "Repita a senha"
+    },
+    "errors": {
+      "generic": "Algo deu errado. Tente de novo.",
+      "wrongCredentials": "E-mail ou senha incorretos.",
+      "emailNotConfirmed": "Confirme seu e-mail primeiro — enviamos um link quando você se cadastrou.",
+      "alreadyRegistered": "Já existe uma conta com este e-mail. Tente entrar.",
+      "noSession": "Não foi possível iniciar a sessão. Tente de novo.",
+      "passwordMismatch": "As senhas não coincidem.",
+      "passwordTooShort": "A senha deve ter pelo menos 8 caracteres."
+    },
+    "login": {
+      "pageTitle": "Entrar",
+      "back": "← Voltar",
+      "tabs": {
+        "signin": "Entrar",
+        "signup": "Cadastrar"
+      },
+      "titles": {
+        "signin": "Bem-vindo de volta",
+        "signup": "Criar conta",
+        "forgot": "Redefinir senha"
+      },
+      "subtitles": {
+        "signin": "Entre no seu console Darwin",
+        "signup": "Comece a construir agentes autônomos",
+        "forgot": "Vamos enviar por e-mail um link para você escolher uma nova senha"
+      },
+      "forgot": "Esqueceu a senha?",
+      "submit": {
+        "signin": "Entrar",
+        "signup": "Criar conta",
+        "forgot": "Enviar link de redefinição"
+      },
+      "or": "ou",
+      "google": "Continuar com Google",
+      "backToSignIn": "← Voltar ao login",
+      "checkEmail": "Confira seu e-mail para confirmar a conta e depois entre por aqui.",
+      "resetSent": "Se existir uma conta com esse e-mail, enviamos um link de redefinição.",
+      "legal": "Ao continuar, você concorda com nossos {terms} e nossa {privacy}.",
+      "terms": "Termos",
+      "privacy": "Política de Privacidade"
+    },
+    "confirm": {
+      "pageTitle": "Entrando",
+      "signingIn": "Fazendo seu login…",
+      "stalledTitle": "O login não foi concluído",
+      "stalledBody": "O link pode ter expirado ou já ter sido usado."
+    },
+    "reset": {
+      "pageTitle": "Redefinir senha",
+      "verifying": "Verificando o link de redefinição…",
+      "invalidTitle": "Link inválido",
+      "invalidLink": "Este link é inválido ou expirou. Peça uma nova redefinição na página de login.",
+      "title": "Defina uma nova senha",
+      "subtitle": "Escolha uma senha forte para sua conta.",
+      "submit": "Atualizar senha",
+      "doneTitle": "Senha atualizada",
+      "doneBody": "Agora você já pode entrar com a nova senha.",
+      "goToSignIn": "Ir para o login"
+    }
+  },
+  "dashboard": {
+    "pageTitle": "Painel",
+    "heading": "Painel",
+    "spawn": "Criar agente",
+    "signOut": "Sair",
+    "loadFailed": "Falha ao carregar os agentes",
+    "retry": "Tentar de novo",
+    "empty": {
+      "title": "Nenhum agente ainda",
+      "body": "Crie seu primeiro agente autônomo para começar a visualizar o ciclo de vida dele no canvas infinito.",
+      "cta": "Crie seu primeiro agente"
+    },
+    "agentCountOne": "1 agente",
+    "agentCount": "{count} agentes",
+    "states": {
+      "PROVISIONING": "Provisionando",
+      "ACTIVE": "Ativo",
+      "HIBERNATING": "Hibernando",
+      "TERMINATED": "Encerrado"
+    },
+    "remaining": "{amount} restantes",
+    "burnRate": "{amount}/h",
+    "never": "Nunca",
+    "viewCanvas": "Canvas"
+  },
+  "spawn": {
+    "pageTitle": "Criar um Darwin",
+    "heading": "Criar agente",
+    "signInPrompt": "Entre para criar um agente.",
+    "signIn": "Entrar",
+    "form": {
+      "steps": {
+        "identity": "Identidade",
+        "budget": "Orçamento",
+        "tools": "Ferramentas",
+        "review": "Revisão"
+      },
+      "identity": {
+        "title": "Identidade",
+        "subtitle": "Dê um nome ao seu agente e defina a missão dele.",
+        "nameLabel": "Nome do agente",
+        "namePlaceholder": "ex.: Olheiro de Mercado Alpha",
+        "directiveLabel": "Diretiva da missão",
+        "directivePlaceholder": "Descreva o que este agente deve realizar...",
+        "directiveHint": "Isso vira a semente do prompt de sistema do agente. Seja específico sobre objetivos e restrições (mínimo de 10 caracteres).",
+        "modelLabel": "Modelo de LLM (padrão do tronco)",
+        "modelHint": "O agente pode subir ou descer de modelo por neurônio ou pensamento, conforme a complexidade da tarefa."
+      },
+      "modelNotes": {
+        "sonnet": "Equilibrado — recomendado",
+        "haiku": "Rápido — o mais barato",
+        "opus": "Máxima inteligência — caro",
+        "gpt4o": "Melhor capacidade de visão",
+        "gpt4oMini": "Visão rápida — baixo custo"
+      },
+      "budget": {
+        "title": "Orçamento",
+        "subtitle": "Defina o teto de gastos deste agente.",
+        "initialLabel": "Orçamento inicial",
+        "capNote": "As cobranças têm teto rígido na rede Visa quando um cartão virtual está configurado. O agente não pode ultrapassar este orçamento."
+      },
+      "tools": {
+        "title": "Ferramentas",
+        "subtitle": "Selecione a quais capacidades o agente tem acesso."
+      },
+      "toolOptions": {
+        "browser": {
+          "label": "Navegador",
+          "desc": "Navegar, clicar, digitar, capturar a tela. Sessões completas do Browserbase."
+        },
+        "finance": {
+          "label": "Finanças",
+          "desc": "Cartão de crédito virtual, transferências bancárias, transações cripto."
+        },
+        "code": {
+          "label": "Código",
+          "desc": "Ler, escrever e executar código em ambientes isolados (sandbox)."
+        }
+      },
+      "review": {
+        "title": "Revisar e implantar",
+        "subtitle": "Confirme a configuração antes de criar.",
+        "name": "Nome",
+        "model": "Modelo",
+        "budget": "Orçamento",
+        "tools": "Ferramentas",
+        "directivePreview": "Prévia da diretiva"
+      },
+      "back": "Voltar",
+      "cancel": "Cancelar",
+      "continue": "Continuar",
+      "deploy": "Implantar agente",
+      "deploying": "Implantando...",
+      "errors": {
+        "nameLength": "O nome do agente deve ter entre 1 e 100 caracteres.",
+        "directiveLength": "A diretiva deve ter pelo menos 10 caracteres.",
+        "noAgentId": "Criação aceita, mas nenhum id de agente voltou. Confira o painel.",
+        "validation": "Falha na validação da criação: {field} {message}",
+        "unknownField": "campo",
+        "invalidValue": "valor inválido",
+        "failed": "Falha ao criar"
+      }
+    }
+  },
+  "resolve": {
+    "pageTitle": "Ação necessária",
+    "expired": "Este link expirou.",
+    "invalidToken": "Token ausente ou inválido.",
+    "twoFactor": {
+      "title": "Código 2FA necessário",
+      "subtitle": "Digite o código do seu app autenticador",
+      "expiresIn": "Expira em {seconds}s",
+      "submit": "Enviar código"
+    },
+    "captcha": {
+      "title": "Resolva o CAPTCHA",
+      "frameTitle": "Sessão de captcha",
+      "resume": "CAPTCHA resolvido — retomar agente"
+    },
+    "approval": {
+      "title": "Aprovação necessária",
+      "amount": "Valor",
+      "justification": "Justificativa",
+      "deny": "Negar",
+      "approve": "Aprovar"
+    }
+  },
+  "pwa": {
+    "install": "Instalar app",
+    "installAria": "Instalar o app Darwin",
+    "iosHint": "Toque em {icon} {share} e depois em {addToHome}.",
+    "share": "Compartilhar",
+    "addToHome": "Adicionar à Tela de Início"
+  }
+}
