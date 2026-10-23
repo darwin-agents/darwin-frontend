@@ -239,7 +239,7 @@ How it fits together:
 - **Structured data.** The landing page emits JSON-LD: both organizations (Nexow, Inc.; Specimen Labs, Inc.), `WebSite`, `SoftwareApplication`, and a `FAQPage` generated from the same `FAQ` array as the visible FAQ chapter (from `darwin-agents/docs/marketing/08-faq.md`).
 - **GEO (generative engine optimization).** `public/llms.txt` is a plain-markdown fact sheet for AI answer engines, linked from `<head>` and the footer; content is server-rendered, so crawlers that don't run JS see everything (the airlock gate only exists with JS). Keep its numbers in sync with the page.
 - **PWA.** `public/site.webmanifest` (standalone, maskable icons) + a minimal `public/sw.js` (registered in `plugins/pwa.client.ts`, production only) that makes the app installable and serves `public/offline.html` when a navigation fails; it caches nothing else. `<UiInstallButton>` (landing nav, dashboard) uses the native install prompt where supported and shows "Share → Add to Home Screen" on iOS. Bump `CACHE` in `sw.js` when `offline.html` changes.
-- **Icons** are generated (ink disc, cream ring, ember nucleus): `favicon.svg`, `favicon.ico` (16/32/48), `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`.
+- **Logo & icons.** The mark is a mother cell (ember nucleus) budding a daughter that carries the same spark. In the app it is always `<UiDarwinLogo>` (`components/ui/DarwinLogo.vue`; membranes use `currentColor`, `mono` for empty states). Static copies — `favicon.svg`, `offline.html`, and the rendered `favicon.ico` (16/32/48), `apple-touch-icon.png`, maskable `icon-192/512.png` and `og.png` — must be regenerated if its geometry changes.
 
 ---
 
