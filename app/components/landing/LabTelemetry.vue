@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // Live readout of the (simulated) specimen, shown in the nav.
+const { t } = useI18n()
 const { active, stage, killed } = useLabChapter()
 const vitals = useState('lab-vitals', () => ({ bpm: 63, alive: true }))
 
@@ -10,20 +11,20 @@ const balance = computed(() => {
   return 142.18
 })
 const state = computed(() => {
-  if (killed.value) return 'halted'
-  if (active.value === 'lifecycle') return LIFECYCLE_STAGES[stage.value]?.toLowerCase()
-  return 'foraging'
+  if (killed.value) return t('lab.telemetry.state.halted')
+  if (active.value === 'lifecycle') return t(`lab.telemetry.state.${LIFECYCLE_STAGES[stage.value] ?? 'birth'}`)
+  return t('lab.telemetry.state.foraging')
 })
 </script>
 
 <template>
-  <div class="lab-tm mono" title="Specimen DRW-0847 · simulated" aria-hidden="true">
+  <div class="lab-tm mono" :title="t('lab.telemetry.title', { id: 'DRW-0847' })" aria-hidden="true">
     <span class="lab-tm-dot" :class="{ 'is-dead': !vitals.alive }" />
     <span>DRW-0847</span>
     <span class="lab-tm-sep">·</span>
     <span>{{ state }}</span>
     <span class="lab-tm-sep">·</span>
-    <span>{{ vitals.alive ? `${vitals.bpm} bpm` : 'flatline' }}</span>
+    <span>{{ vitals.alive ? t('lab.telemetry.bpm', { n: vitals.bpm }) : t('lab.telemetry.flatline') }}</span>
     <span class="lab-tm-sep">·</span>
     <span>${{ balance.toFixed(2) }}</span>
   </div>

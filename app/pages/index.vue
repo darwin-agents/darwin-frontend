@@ -377,7 +377,9 @@ onMounted(() => {
         <div class="lab-head">
           <div>
             <div class="upper dim lab-eyebrow">§ 01 — Thesis</div>
-            <h2 class="lp-h2 reveal">The metaphor is <em class="lp-ember-deep lp-italic">load-bearing</em>.</h2>
+            <i18n-t keypath="landing.thesis.title" tag="h2" class="lp-h2 reveal">
+              <template #em><em class="lp-ember-deep lp-italic">{{ $t('landing.thesis.titleEm') }}</em></template>
+            </i18n-t>
           </div>
           <p class="lab-lead reveal">
             Darwin isn't a chatbot with a wallet. It is modelled on a living thing, and every part

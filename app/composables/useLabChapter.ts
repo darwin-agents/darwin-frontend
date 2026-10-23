@@ -1,8 +1,8 @@
 // Which chapter of the landing page is under the viewport's centre line, and how the
 // fixed specimen should look there. Sections opt in with `data-chapter="<id>"`.
 
+// Chapter names live in the locale files under `lab.chapters.<id>`.
 export interface ChapterConfig {
-  label: string
   dark: boolean
   x: number // viewport NDC: -1 left edge … 1 right edge (ignored when the chapter has an anchor)
   scale: number
@@ -10,27 +10,27 @@ export interface ChapterConfig {
 }
 
 export const CHAPTERS = {
-  hero: { label: 'Specimen', dark: false, x: 0.45, scale: 1.15, presence: 1 },
-  thesis: { label: 'Thesis', dark: false, x: -0.5, scale: 0.8, presence: 0.75 },
-  anatomy: { label: 'Anatomy', dark: false, x: -0.35, scale: 0.6, presence: 0 },
-  lifecycle: { label: 'Lifecycle', dark: true, x: 0.45, scale: 1, presence: 1 },
-  selection: { label: 'Selection', dark: true, x: 0, scale: 0.5, presence: 0 },
-  neurons: { label: 'Neurons', dark: false, x: 0.45, scale: 0.7, presence: 0 },
-  treasury: { label: 'Treasury', dark: false, x: -0.45, scale: 0.6, presence: 0 },
-  evolution: { label: 'Evolution', dark: false, x: 0.45, scale: 0.6, presence: 1 }, // only inside its lineage slot
-  trust: { label: 'Trust', dark: true, x: 0.45, scale: 0.85, presence: 0.9 },
-  boundaries: { label: 'Boundaries', dark: false, x: 0, scale: 0.5, presence: 0 },
-  operators: { label: 'Operators', dark: false, x: 0, scale: 0.5, presence: 0 },
-  canvas: { label: 'Canvas', dark: true, x: -0.4, scale: 0.7, presence: 0 },
-  roadmap: { label: 'Roadmap', dark: false, x: 0, scale: 0.5, presence: 0 },
-  faq: { label: 'FAQ', dark: false, x: 0, scale: 0.5, presence: 0 },
-  cta: { label: 'Waitlist', dark: true, x: 0.5, scale: 1.0, presence: 1 },
+  hero: { dark: false, x: 0.45, scale: 1.15, presence: 1 },
+  thesis: { dark: false, x: -0.5, scale: 0.8, presence: 0.75 },
+  anatomy: { dark: false, x: -0.35, scale: 0.6, presence: 0 },
+  lifecycle: { dark: true, x: 0.45, scale: 1, presence: 1 },
+  selection: { dark: true, x: 0, scale: 0.5, presence: 0 },
+  neurons: { dark: false, x: 0.45, scale: 0.7, presence: 0 },
+  treasury: { dark: false, x: -0.45, scale: 0.6, presence: 0 },
+  evolution: { dark: false, x: 0.45, scale: 0.6, presence: 1 }, // only inside its lineage slot
+  trust: { dark: true, x: 0.45, scale: 0.85, presence: 0.9 },
+  boundaries: { dark: false, x: 0, scale: 0.5, presence: 0 },
+  operators: { dark: false, x: 0, scale: 0.5, presence: 0 },
+  canvas: { dark: true, x: -0.4, scale: 0.7, presence: 0 },
+  roadmap: { dark: false, x: 0, scale: 0.5, presence: 0 },
+  faq: { dark: false, x: 0, scale: 0.5, presence: 0 },
+  cta: { dark: true, x: 0.5, scale: 1.0, presence: 1 },
 } satisfies Record<string, ChapterConfig>
 
 export type ChapterId = keyof typeof CHAPTERS
 export const CHAPTER_IDS = Object.keys(CHAPTERS) as ChapterId[]
 
-export const LIFECYCLE_STAGES = ['Birth', 'Heartbeat', 'Metabolism', 'Escalation', 'Reproduction', 'Death'] as const
+export const LIFECYCLE_STAGES = ['birth', 'heartbeat', 'metabolism', 'escalation', 'reproduction', 'death'] as const
 
 export function useLabChapter() {
   return {

@@ -1,1 +1,48 @@
-{ "common": { "language": "Language" } }
+{
+  "common": {
+    "language": "Language"
+  },
+  "lab": {
+    "chapters": {
+      "hero": "Specimen",
+      "thesis": "Thesis",
+      "anatomy": "Anatomy",
+      "lifecycle": "Lifecycle",
+      "selection": "Selection",
+      "neurons": "Neurons",
+      "treasury": "Treasury",
+      "evolution": "Evolution",
+      "trust": "Trust",
+      "boundaries": "Boundaries",
+      "operators": "Operators",
+      "canvas": "Canvas",
+      "roadmap": "Roadmap",
+      "faq": "FAQ",
+      "cta": "Waitlist"
+    },
+    "hud": {
+      "chapters": "Chapters"
+    },
+    "telemetry": {
+      "title": "Specimen {id} · simulated",
+      "bpm": "{n} bpm",
+      "flatline": "flatline",
+      "state": {
+        "halted": "halted",
+        "foraging": "foraging",
+        "birth": "birth",
+        "heartbeat": "heartbeat",
+        "metabolism": "metabolism",
+        "escalation": "escalation",
+        "reproduction": "reproduction",
+        "death": "death"
+      }
+    }
+  },
+  "landing": {
+    "thesis": {
+      "title": "The metaphor is {em}.",
+      "titleEm": "load-bearing"
+    }
+  }
+}
