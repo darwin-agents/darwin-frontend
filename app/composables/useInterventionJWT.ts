@@ -5,7 +5,9 @@ export function useInterventionJWT() {
     const token = route.query.token as string | undefined
     if (!token) return null
     try {
-      const payload = JSON.parse(atob(token.split('.')[1] ?? '')) as {
+      // JWT segments are base64url; atob only accepts standard base64
+      const segment = (token.split('.')[1] ?? '').replace(/-/g, '+').replace(/_/g, '/')
+      const payload = JSON.parse(atob(segment)) as {
         darwin_id: string
         session_id: string
         purpose: string

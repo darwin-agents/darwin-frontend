@@ -52,7 +52,9 @@ const nodeComponent = computed(() => {
     AGENT_HIBERNATED: HibernateNode,
     AGENT_TERMINATED: TerminatedNode,
   }
-  return map[props.event.event_type] ?? ToolNode
+  // `null` entries are deliberately hidden (e.g. NEURON_SPAWNED is drawn by the lane itself)
+  const type = props.event.event_type
+  return type in map ? map[type] : ToolNode
 })
 
 function onClick() {

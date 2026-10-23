@@ -7,6 +7,7 @@ import {
 import type { AgentStateApi } from '~/types/agent'
 
 definePageMeta({ layout: false })
+useHead({ title: 'Dashboard' })
 
 const auth = useAuthStore()
 const api = useApi()
@@ -84,7 +85,7 @@ function formatRelativeTime(dateStr: string | null) {
             <Plus :size="14" />
             Spawn agent
           </NuxtLink>
-          <button type="button" class="darwin-btn-ghost text-xs py-2" @click="auth.logout()">
+          <button type="button" class="darwin-btn-ghost text-xs py-2" aria-label="Sign out" title="Sign out" @click="auth.logout()">
             <LogOut :size="14" />
           </button>
         </div>
@@ -163,11 +164,11 @@ function formatRelativeTime(dateStr: string | null) {
             <div class="flex items-center gap-4 text-xs text-darwin-muted">
               <span class="flex items-center gap-1">
                 <TrendingDown :size="11" />
-                ${{ a.budget_remaining_usd.toFixed(2) }} remaining
+                ${{ (a.budget_remaining_usd ?? 0).toFixed(2) }} remaining
               </span>
-              <span v-if="a.burn_rate_usd_per_hour > 0" class="flex items-center gap-1">
+              <span v-if="(a.burn_rate_usd_per_hour ?? 0) > 0" class="flex items-center gap-1">
                 <Zap :size="11" />
-                ${{ a.burn_rate_usd_per_hour.toFixed(2) }}/hr
+                ${{ (a.burn_rate_usd_per_hour ?? 0).toFixed(2) }}/hr
               </span>
               <span class="flex items-center gap-1">
                 <Clock :size="11" />

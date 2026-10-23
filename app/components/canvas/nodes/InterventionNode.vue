@@ -9,7 +9,8 @@ const props = defineProps<{
 }>()
 
 const notifications = useNotificationStore()
-const agent = useAgentStore()
+const { approve, deny } = useApprovalFlow(() => props.darwinId)
+const toast = useToast()
 
 const isPending = computed(() => notifications.pending.some((n) => n.id === props.event.id))
 
@@ -17,7 +18,7 @@ const isApproval = computed(() => props.event.event_type === 'APPROVAL_REQUESTED
 
 const accent = computed(() => {
   if (props.event.event_type === 'APPROVAL_DENIED') return '#b42318'
-  if (!isPending.value && String(props.event.event_type).includes('RESOLVED')) return '#2f6f4e'
+  if (!isPending.value && /RESOLVED|GRANTED|SOLVED/.test(props.event.event_type)) return '#2f6f4e'
   return '#b45309'
 })
 
@@ -27,14 +28,13 @@ const label = computed(() => {
   return 'Human'
 })
 
-async function onApprove(e: Event) {
+async function respond(e: Event, action: typeof approve) {
   e.stopPropagation()
-  await agent.patchConfig(props.darwinId, { requires_approval: false })
-}
-
-async function onDeny(ev: Event) {
-  ev.stopPropagation()
-  await agent.patchConfig(props.darwinId, { requires_approval: true })
+  try {
+    await action(props.event)
+  } catch {
+    toast('Could not send your decision. Please try again.', 'error')
+  }
 }
 </script>
 
@@ -51,14 +51,14 @@ async function onDeny(ev: Event) {
         <button
           type="button"
           class="px-2 py-1 text-[10px] font-medium rounded-lg bg-darwin-accent text-darwin-bg hover:bg-darwin-accent-deep transition-colors shadow-sm"
-          @click="onApprove"
+          @click="respond($event, approve)"
         >
           ✓ Approve
         </button>
         <button
           type="button"
           class="px-2 py-1 text-[10px] font-medium rounded-lg bg-darwin-bg-2 text-darwin-ink border border-darwin-border hover:bg-darwin-bg-3 transition-colors"
-          @click="onDeny"
+          @click="respond($event, deny)"
         >
           ✕ Deny
         </button>

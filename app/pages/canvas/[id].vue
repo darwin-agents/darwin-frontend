@@ -9,29 +9,37 @@ const agent = useAgentStore()
 const realtime = useRealtimeCanvas(darwinId)
 const api = useApi()
 const panels = useCanvasPanels()
+const notifications = useNotificationStore()
+const toast = useToast()
+
+useHead({ title: () => agent.agent?.name ?? 'Canvas' })
 
 async function loadCanvas(id: string) {
+  realtime.unsubscribe()
   canvas.reset()
+  notifications.reset()
   panels.closeAllPanels()
   try {
     await agent.fetchAgent(id)
   } catch {
+    toast('Could not load this agent.', 'error')
     await navigateTo('/dashboard')
     return
   }
 
+  // Subscribe before fetching history so nothing inserted in between is lost;
+  // appendEvent / notifications.add dedupe by id.
+  realtime.subscribe()
   try {
     const data = await api.get<{ events: import('~/types/events').DarwinEvent[] }>(
       `/darwins/${id}/events`,
       { limit: 2000, order: 'timestamp_ms.asc' },
     )
-    canvas.loadHistoricalEvents(data.events ?? [])
+    // Route history like live events so pending approvals get banners and buttons.
+    for (const e of data.events ?? []) realtime.routeEvent(e, false)
   } catch {
-    canvas.loadHistoricalEvents([])
+    toast('Could not load event history.', 'error')
   }
-
-  realtime.unsubscribe()
-  realtime.subscribe()
 }
 
 watch(
@@ -46,6 +54,7 @@ onUnmounted(() => {
   realtime.unsubscribe()
   panels.closeAllPanels()
   canvas.reset()
+  notifications.reset()
 })
 </script>
 

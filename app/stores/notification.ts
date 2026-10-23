@@ -15,6 +15,7 @@ export const useNotificationStore = defineStore('notification', () => {
   const pending = computed(() => interventions.value.filter((i) => !i.resolved))
 
   function add(event: DarwinEvent) {
+    if (interventions.value.some((i) => i.id === event.id)) return
     interventions.value.push({
       id: event.id,
       event_type: event.event_type,
@@ -32,10 +33,10 @@ export const useNotificationStore = defineStore('notification', () => {
       APPROVAL_DENIED: 'APPROVAL_REQUESTED',
     }
     const triggerId = pendingMap[event.event_type]
-    if (triggerId) {
-      const match = interventions.value.find((i) => i.event_type === triggerId && !i.resolved)
-      if (match) match.resolved = true
-    }
+    if (!triggerId) return
+    const open = interventions.value.filter((i) => i.event_type === triggerId && !i.resolved)
+    const match = open.find((i) => i.id === event.parent_event_id) ?? open[0]
+    if (match) match.resolved = true
   }
 
   function dismiss(id: string) {
@@ -43,5 +44,9 @@ export const useNotificationStore = defineStore('notification', () => {
     if (item) item.resolved = true
   }
 
-  return { interventions, pending, add, resolve, dismiss }
+  function reset() {
+    interventions.value = []
+  }
+
+  return { interventions, pending, add, resolve, dismiss, reset }
 })

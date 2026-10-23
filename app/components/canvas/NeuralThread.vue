@@ -40,7 +40,7 @@ const branchConnectX = computed(() => branchX.value + 80)
 function dedupeAdjacentXs(xs: number[], eps = 0.75): number[] {
   const out: number[] = []
   for (const x of xs) {
-    if (out.length === 0 || Math.abs(out[out.length - 1] - x) > eps) out.push(x)
+    if (out.length === 0 || Math.abs(out[out.length - 1]! - x) > eps) out.push(x)
   }
   return out
 }
@@ -57,8 +57,8 @@ const laneSegments = computed(() => {
   const cleaned = dedupeAdjacentXs(pts)
   const out: { x1: number; x2: number }[] = []
   for (let i = 0; i < cleaned.length - 1; i++) {
-    const x1 = cleaned[i]
-    const x2 = cleaned[i + 1]
+    const x1 = cleaned[i]!
+    const x2 = cleaned[i + 1]!
     if (Math.abs(x2 - x1) < 0.5) continue
     out.push({ x1, x2 })
   }

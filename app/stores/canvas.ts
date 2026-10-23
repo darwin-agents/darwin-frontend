@@ -16,6 +16,10 @@ export const useCanvasStore = defineStore('canvas', () => {
   const maxTimestamp = computed(() =>
     events.value.length ? Math.max(...events.value.map((e) => e.timestamp_ms)) : 0,
   )
+  // Not events[0]: live events can land before history is loaded.
+  const minTimestamp = computed(() =>
+    events.value.length ? Math.min(...events.value.map((e) => e.timestamp_ms)) : 0,
+  )
 
   function appendEvent(event: DarwinEvent) {
     if (events.value.some((e) => e.id === event.id)) return
@@ -34,6 +38,7 @@ export const useCanvasStore = defineStore('canvas', () => {
       const lane = neuronLanes[event.neuron_id]
       if (!lane) return
       lane.events.push(event)
+      lane.spawn_timestamp_ms = Math.min(lane.spawn_timestamp_ms, event.timestamp_ms)
       if (event.event_type === 'NEURON_COMPLETED' || event.event_type === 'NEURON_FAILED') {
         lane.status = event.event_type === 'NEURON_COMPLETED' ? 'completed' : 'failed'
         lane.end_timestamp_ms = event.timestamp_ms
@@ -50,12 +55,6 @@ export const useCanvasStore = defineStore('canvas', () => {
   function pushHeartbeatSample(tokensPerBatch: number) {
     heartbeatSamples.value.push(tokensPerBatch)
     if (heartbeatSamples.value.length > 10) heartbeatSamples.value.shift()
-  }
-
-  function loadHistoricalEvents(historicalEvents: DarwinEvent[]) {
-    events.value = []
-    for (const k of Object.keys(neuronLanes)) delete neuronLanes[k]
-    historicalEvents.forEach(appendEvent)
   }
 
   function selectEvent(eventId: string | null) {
@@ -88,8 +87,8 @@ export const useCanvasStore = defineStore('canvas', () => {
     heartbeatSamples,
     trunkEvents,
     maxTimestamp,
+    minTimestamp,
     appendEvent,
-    loadHistoricalEvents,
     selectEvent,
     setScroll,
     setZoom,

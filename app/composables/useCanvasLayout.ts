@@ -58,7 +58,7 @@ export function pickTimelineTickStepMs(
 export function useCanvasLayout() {
   const canvas = useCanvasStore()
 
-  const genesisMs = computed(() => canvas.events[0]?.timestamp_ms ?? 0)
+  const genesisMs = computed(() => canvas.minTimestamp)
 
   function timestampToX(timestamp_ms: number): number {
     const z = canvas.zoomLevel
