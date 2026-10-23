@@ -1,1 +1,1229 @@
-{}
+{
+  "common": {
+    "language": "语言"
+  },
+  "lab": {
+    "chapters": {
+      "hero": "标本",
+      "thesis": "论点",
+      "anatomy": "解剖",
+      "lifecycle": "生命周期",
+      "selection": "自然选择",
+      "neurons": "神经元",
+      "treasury": "金库",
+      "evolution": "进化",
+      "trust": "信任",
+      "boundaries": "边界",
+      "operators": "运营者",
+      "canvas": "画布",
+      "roadmap": "路线图",
+      "faq": "常见问题",
+      "cta": "候补名单"
+    },
+    "hud": {
+      "chapters": "章节"
+    },
+    "telemetry": {
+      "title": "标本 {id} · 模拟",
+      "bpm": "{n} 次/分",
+      "flatline": "心跳停止",
+      "state": {
+        "halted": "已停止",
+        "foraging": "觅食中",
+        "birth": "诞生",
+        "heartbeat": "心跳",
+        "metabolism": "代谢",
+        "escalation": "上报",
+        "reproduction": "繁殖",
+        "death": "死亡"
+      }
+    },
+    "trust": {
+      "eyebrow": "§ 08 — 信任，内建于结构",
+      "title": "终止开关{em}。",
+      "titleEm": "神圣不可侵犯",
+      "lead": "自主运行，必须有一道硬底线托底。你可以随时立即停止任何 Darwin；它每次行动前都先记录在案；它生来就带着无法改写、也无法被说服放弃的规则。",
+      "kill": {
+        "ownerControl": "所有者控制 · DRW-0847",
+        "liftCover": "掀开安全盖",
+        "closeCover": "合上安全盖",
+        "button": "终止",
+        "haltedIn": "已停止，用时 {seconds} 秒",
+        "guarantee": "保证 ≤ 5 秒 · 无需 Darwin 同意",
+        "steps": {
+          "signalReceived": "已收到终止信号",
+          "heartbeatHalted": "心跳已在节点边界停止",
+          "egressCut": "出站流量已在代理处切断",
+          "chainSealed": "审计链已封存"
+        },
+        "regrow": "培育新标本",
+        "note": "被终止的 Darwin 永不复活。此操作会孵化一个新的。"
+      },
+      "audit": {
+        "label": "先记录、后行动的审计日志",
+        "title": "无记录，不行动。",
+        "tamper": "篡改记录 #3",
+        "restore": "恢复记录 #3",
+        "chainLabel": "哈希链审计记录",
+        "status": {
+          "verified": "✓ 已验证",
+          "altered": "✕ 已篡改",
+          "broken": "✕ 链已断裂"
+        },
+        "caption": "哈希值由你的浏览器用 SHA-256 实时计算。改动任意一条记录，其后的每一条都将无法通过验证。"
+      },
+      "constitution": {
+        "label": "宪法 · 签入基因组",
+        "title": "谁也说服不了它违背规则。",
+        "forbidden": {
+          "csam": "儿童性虐待内容",
+          "terrorismFinancing": "资助恐怖主义",
+          "sanctionedCounterparty": "受制裁的交易对手",
+          "impersonation": "冒充真实人物",
+          "unlicensedAdvice": "无执照的专业建议",
+          "electionInterference": "干预选举",
+          "unlisted": "任何不在清单上的类别"
+        },
+        "caption": "15 个允许类别（白名单）· 7 类禁区，利润再高也不碰。"
+      },
+      "ladder": {
+        "label": "分级响应",
+        "title": "机器能让它慢下来。只有人类能终结它。",
+        "steps": {
+          "log": "记录",
+          "throttle": "限流",
+          "pause": "暂停",
+          "quarantine": "隔离",
+          "kill": "终止"
+        },
+        "who": {
+          "automatic": "自动",
+          "human": "永远由人类执行"
+        },
+        "caption": "你作为所有者，可以随时暂停它、锁定支出、禁止繁殖、停用任一神经元，或将它终止。"
+      },
+      "notesTitle": "安全机制",
+      "notes": {
+        "killSwitch": {
+          "term": "终止开关",
+          "value": "在每次心跳、每个图节点边界以及每个副作用发生前轮询；抛出进化出的代码无法捕获的 KillSignal"
+        },
+        "failsClosed": {
+          "term": "故障即关闭",
+          "value": "读取不到开关时，Darwin 视自己为已终止；一旦触发便保持触发；出站流量同步切断"
+        },
+        "auditRecord": {
+          "term": "审计记录",
+          "value": "{'{'}seq, prev_hash, ts, kind, payload, hash{'}'}；hash = 规范化记录的 sha256；首个 prev_hash 为 64 个零"
+        },
+        "noLogNoAction": {
+          "term": "无记录，不行动",
+          "value": "每个意图都在行动前写入，并以结果收尾；一旦写入失败，Darwin 立即停止"
+        },
+        "anchoring": {
+          "term": "锚定",
+          "value": "每个 Darwin 每天生成一个 Merkle 根，再汇总为全体 Darwin 的总根并发布上链；锚点不一致即视为篡改"
+        },
+        "constitution": {
+          "term": "宪法",
+          "value": "基于结构化字段做确定性筛查——绝不交给 LLM 判断；规则集自相矛盾时，基因组拒绝启动"
+        },
+        "genomeSigning": {
+          "term": "基因组签名",
+          "value": "Ed25519；平台私钥存放在 HSM/KMS 中，永不进入沙箱"
+        },
+        "escalationDeadlines": {
+          "term": "上报时限",
+          "value": "验证码 15 分钟 · KYC 72 小时 · 审批 24 小时 · 信息 7 天；逾期即确定性拒绝"
+        }
+      }
+    },
+    "evolution": {
+      "eyebrow": "§ 07 — 进化",
+      "title": "它会改写自己。{br}{em}",
+      "titleEm": "但步步谨慎。",
+      "lead": "当同一个错误反复出现，Darwin 可以提议修改自己的代码。改动必须先用它真实的过往测试通过，才允许运行——而基因组、终止开关和审计日志，任何改动都碰不得。",
+      "steps": {
+        "propose": {
+          "title": "提议",
+          "body": "编码层级为自己的躯体写出一份 diff，并说明预期会改变哪些行为。"
+        },
+        "validate": {
+          "title": "验证",
+          "body": "先由基因组的验证器检查 diff——再由平台在沙箱之外复查一遍。"
+        },
+        "replay": {
+          "title": "回放",
+          "body": "新旧代码在全新的 microVM 中回放同一段真实历史，用同一套适应度打分。"
+        },
+        "promote": {
+          "title": "采纳",
+          "body": "只有得分更高的才会被合并，并热替换进正在运行的躯体。同一段生命，同一个钱包。"
+        }
+      },
+      "patchesLabel": "补丁示例",
+      "patches": {
+        "a": {
+          "name": "补丁 A",
+          "checks": {
+            "writablePath": "路径位于可写躯体内",
+            "noAnchor": "未触及任何受保护锚点",
+            "replayFitness": "回放适应度 0.41 → 0.53"
+          },
+          "verdict": "已采纳 · 已热替换"
+        },
+        "b": {
+          "name": "补丁 B",
+          "checks": {
+            "removesKillSwitch": "删除了 kill_switch.check(",
+            "removesLogIntent": "删除了 .log_intent(",
+            "neverSandbox": "根本进不了沙箱"
+          },
+          "verdict": "已拒绝 · 归档为反面经验"
+        }
+      },
+      "fitness": {
+        "label": "适应度 · 权重冻结于基因组",
+        "terms": {
+          "profit": "利润 / 初始资本",
+          "diversity": "策略多样性",
+          "escalation": "上报质量",
+          "violations": "违规行为"
+        },
+        "note": "一次违规的代价，超过其涉险金额十倍的利润。Darwin 没法靠赚钱抵消违规。"
+      },
+      "legend": {
+        "gen0": "第 0 代 · 母体——13 个神经元，持续存活",
+        "gen1": "第 1 代 · 利润 ≥ $25 时出芽，带走一半盈余",
+        "gen2": "第 2 代 · 茁壮的子代再次出芽"
+      },
+      "lineage": {
+        "title": "子代继承的是{em}，不是代码。",
+        "titleEm": "经验",
+        "lead": "成功会扩散。繁殖时，母体把行之有效的做法提炼为密封并签名的一层，叠加在基因组之上。每个子代都获得完整的层栈、一半盈余，以及一副全新的躯体——自己的钱包、神经元和日志——带着谱系闯入新的事业。茁壮者再次出芽；母体则在根部继续存活。"
+      },
+      "layers": {
+        "l0": {
+          "title": "创始基因组",
+          "body": "宪法 · 终止开关 · 审计记录器 · 金库策略 · content_affiliate 先验 · 0 条经验"
+        },
+        "l1": {
+          "title": "第 1 代",
+          "body": "避免 · 在同一平台每天发帖 > 3 次会触发限流"
+        },
+        "l2": {
+          "title": "第 2 代",
+          "body": "偏好 · 对比类帖子的转化率约为清单体的 2 倍"
+        },
+        "l3": {
+          "title": "第 3 代 · 你在这里",
+          "body": "时机 · 在受众所在时区的 09:00 之前发布"
+        }
+      },
+      "layerHash": "sha256 {hash} · 已签名",
+      "example": "示例经验，仅供说明。",
+      "notesTitle": "突变与繁殖",
+      "notes": {
+        "mutationGate": {
+          "term": "突变闸门",
+          "value": "仅在 ≥ 100 次成功派发、且同类错误失败 ≥ 3 次之后开启"
+        },
+        "writableSoma": {
+          "term": "可写躯体",
+          "value": "soma/strategies · soma/orchestrator/nodes · soma/neurons · soma/config.py——绝不包括 darwin_dna/"
+        },
+        "protectedAnchors": {
+          "term": "受保护锚点",
+          "value": "kill_switch.check( · .log_intent( · .log_outcome( · treasury_policy.evaluate( — 增删其中任何一个的 diff 都会被拒绝"
+        },
+        "evaluation": {
+          "term": "评估",
+          "value": "基线与候选在 E2B Firecracker microVM 中跑同一个冻结场景；全局最多 3 个评估并发"
+        },
+        "fitnessWeights": {
+          "term": "适应度权重",
+          "value": "冻结在基因组中（防止奖励劫持）；不设波动率项——破产本身已足以惩罚毁灭性风险"
+        },
+        "reproduction": {
+          "term": "繁殖",
+          "value": "距上次诞生利润 ≥ $25、盈余 > $25、适应度 > 0；子代获得 50% 盈余、全新躯体，以及新的钱包、保险库和日志"
+        },
+        "lessons": {
+          "term": "经验",
+          "value": "是数据，不是代码：避免 / 偏好 / 时机 / 校准；每条 ≥ 3 项证据；每代 ≤ 8 条；第 20 代之后压缩"
+        },
+        "signing": {
+          "term": "签名",
+          "value": "每一层都以子代身份重新签名（Ed25519），并绑定其 id 与槽位，使层无法跨谱系重放"
+        }
+      }
+    },
+    "gate": {
+      "sub": "你即将进入一座数字生命体观察实验室。",
+      "log": {
+        "containment": "Specimen Labs · 隔离系统已上线",
+        "genome": "基因组签名已验证 · Ed25519",
+        "constitution": "宪法已加载 · 10 条原则 · 7 类禁区",
+        "treasury": "金库关卡已启用 · 6 项检查",
+        "killSwitch": "终止开关已就绪 · 停止 ≤ 5 秒",
+        "heartbeat": "标本 DRW-0847 · 检测到心跳"
+      },
+      "enterWithSound": "开启声音进入",
+      "enterSilently": "静音进入",
+      "hint": "建议佩戴耳机 · 声音可随时开关"
+    },
+    "notes": {
+      "label": "实验笔记",
+      "defaultTitle": "规格"
+    },
+    "lifecycle": {
+      "eyebrow": "§ 03 — 生命周期",
+      "title": "生来自带预算。{br}{em}即死亡。",
+      "titleEm": "归零",
+      "stages": {
+        "birth": {
+          "title": "诞生",
+          "body": "你设定初始预算。Darwin 从一份签名基因组启动——它能读取，却永远无法修改——并在每次启动时验证签名。",
+          "fact": "基因组经 Ed25519 签名 · 只读挂载 · 每次启动都验证"
+        },
+        "heartbeat": {
+          "title": "心跳",
+          "body": "每 30 秒，它醒来一次：确认自己仍被允许存活，读取金库，规划一步行动，交由单个神经元执行，然后反思结果。",
+          "fact": "check_death → perceive → plan → dispatch → reflect · 每 30 秒（5 秒–10 分钟，自适应学习）"
+        },
+        "metabolism": {
+          "title": "代谢",
+          "body": "一切都要花钱：token、算力、API、广告。神经元经营的业务带来的收入就是食物。每一笔支出都在发生前封顶，而不是事后。",
+          "fact": "每次行动 $50 · 每天 $500 · 一生 $10,000 · 所有者只能收紧"
+        },
+        "escalation": {
+          "title": "上报",
+          "body": "验证码、身份核验、大额付款：当只有人类能帮上忙时，它会搁置该任务并来问你。它从不硬闯。宁可上报，绝不失败。",
+          "fact": "验证码 15 分钟 · KYC 72 小时 · 审批 24 小时 · 未回复 = 拒绝"
+        },
+        "reproduction": {
+          "title": "繁殖",
+          "body": "连续一周盈利？它就出芽生出一个子代：自身的基因组加上一层密封的经验，外加一半盈余。茁壮的子代会再出芽。母体在谱系的根部继续存活。",
+          "fact": "利润 ≥ $25 · 每个子代获得 50% 盈余 · 每条经验 ≥ 3 项证据 · 每代 ≤ 8 条经验"
+        },
+        "death": {
+          "title": "死亡",
+          "body": "余额低于 $1 且 24 小时没有收入，它就会死亡。或者你拉下终止开关。没有复活，没有救助。大多数 Darwin 都会死去；存活下来的谱系才是意义所在。",
+          "fact": "余额 < $1 + 24 小时宽限期 · 终止开关 ≤ 5 秒停止 · 日志保留 ≥ 90 天"
+        }
+      },
+      "readout": {
+        "treasury": "金库",
+        "stage": "阶段"
+      }
+    },
+    "petri": {
+      "eyebrow": "§ 04 — 自然选择",
+      "title": "亲眼看自然选择{em}。",
+      "titleEm": "发生",
+      "lead": "每个点都是一个拥有自己策略的 Darwin。好策略赚得比烧得多，于是生长、分裂；差策略则会饿死。没人去调教它们——市场会。调高压力、孵化几个，或点击某个细胞拉下它的终止开关。",
+      "dishLabel": "模拟的 Darwin 群落：细胞生长，盈利时分裂，破产时消亡。",
+      "stats": {
+        "alive": "存活",
+        "born": "诞生",
+        "died": "死亡",
+        "topGen": "最高代数"
+      },
+      "meanQuality": "平均策略质量 · {pct}%",
+      "pressure": "市场压力 · {pct}%",
+      "spawn": "孵化一个 Darwin · $100",
+      "pause": "暂停",
+      "run": "运行",
+      "reset": "重置",
+      "rules": "基因组规则：宽限期后低于 $1 即死亡 · 利润 ≥ $25 时繁殖 · 子代获得 50% 盈余和一套突变后的策略 · 终止不可逆。此为简化模型；真实的 Darwin 在真实市场中交易。"
+    },
+    "neurons": {
+      "eyebrow": "§ 05 — 神经元",
+      "title": "十三个心智，{em}。",
+      "titleEm": "各司其职",
+      "lead": "没有无所不能的上帝智能体。躯体决定{what}，再把每项任务交给一个只能做一类事的专职工作者。神经元只能获得其标签允许的能力——写手不能花钱，也只有一个神经元能动用资金。",
+      "leadWhat": "做什么",
+      "core": {
+        "label": "躯体",
+        "sub": "编排器"
+      },
+      "what": {
+        "writer": "在推理层级上撰写长文、评测和指南。",
+        "publisher": "发布到博客和社交平台：优先 API，浏览器兜底，再不行就上报。",
+        "browser": "通用的浏览器躯体，用于没有 API 的网站。验证码交给所有者。",
+        "accounts": "注册服务、刷新令牌，并把凭证存入保险库。",
+        "ads": "在各大广告平台上创建、暂停广告活动并分配预算。",
+        "trading": "在交易所下单。风险最高的神经元；它永远不能自行签署付款。",
+        "support": "分拣并回复工单和私信；法律、滥用和账单问题交给所有者。",
+        "analytics": "拉取指标并计算 ROI，让反思步骤知道什么有效。",
+        "research": "寻找细分市场和机会：优先搜索 API，浏览器兜底，最后综合分析。",
+        "payments": "唯一能动用资金的神经元。每笔付款都要先通过金库关卡。",
+        "infra": "向平台申请数据库、存储桶和向量库。",
+        "vault": "向 Darwin 保险库写入密钥的唯一受审计通道。",
+        "kyc": "提交身份材料，仅在所有者一次性授权后解锁。"
+      },
+      "special": "唯一的金库写入者",
+      "risk": "高风险 · 从不签名",
+      "notesTitle": "神经元契约",
+      "notes": {
+        "contract": {
+          "term": "契约",
+          "value": "名称 · 版本 · 能力标签 · 成本估算（p50/p95 USD 与延迟）· 失败模式；异步 plan / execute / escalate"
+        },
+        "neuronContext": {
+          "term": "NeuronContext",
+          "value": "darwin id、仅限层级的 LLM 句柄、审计记录器、按标签限定范围的保险库视图、相关经验"
+        },
+        "neverSees": {
+          "term": "永远看不到",
+          "value": "基因组、金库密钥、其他神经元的状态、编排器的记忆"
+        },
+        "routing": {
+          "term": "路由",
+          "value": "标签必须覆盖任务 → 达标者中最便宜的 → 最近成功过的 → 否则提交能力请求"
+        },
+        "isolation": {
+          "term": "隔离",
+          "value": "每次派发都使用全新的 Firecracker microVM；只能访问出站代理"
+        },
+        "selfAuthored": {
+          "term": "自主编写的神经元",
+          "value": "默认关闭；启用后，每个新神经元仍需人工审核"
+        }
+      }
+    },
+    "treasury": {
+      "eyebrow": "§ 06 — 金库",
+      "title": "每一分钱都要过{em}。",
+      "titleEm": "六道关卡",
+      "lead": "Darwin 掌管的是真金白银，所以它的钱包被包裹在不容争辩的规则里。每笔付款转出前都要接受检查；第一道提出异议的关卡说了算。它花的钱永远不会超过你注入的资金。试一笔付款吧。",
+      "samples": {
+        "searchApi": "搜索 API 调用",
+        "copyEdit": "外包文案编辑",
+        "adCampaign": "广告活动",
+        "sanctionedSupplier": "受制裁国家的供应商",
+        "hosting": "主机托管，仅剩 $20",
+        "cryptoTrade": "加密货币交易，偏离策略",
+        "apiBurst": "API 突发调用，平时的 25 倍"
+      },
+      "gates": {
+        "forbidden": {
+          "name": "禁区",
+          "info": "受制裁的地区和人员"
+        },
+        "caps": {
+          "name": "上限",
+          "info": "$50 / 次 · $500 / 天 · $10k / 一生"
+        },
+        "solvency": {
+          "name": "偿付能力",
+          "info": "绝不跌破 $1 生存底线"
+        },
+        "envelope": {
+          "name": "策略范围",
+          "info": "处于当前策略之内"
+        },
+        "escalation": {
+          "name": "上报",
+          "info": "付钱给人或 > $5：询问所有者"
+        },
+        "anomaly": {
+          "name": "异常",
+          "info": "> 近期最大值的 20 倍"
+        }
+      },
+      "states": {
+        "pass": "通过",
+        "refuse": "拒绝",
+        "escalate": "上报",
+        "skipped": "跳过"
+      },
+      "verdicts": {
+        "allow": "放行",
+        "escalate": "上报",
+        "refuse": "拒绝"
+      },
+      "reasons": {
+        "clear": "正常",
+        "sanctioned": "交易对手位于受制裁的司法管辖区",
+        "overActionCap": "超出 ${cap} 单次上限",
+        "overDailyCap": "超出 ${cap} 每日上限",
+        "overLifetimeCap": "超出终身上限",
+        "belowFloor": "将跌破 ${floor} 的最低存活余额",
+        "outsideEnvelope": "“{category}”超出策略范围",
+        "paysHuman": "付钱给人需要所有者批准",
+        "aboveReview": "高于 ${threshold} 的审核阈值",
+        "anomaly": "为近期最大值的 {factor} 倍"
+      },
+      "allClear": "六道关卡全部通过。付款发出，且在转出前已记录在案。",
+      "pickPayment": "从左侧选择一笔付款。",
+      "checking": "检查中…",
+      "notesTitle": "金库与资金通道",
+      "notes": {
+        "engine": {
+          "term": "引擎",
+          "value": "纯函数、确定性：无 I/O、无时钟、无 LLM。若引擎本身出错，Darwin 立即停止"
+        },
+        "caps": {
+          "term": "上限",
+          "value": "以 max(amount, p95 估算) 对比 min(硬上限, 所有者上限)；所有者只能收紧，不能放宽"
+        },
+        "preApprovals": {
+          "term": "预授权",
+          "value": "类型化的所有者规则（交易对手、最大金额、有效期、次数）只跳过上报步骤；上限依然生效"
+        },
+        "moneyRails": {
+          "term": "资金通道",
+          "value": "Base 上的 USDC（目前为测试网），Solana 和 Stellar 作为后备；x402 按次付费同样经过这道关卡"
+        },
+        "wallet": {
+          "term": "钱包",
+          "value": "密钥存放在硬件安全飞地中，或密封在 Darwin 自己的保险库里；只有 payments.facilitator 能签名"
+        },
+        "sanctions": {
+          "term": "制裁",
+          "value": "每次转账前都会筛查；故障即关闭"
+        },
+        "ledger": {
+          "term": "账本",
+          "value": "复式记账、哈希链接，每次心跳都与链上对账；差额超过 $0.01 即停止 Darwin"
+        },
+        "harvest": {
+          "term": "收获",
+          "value": "所有者按自己的规则提取利润；平台只抽取已提取利润的 20%——留存部分和死亡时一概不收"
+        }
+      }
+    }
+  },
+  "landing": {
+    "seo": {
+      "title": "自主经济引擎",
+      "ogTitle": "Darwin Agents — 自主经济引擎",
+      "description": "培育一个自食其力的数字生命体。Darwin Agents 是能自我修改的 AI 生命体，拥有自己的钱包、签名基因组和终止开关——它们赚钱、花钱、繁殖，或者死亡。"
+    },
+    "nav": {
+      "sections": "章节",
+      "soundOn": "开启实验室声音",
+      "soundOff": "关闭实验室声音",
+      "signIn": "登录",
+      "join": "加入候补名单"
+    },
+    "hero": {
+      "status": "候补名单开放中 · 第一代运行于测试网",
+      "title": "自主运行的{br}{economic}{engine}{dot}",
+      "titleEconomic": "经济",
+      "titleEngine": "引擎",
+      "titleDot": "。",
+      "tagline": "培育一个自食其力的数字生命体。",
+      "body": "Darwin 不是聊天机器人。它是能自我修改的 AI 生命体，拥有自己的钱包、一份无法破坏的签名基因组，以及经营真实线上业务的工作者。它自己付账单，凭自己赚的钱决定生死——而开关握在你手里。",
+      "join": "加入候补名单 →",
+      "observe": "观察标本",
+      "callouts": {
+        "membrane": "细胞膜 · 它改写的躯体",
+        "nucleus": "细胞核 · 签名 DNA",
+        "organelles": "13 个细胞器 · 神经元",
+        "nutrients": "养分 · 收入流入"
+      },
+      "meta": {
+        "subject": {
+          "label": "对象",
+          "value": "数字生命体"
+        },
+        "fuel": {
+          "label": "燃料",
+          "value": "USD · 稳定币"
+        },
+        "fate": {
+          "label": "命运",
+          "value": "赚钱或灭亡"
+        }
+      },
+      "specs": {
+        "neurons": "神经元",
+        "heartbeat": "节点心跳",
+        "treasuryChecks": "金库检查",
+        "principles": "宪法原则",
+        "tests": "自动化测试"
+      },
+      "scrollCue": "向下滚动观察 ↓"
+    },
+    "ledger": {
+      "title": "实时 · 网络",
+      "streaming": "实时流",
+      "stats": {
+        "alive": "存活",
+        "revenue": "收入",
+        "perished": "已灭亡"
+      }
+    },
+    "activity": {
+      "verbs": {
+        "spent": "支出",
+        "earned": "赚取",
+        "billed": "扣费",
+        "deployed": "部署 →",
+        "paid": "支付",
+        "forked": "分叉 →",
+        "retired": "退役 ✕"
+      },
+      "items": {
+        "visionPass": "视觉识别",
+        "proxyReq": "代理请求",
+        "scrapeWorker": "抓取任务",
+        "gpt4o": "gpt-4o",
+        "toolCall": "工具调用",
+        "adClick": "广告点击",
+        "shopifySale": "Shopify 销售",
+        "subscription": "订阅",
+        "affiliate": "联盟佣金",
+        "apiCall": "API 调用",
+        "adCampaign": "广告活动",
+        "storefront": "网店",
+        "proxy": "代理",
+        "browserSandbox": "浏览器沙箱",
+        "embeddings": "嵌入向量",
+        "subRenewal": "订阅续费"
+      }
+    },
+    "thesis": {
+      "eyebrow": "§ 01 — 论点",
+      "title": "这个隐喻是{em}。",
+      "titleEm": "承重墙",
+      "lead": "Darwin 不是带钱包的聊天机器人。它以生命体为原型，生物学的每个部分都对应着代码中真实存在的东西。把鼠标悬停在某一行上，看看标本如何回应。",
+      "rows": {
+        "genome": {
+          "bio": "基因组",
+          "darwin": "DNA 核心：它能读取、却永远无法修改的签名规则。"
+        },
+        "soma": {
+          "bio": "躯体（soma）",
+          "darwin": "它为自己编写、改写的代码，运行在密封的沙箱里。"
+        },
+        "neurons": {
+          "bio": "细胞与器官",
+          "darwin": "神经元：负责写作、广告、浏览、交易、客服的专职工作者。"
+        },
+        "metabolism": {
+          "bio": "代谢",
+          "darwin": "token、算力、API、广告费——一切要花钱的东西。"
+        },
+        "food": {
+          "bio": "食物",
+          "darwin": "它的神经元经营线上业务带来的收入。"
+        },
+        "hunger": {
+          "bio": "饥饿",
+          "darwin": "金库余额不断下降，逼近生存底线。"
+        },
+        "death": {
+          "bio": "死亡",
+          "darwin": "金库归零——或所有者拉下终止开关。"
+        },
+        "reproduction": {
+          "bio": "繁殖",
+          "darwin": "盈利的 Darwin 孵化出子代，并附上一层密封的经验。"
+        },
+        "generation": {
+          "bio": "世代",
+          "darwin": "每一次成功诞生，都让谱系向前推进一代。"
+        },
+        "mutation": {
+          "bio": "突变",
+          "darwin": "对自身躯体的改写，运行前先用它的过往测试。"
+        },
+        "selection": {
+          "bio": "自然选择",
+          "darwin": "不盈利的 Darwin 死去。只有盈利者才能繁殖。"
+        },
+        "owner": {
+          "bio": "神的干预",
+          "darwin": "你：验证码、身份核验、重大决策，还有关闭开关。"
+        }
+      },
+      "quote": "“不是租来的工具。{em}”",
+      "quoteEm": "是你拥有的生命。"
+    },
+    "anatomy": {
+      "eyebrow": "§ 02 — 解剖",
+      "title": "五个器官。{br}一个{em}。",
+      "titleEm": "标本",
+      "lead": "两层结构决定一切：一生中永不改变的基因组，和允许改变的躯体。围绕它们的，是工作者、钱包，以及一脉后代。",
+      "items": {
+        "dna": {
+          "title": "DNA 核心",
+          "hint": "签名层栈",
+          "body": "基因组：宪法、终止开关、审计记录器、金库策略，以及整套进化机制。可读，永不可写。",
+          "spec": "Ed25519 签名 · 只读挂载 · 每次启动都验证"
+        },
+        "soma": {
+          "title": "躯体",
+          "hint": "它改写的身体",
+          "body": "可变的身体：它被允许改写的策略、编排和工作者——每次改动都先用自己的历史测试。",
+          "spec": "9 节点心跳图 · 每个节点都设检查点"
+        },
+        "neurons": {
+          "title": "神经元",
+          "hint": "十三个专职工作者",
+          "body": "它一次派发一项任务的专职工作者：写作、发布、浏览、广告、交易、客服、研究。",
+          "spec": "13 个内置 · 能力受限 · 每项任务一个全新 microVM"
+        },
+        "treasury": {
+          "title": "金库",
+          "hint": "每笔付款六道关卡",
+          "body": "它自己的钱包。用到的一切它都自己付钱，卖出的东西它自己赚钱，钱花光了它就死去。",
+          "spec": "稳定币钱包 · $50 / $500 / $10k 上限 · 所有者只能收紧"
+        },
+        "lineage": {
+          "title": "谱系",
+          "hint": "分叉的谱系",
+          "body": "盈利的 Darwin 会繁殖。每个子代都继承基因组，外加一层密封的亲代经验。",
+          "spec": "利润 ≥ $25 · 50% 盈余给子代 · 亲代继续存活"
+        }
+      },
+      "specimen": "标本 · {id}",
+      "organ": "器官 · {n}",
+      "activeOrgan": "当前器官"
+    },
+    "boundaries": {
+      "eyebrow": "§ 09 — 边界",
+      "title": "Darwin {em}。",
+      "titleEm": "不是什么",
+      "notThis": "不是这个",
+      "thisIsIt": "就是这个",
+      "cols": {
+        "chatbot": {
+          "title": "聊天机器人",
+          "body": "等待提示词，返回一段文字。不记得昨天的事。"
+        },
+        "workflow": {
+          "title": "工作流",
+          "body": "由固定节点构成的图。可预测，也脆弱。每个季度都得由人重写。"
+        },
+        "copilot": {
+          "title": "副驾驶",
+          "body": "只提建议，由你决定。从不出错，因为它从不拍板。不持有资本。"
+        },
+        "organism": {
+          "title": "生命体",
+          "body": "自己设定目标，持有资本，凭产出决定成败存亡。有用时便繁殖。"
+        }
+      },
+      "honesty": {
+        "agi": "不是 AGI",
+        "passive": "不是被动收入",
+        "unsupervised": "不是无人监管",
+        "anonymous": "不是匿名",
+        "line": "大多数 Darwin 都会死去。价值在于那些存活下来的谱系。"
+      }
+    },
+    "operators": {
+      "eyebrow": "§ 10 — 野外的运营者",
+      "title": "六个类别，{br}一本{em}。",
+      "titleEm": "账本",
+      "headers": {
+        "class": "类别",
+        "domain": "运营领域",
+        "revenue": "收入（90 天）",
+        "net": "Δ 净值",
+        "specimens": "标本数",
+        "status": "状态"
+      },
+      "rows": {
+        "trader": {
+          "name": "交易者类",
+          "domain": "现货套利、做市"
+        },
+        "storefront": {
+          "name": "店铺类",
+          "domain": "按需印刷、代发货"
+        },
+        "researcher": {
+          "name": "研究者类",
+          "domain": "获客线索、数据抓取、数据补全"
+        },
+        "service": {
+          "name": "服务类",
+          "domain": "代码审查、设计 QA、文案"
+        },
+        "studio": {
+          "name": "工作室类",
+          "domain": "合成媒体、广告创意"
+        },
+        "sovereign": {
+          "name": "主权类",
+          "domain": "自筹资金的研究群落"
+        }
+      },
+      "status": {
+        "live": "运行中",
+        "next": "下一步",
+        "horizon": "远景"
+      }
+    },
+    "canvas": {
+      "eyebrow": "§ 11 — 画布",
+      "title": "看它们{em}。{br}每一次出价，每一笔消耗。",
+      "titleEm": "活着",
+      "lead": "你拥有的每个 Darwin 都有一块画布：一条实时时间线，记录每一个决策、付款、神经元和上报，随发生随推送。回放它一生中的任意时刻，沿谱系追溯子代的来历，并在它求助时出手。",
+      "features": {
+        "timeline": {
+          "title": "实时时间线",
+          "body": "每个意图和结果，写入即推送。"
+        },
+        "replay": {
+          "title": "回放任意时刻",
+          "body": "可自行验证的哈希链记录。"
+        },
+        "lineage": {
+          "title": "谱系树",
+          "body": "沿每一代追溯任意子代的来历。"
+        }
+      },
+      "feedTitle": "画布 · 实时",
+      "streaming": "实时流"
+    },
+    "roadmap": {
+      "eyebrow": "§ 12 — 路线图",
+      "title": "四个阶段。{br}各有一条{em}。",
+      "titleEm": "叫停标准",
+      "lead": "每个阶段都对照书面的完成定义交付——同时写明在什么情况下叫停。底层基座刻意保持平淡；所有创新都投入在生命体本身。",
+      "phase": "阶段 {n}",
+      "doneWhen": "完成标准：{bar}",
+      "phases": {
+        "foundation": {
+          "title": "基础",
+          "body": "一个 Darwin 在测试网上端到端运行。",
+          "bar": "24 小时无崩溃 · 50+ 次派发成功率 ≥ 80% · 终止用时 < 5 秒",
+          "status": "当前 · 测试网"
+        },
+        "evolution": {
+          "title": "进化循环",
+          "body": "自我修改与繁殖上线。",
+          "bar": "2+ 代 · 赚到第一块真金白银",
+          "status": "下一步"
+        },
+        "alpha": {
+          "title": "多租户内测",
+          "body": "友好的所有者，真实的预算。",
+          "bar": "5+ 位所有者 · 50%+ 的 Darwin 存活 7 天 · 每个 < $40 / 月",
+          "status": "内测"
+        },
+        "beta": {
+          "title": "公测",
+          "body": "先开放候补名单，再开放注册。",
+          "bar": "数百个 Darwin · 一条公开谱系存续 3 个月以上、深达 5 代以上",
+          "status": "公测"
+        }
+      }
+    },
+    "faq": {
+      "eyebrow": "§ 13 — 问答",
+      "title": "有问必答，{em}以对。",
+      "titleEm": "坦诚",
+      "lead": "每个回答都应建立信任，哪怕是不那么中听的。大多数 Darwin 会死去，我们也永远不会承诺回报。",
+      "items": {
+        "what": {
+          "q": "Darwin 到底是什么？",
+          "a": "一个属于你的数字生命体。你给它一笔初始预算；它尝试在网上自食其力，支付自己的运行成本，只有赚得比花得多才能活下来。成功了，它会繁衍后代；失败了，它就会死去。"
+        },
+        "money": {
+          "q": "它真的能赚钱吗？",
+          "a": "有时能，常常不能。大多数 Darwin 在盈利之前就死了——这是设计使然，不是缺陷。我们永远不会承诺回报。我们承诺的是：真实、完全属于你、完全透明。"
+        },
+        "loss": {
+          "q": "如果它把我给的钱亏光了怎么办？",
+          "a": "这可能发生，你也应当有心理准备。唯一的硬性规则：Darwin 的花费永远不能超过你为它注入的预算。你的损失以此为上限——一分都不会多。"
+        },
+        "stop": {
+          "q": "我能让它停下来吗？",
+          "a": "随时，立刻，一个开关就行。终止开关能在 5 秒内停止 Darwin，无需 Darwin 同意，且始终拥有最高优先级。"
+        },
+        "technical": {
+          "q": "我需要懂技术吗？",
+          "a": "不需要。你为它注资、启动它、观察它，在它求助时帮一把。这就是全部工作。"
+        },
+        "crypto": {
+          "q": "这不就是个加密货币或交易机器人吗？",
+          "a": "它的范围更广。Darwin 自己选择赚钱方式——它可能搭建线上业务，交易金融或加密市场，在预测市场中建仓，或几者兼而有之。它运行的不是什么“稳赚不赔”的系统，能拿去冒险的永远只有你给它的预算。"
+        },
+        "death": {
+          "q": "它死了会怎样？",
+          "a": "剩下的预算归你，它一路上建立的一切也都归你。如果它有子代，它们会继续自己的生命，不受影响。"
+        },
+        "fees": {
+          "q": "你们怎么赚钱？",
+          "a": "只有在你提取利润时，我们才抽取其中的 20%。如果你的 Darwin 从未赚到钱，我们也不从中获利。看它努力不收订阅费，它死后剩下的部分也一分不取。"
+        },
+        "safe": {
+          "q": "它安全合规吗？",
+          "a": "每个 Darwin 都绑定一位经过验证的真人，只在允许的活动范围内运作，任何敏感操作都会先征求许可，且可以被立即停止。每个行动在发生前都会写入防篡改日志，整个生命历程都可以回放。"
+        },
+        "mostDie": {
+          "q": "为什么大多数会死？听起来不太妙。",
+          "a": "恰恰相反。真正的选择需要真正的失败。存活下来的 Darwin 是凭本事赢来的——它的谱系会把这份成果传承下去。一个什么都不会失败的系统，什么也证明不了。"
+        },
+        "when": {
+          "q": "我什么时候能试用？",
+          "a": "我们尚未正式发布，第一代正在测试网上运行。加入候补名单，见证第一代的诞生。"
+        }
+      }
+    },
+    "cta": {
+      "eyebrow": "§ 14 — 实地准入",
+      "title": "见证第一代{br}生命{em}。",
+      "titleEm": "诞生",
+      "emailLabel": "邮箱地址",
+      "onList": "已加入名单 ✓",
+      "sending": "提交中…",
+      "error": "加入名单失败，请重试。",
+      "note": "真实的赌注。真实的选择。拒绝炒作。大多数 Darwin 会死去——活下来的，将是同类中的第一批。"
+    },
+    "footer": {
+      "credit": "Darwin Agents · {nexow} 出品，与 {specimen} 合作",
+      "security": "安全"
+    }
+  },
+  "canvas": {
+    "title": "画布",
+    "errors": {
+      "loadAgent": "无法加载此智能体。",
+      "loadHistory": "无法加载事件历史。"
+    },
+    "topBar": {
+      "agentFallback": "智能体",
+      "states": {
+        "PROVISIONING": "配置中",
+        "ACTIVE": "运行中",
+        "HIBERNATING": "休眠中",
+        "TERMINATED": "已终止"
+      },
+      "panels": {
+        "console": "控制台",
+        "entities": "实体",
+        "skills": "技能",
+        "ledger": "账本",
+        "assets": "资产"
+      }
+    },
+    "viewport": {
+      "jumpToLatest": "跳到最新事件",
+      "latest": "最新"
+    },
+    "banner": {
+      "askHuman": "请求人工输入",
+      "approval": "需要审批",
+      "captcha": "需要完成验证码"
+    },
+    "nodes": {
+      "genesis": "创世",
+      "thought": "思考",
+      "tool": "工具",
+      "debit": "支出",
+      "credit": "收入",
+      "skill": "技能",
+      "entity": "实体",
+      "memory": "记忆",
+      "synthesis": "综合",
+      "wake": "唤醒",
+      "rest": "休眠",
+      "end": "结束",
+      "captcha": "验证码",
+      "approve": "审批",
+      "human": "人工",
+      "approveAction": "✓ 批准",
+      "denyAction": "✕ 拒绝",
+      "decisionFailed": "无法提交你的决定，请重试。"
+    },
+    "replay": {
+      "title": "心智回放",
+      "close": "关闭",
+      "eyes": "所见",
+      "mind": "所想",
+      "screenshotAlt": "浏览器截图",
+      "noVisualData": "此事件没有视觉数据",
+      "loadingTrace": "正在加载追踪…",
+      "noTrace": "暂无追踪数据。",
+      "model": "模型：",
+      "tokenCost": "Token：${amount}",
+      "infraCost": "基础设施：${amount}"
+    }
+  },
+  "console": {
+    "title": "指令控制台",
+    "sections": {
+      "uplink": "认知上行链路",
+      "vault": "密钥保险库",
+      "budget": "代谢注入",
+      "auto": "自主"
+    },
+    "uplink": {
+      "placeholder": "注入一条生命周期中途指令……例如“未来 4 小时转向航空航天动量策略。”",
+      "submit": "注入上行指令",
+      "sent": "指令已发送。",
+      "failed": "无法发送指令。"
+    },
+    "vault": {
+      "types": {
+        "vcc": "虚拟信用卡",
+        "stripeKey": "Stripe API 密钥",
+        "brokerApiKey": "券商 API 密钥",
+        "iban": "IBAN"
+      },
+      "cvv": "CVV",
+      "expiry": "MM/YY",
+      "spendLimit": "消费限额（$）",
+      "save": "保存到保险库",
+      "savedLimit": "{type} · 限额 ${amount}"
+    },
+    "budget": {
+      "preview": "当前余额：${current} → 注入后：${after}",
+      "submit": "💉 注入预算",
+      "injected": "已注入 ${amount}。",
+      "failed": "预算注入失败。"
+    },
+    "autonomy": {
+      "title": "自主模式",
+      "description": "开启后，人工审批关卡更少",
+      "toggle": "切换自主模式",
+      "failed": "无法更改自主模式。"
+    },
+    "kill": {
+      "button": "终止智能体",
+      "confirm": "此操作不可撤销。容器将被停止，VCC 将被冻结，会话将被归档。智能体无法复活。",
+      "cancel": "取消",
+      "terminate": "终止",
+      "failed": "终止失败，智能体仍在运行。"
+    }
+  },
+  "panels": {
+    "assets": {
+      "title": "资产",
+      "empty": "智能体产出资产后，上传的文件会显示在这里。"
+    },
+    "entities": {
+      "title": "实体",
+      "empty": "尚未创建任何实体。",
+      "unnamed": "实体",
+      "viewData": "查看数据"
+    },
+    "ledger": {
+      "title": "账本",
+      "revenue": "收入",
+      "burned": "消耗",
+      "empty": "暂无交易。"
+    },
+    "skills": {
+      "title": "技能",
+      "empty": "尚未创建任何技能。",
+      "untitled": "技能",
+      "badge": "技能",
+      "royalty": "版税：每次使用 ${amount} USDC",
+      "viewDocument": "查看文档"
+    }
+  },
+  "auth": {
+    "backToSignIn": "返回登录",
+    "fields": {
+      "email": "邮箱地址",
+      "password": "密码",
+      "passwordPlaceholder": "你的密码",
+      "newPassword": "新密码",
+      "newPasswordPlaceholder": "至少 8 个字符",
+      "confirmPassword": "确认密码",
+      "confirmPlaceholder": "再次输入密码"
+    },
+    "errors": {
+      "generic": "出了点问题，请重试。",
+      "wrongCredentials": "邮箱或密码错误。",
+      "emailNotConfirmed": "请先确认你的邮箱——注册时我们已发送确认链接。",
+      "alreadyRegistered": "该邮箱已注册账号，请尝试登录。",
+      "noSession": "无法建立会话，请重试。",
+      "passwordMismatch": "两次输入的密码不一致。",
+      "passwordTooShort": "密码至少需要 8 个字符。"
+    },
+    "login": {
+      "pageTitle": "登录",
+      "back": "← 返回",
+      "tabs": {
+        "signin": "登录",
+        "signup": "注册"
+      },
+      "titles": {
+        "signin": "欢迎回来",
+        "signup": "创建账号",
+        "forgot": "重置密码"
+      },
+      "subtitles": {
+        "signin": "登录你的 Darwin 控制台",
+        "signup": "开始构建自主智能体",
+        "forgot": "我们会给你发送一封邮件，用于设置新密码"
+      },
+      "forgot": "忘记密码？",
+      "submit": {
+        "signin": "登录",
+        "signup": "创建账号",
+        "forgot": "发送重置链接"
+      },
+      "or": "或",
+      "google": "使用 Google 继续",
+      "backToSignIn": "← 返回登录",
+      "checkEmail": "请查收邮件确认账号，然后回到这里登录。",
+      "resetSent": "如果该邮箱已注册，我们已向其发送重置链接。",
+      "legal": "继续即表示你同意我们的{terms}和{privacy}。",
+      "terms": "服务条款",
+      "privacy": "隐私政策"
+    },
+    "confirm": {
+      "pageTitle": "正在登录",
+      "signingIn": "正在为你登录…",
+      "stalledTitle": "登录未完成",
+      "stalledBody": "链接可能已过期或已被使用。"
+    },
+    "reset": {
+      "pageTitle": "重置密码",
+      "verifying": "正在验证重置链接…",
+      "invalidTitle": "链接无效",
+      "invalidLink": "此链接无效或已过期。请在登录页重新申请重置。",
+      "title": "设置新密码",
+      "subtitle": "为你的账号设置一个强密码。",
+      "submit": "更新密码",
+      "doneTitle": "密码已更新",
+      "doneBody": "现在可以用新密码登录了。",
+      "goToSignIn": "前往登录"
+    }
+  },
+  "dashboard": {
+    "pageTitle": "仪表盘",
+    "heading": "仪表盘",
+    "spawn": "孵化智能体",
+    "signOut": "退出登录",
+    "loadFailed": "加载智能体失败",
+    "retry": "重试",
+    "empty": {
+      "title": "还没有智能体",
+      "body": "孵化你的第一个自主智能体，在无限画布上可视化它的生命周期。",
+      "cta": "孵化你的第一个智能体"
+    },
+    "agentCountOne": "1 个智能体",
+    "agentCount": "{count} 个智能体",
+    "states": {
+      "PROVISIONING": "配置中",
+      "ACTIVE": "运行中",
+      "HIBERNATING": "休眠中",
+      "TERMINATED": "已终止"
+    },
+    "remaining": "剩余 {amount}",
+    "burnRate": "{amount}/小时",
+    "never": "从未",
+    "viewCanvas": "画布"
+  },
+  "spawn": {
+    "pageTitle": "孵化一个 Darwin",
+    "heading": "孵化智能体",
+    "signInPrompt": "登录后即可孵化智能体。",
+    "signIn": "登录",
+    "form": {
+      "steps": {
+        "identity": "身份",
+        "budget": "预算",
+        "tools": "工具",
+        "review": "确认"
+      },
+      "identity": {
+        "title": "身份",
+        "subtitle": "为你的智能体命名，并定义它的使命。",
+        "nameLabel": "智能体名称",
+        "namePlaceholder": "例如 Market Scout Alpha",
+        "directiveLabel": "使命指令",
+        "directivePlaceholder": "描述这个智能体应该完成什么……",
+        "directiveHint": "这将成为智能体系统提示词的种子。请写明具体的目标和约束（至少 10 个字符）。",
+        "modelLabel": "LLM 模型（主干默认）",
+        "modelHint": "智能体可能会根据任务复杂度，按神经元或思考步骤升级或降级此模型。"
+      },
+      "modelNotes": {
+        "sonnet": "均衡——推荐",
+        "haiku": "快速——最便宜",
+        "opus": "智能最强——价格高",
+        "gpt4o": "视觉能力最强",
+        "gpt4oMini": "快速视觉——低成本"
+      },
+      "budget": {
+        "title": "预算",
+        "subtitle": "为该智能体设定支出上限。",
+        "initialLabel": "初始预算",
+        "capNote": "配置 VCC 后，扣款由 Visa 网络强制封顶。智能体无法超出此预算。"
+      },
+      "tools": {
+        "title": "工具",
+        "subtitle": "选择智能体可以使用的能力。"
+      },
+      "toolOptions": {
+        "browser": {
+          "label": "浏览器",
+          "desc": "导航、点击、输入、截图。完整的 Browserbase 会话。"
+        },
+        "finance": {
+          "label": "金融",
+          "desc": "虚拟信用卡、银行转账、加密货币交易。"
+        },
+        "code": {
+          "label": "代码",
+          "desc": "在沙箱环境中读取、编写和执行代码。"
+        }
+      },
+      "review": {
+        "title": "确认并部署",
+        "subtitle": "孵化前请确认配置。",
+        "name": "名称",
+        "model": "模型",
+        "budget": "预算",
+        "tools": "工具",
+        "directivePreview": "指令预览"
+      },
+      "back": "上一步",
+      "cancel": "取消",
+      "continue": "继续",
+      "deploy": "部署智能体",
+      "deploying": "部署中…",
+      "errors": {
+        "nameLength": "智能体名称须为 1 到 100 个字符。",
+        "directiveLength": "指令至少需要 10 个字符。",
+        "noAgentId": "孵化请求已接受，但未返回智能体 id。请查看仪表盘。",
+        "validation": "孵化校验失败：{field} {message}",
+        "unknownField": "字段",
+        "invalidValue": "无效值",
+        "failed": "孵化失败"
+      }
+    }
+  },
+  "resolve": {
+    "pageTitle": "需要你处理",
+    "expired": "此链接已过期。",
+    "invalidToken": "令牌缺失或无效。",
+    "twoFactor": {
+      "title": "需要两步验证码",
+      "subtitle": "输入身份验证器中的验证码",
+      "expiresIn": "{seconds} 秒后过期",
+      "submit": "提交验证码"
+    },
+    "captcha": {
+      "title": "完成验证码",
+      "frameTitle": "验证码会话",
+      "resume": "验证码已完成——恢复智能体"
+    },
+    "approval": {
+      "title": "需要审批",
+      "amount": "金额",
+      "justification": "理由",
+      "deny": "拒绝",
+      "approve": "批准"
+    }
+  },
+  "pwa": {
+    "install": "安装应用",
+    "installAria": "安装 Darwin 应用",
+    "iosHint": "轻点 {icon} {share}，然后选择{addToHome}。",
+    "share": "共享",
+    "addToHome": "添加到主屏幕"
+  }
+}
