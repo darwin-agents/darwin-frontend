@@ -7,7 +7,9 @@ import {
 import type { AgentStateApi } from '~/types/agent'
 
 definePageMeta({ layout: false })
-useHead({ title: 'Dashboard' })
+const { t, locale } = useI18n()
+const localePath = useLocalePath()
+useHead({ title: () => t('dashboard.pageTitle') })
 
 const auth = useAuthStore()
 const api = useApi()
@@ -26,7 +28,7 @@ async function load() {
     })
     agents.value = res.agents ?? []
   } catch (e) {
-    error.value = e instanceof Error ? e.message : 'Failed to load agents'
+    error.value = e instanceof Error ? e.message : t('dashboard.loadFailed')
     agents.value = []
   } finally {
     loading.value = false
@@ -35,14 +37,14 @@ async function load() {
 
 onMounted(load)
 
-type StateConfig = { icon: typeof Activity; color: string; bg: string; border: string; label: string }
+type StateConfig = { icon: typeof Activity; color: string; bg: string; border: string; key: string }
 
-const PROVISIONING_CONFIG: StateConfig = { icon: Loader2, color: 'text-amber-600', bg: 'bg-amber-500/10', border: 'border-amber-500/30', label: 'Provisioning' }
+const PROVISIONING_CONFIG: StateConfig = { icon: Loader2, color: 'text-amber-600', bg: 'bg-amber-500/10', border: 'border-amber-500/30', key: 'PROVISIONING' }
 
 const stateConfig: Record<string, StateConfig> = {
-  ACTIVE:       { icon: Activity, color: 'text-darwin-accent', bg: 'bg-darwin-accent/10', border: 'border-darwin-accent/30', label: 'Active' },
-  HIBERNATING:  { icon: Moon,     color: 'text-darwin-muted',  bg: 'bg-darwin-bg-3',      border: 'border-darwin-border',   label: 'Hibernating' },
-  TERMINATED:   { icon: Skull,    color: 'text-red-600',       bg: 'bg-red-500/10',        border: 'border-red-500/30',      label: 'Terminated' },
+  ACTIVE:       { icon: Activity, color: 'text-darwin-accent', bg: 'bg-darwin-accent/10', border: 'border-darwin-accent/30', key: 'ACTIVE' },
+  HIBERNATING:  { icon: Moon,     color: 'text-darwin-muted',  bg: 'bg-darwin-bg-3',      border: 'border-darwin-border',   key: 'HIBERNATING' },
+  TERMINATED:   { icon: Skull,    color: 'text-red-600',       bg: 'bg-red-500/10',        border: 'border-red-500/30',      key: 'TERMINATED' },
   PROVISIONING: PROVISIONING_CONFIG,
 }
 
@@ -51,14 +53,19 @@ function getStateConfig(s: string): StateConfig {
 }
 
 function formatRelativeTime(dateStr: string | null) {
-  if (!dateStr) return 'Never'
+  if (!dateStr) return t('dashboard.never')
+  const rtf = new Intl.RelativeTimeFormat(locale.value, { numeric: 'auto' })
   const diff = Date.now() - new Date(dateStr).getTime()
   const mins = Math.floor(diff / 60000)
-  if (mins < 1) return 'Just now'
-  if (mins < 60) return `${mins}m ago`
+  if (mins < 1) return rtf.format(0, 'second')
+  if (mins < 60) return rtf.format(-mins, 'minute')
   const hours = Math.floor(mins / 60)
-  if (hours < 24) return `${hours}h ago`
-  return `${Math.floor(hours / 24)}d ago`
+  if (hours < 24) return rtf.format(-hours, 'hour')
+  return rtf.format(-Math.floor(hours / 24), 'day')
+}
+
+function usd(v: number | null | undefined) {
+  return (v ?? 0).toLocaleString(locale.value, { style: 'currency', currency: 'USD' })
 }
 </script>
 
@@ -71,19 +78,20 @@ function formatRelativeTime(dateStr: string | null) {
     >
       <div class="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <NuxtLink to="/" class="flex items-center gap-2">
+          <NuxtLink :to="localePath('/')" class="flex items-center gap-2">
             <UiDarwinLogo :size="28" />
           </NuxtLink>
           <div class="h-4 w-px bg-darwin-border" />
-          <h1 class="text-sm font-medium text-darwin-ink">Dashboard</h1>
+          <h1 class="text-sm font-medium text-darwin-ink">{{ t('dashboard.heading') }}</h1>
         </div>
         <div class="flex items-center gap-2">
           <UiInstallButton class="text-darwin-ink" />
+          <UiLocaleSwitcher class="text-darwin-ink" />
           <NuxtLink to="/spawn" class="darwin-btn-primary text-xs py-2">
             <Plus :size="14" />
-            Spawn agent
+            {{ t('dashboard.spawn') }}
           </NuxtLink>
-          <button type="button" class="darwin-btn-ghost text-xs py-2" aria-label="Sign out" title="Sign out" @click="auth.logout()">
+          <button type="button" class="darwin-btn-ghost text-xs py-2" :aria-label="t('dashboard.signOut')" :title="t('dashboard.signOut')" @click="auth.logout()">
             <LogOut :size="14" />
           </button>
         </div>
@@ -99,7 +107,7 @@ function formatRelativeTime(dateStr: string | null) {
       <!-- Error -->
       <div v-else-if="error" class="darwin-card p-6 text-center">
         <p class="text-sm text-red-600 mb-3">{{ error }}</p>
-        <button type="button" class="darwin-btn-secondary text-xs" @click="load">Retry</button>
+        <button type="button" class="darwin-btn-secondary text-xs" @click="load">{{ t('dashboard.retry') }}</button>
       </div>
 
       <!-- Empty state -->
@@ -110,20 +118,20 @@ function formatRelativeTime(dateStr: string | null) {
         >
           <UiDarwinLogo :size="28" mono class="text-darwin-muted" />
         </div>
-        <h2 class="text-lg font-semibold text-darwin-ink mb-2">No agents yet</h2>
+        <h2 class="text-lg font-semibold text-darwin-ink mb-2">{{ t('dashboard.empty.title') }}</h2>
         <p class="text-sm text-darwin-muted mb-6 max-w-sm mx-auto">
-          Spawn your first autonomous agent to start visualizing its lifecycle on the infinite canvas.
+          {{ t('dashboard.empty.body') }}
         </p>
         <NuxtLink to="/spawn" class="darwin-btn-primary">
           <Plus :size="16" />
-          Spawn your first agent
+          {{ t('dashboard.empty.cta') }}
         </NuxtLink>
       </div>
 
       <!-- Agent list -->
       <div v-else class="space-y-3">
         <div class="flex items-center justify-between mb-2">
-          <p class="text-xs text-darwin-muted">{{ agents.length }} agent{{ agents.length === 1 ? '' : 's' }}</p>
+          <p class="text-xs text-darwin-muted">{{ agents.length === 1 ? t('dashboard.agentCountOne') : t('dashboard.agentCount', { count: agents.length.toLocaleString(locale) }) }}</p>
         </div>
 
         <NuxtLink
@@ -154,16 +162,16 @@ function formatRelativeTime(dateStr: string | null) {
               <span
                 class="darwin-badge"
                 :class="[getStateConfig(a.state).color, getStateConfig(a.state).bg, getStateConfig(a.state).border]"
-              >{{ getStateConfig(a.state).label }}</span>
+              >{{ t(`dashboard.states.${getStateConfig(a.state).key}`) }}</span>
             </div>
             <div class="flex items-center gap-4 text-xs text-darwin-muted">
               <span class="flex items-center gap-1">
                 <TrendingDown :size="11" />
-                ${{ (a.budget_remaining_usd ?? 0).toFixed(2) }} remaining
+                {{ t('dashboard.remaining', { amount: usd(a.budget_remaining_usd) }) }}
               </span>
               <span v-if="(a.burn_rate_usd_per_hour ?? 0) > 0" class="flex items-center gap-1">
                 <Zap :size="11" />
-                ${{ (a.burn_rate_usd_per_hour ?? 0).toFixed(2) }}/hr
+                {{ t('dashboard.burnRate', { amount: usd(a.burn_rate_usd_per_hour) }) }}
               </span>
               <span class="flex items-center gap-1">
                 <Clock :size="11" />
@@ -176,7 +184,7 @@ function formatRelativeTime(dateStr: string | null) {
           <div class="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
             <span class="darwin-btn-ghost text-xs py-1.5 px-3">
               <Eye :size="14" />
-              Canvas
+              {{ t('dashboard.viewCanvas') }}
             </span>
           </div>
         </NuxtLink>

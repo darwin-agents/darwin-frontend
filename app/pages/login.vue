@@ -3,7 +3,10 @@ import { Mail, Lock, Loader2, Eye, EyeOff } from 'lucide-vue-next'
 
 type Mode = 'signin' | 'signup' | 'forgot'
 
-useHead({ title: 'Sign in' })
+const { t } = useI18n()
+const localePath = useLocalePath()
+
+useHead({ title: () => t('auth.login.pageTitle') })
 
 const auth = useAuthStore()
 const supabase = useSupabaseClient()
@@ -47,11 +50,11 @@ function setOk(msg: string) {
 
 /** Map Supabase / network errors to clearer copy */
 function formatAuthError(err: { message: string; status?: number } | null): string {
-  if (!err?.message) return 'Something went wrong. Please try again.'
+  if (!err?.message) return t('auth.errors.generic')
   const m = err.message.toLowerCase()
-  if (m.includes('invalid login credentials')) return 'Wrong email or password.'
-  if (m.includes('email not confirmed')) return 'Confirm your email first — we sent a link when you signed up.'
-  if (m.includes('user already registered')) return 'An account with this email already exists. Try signing in.'
+  if (m.includes('invalid login credentials')) return t('auth.errors.wrongCredentials')
+  if (m.includes('email not confirmed')) return t('auth.errors.emailNotConfirmed')
+  if (m.includes('user already registered')) return t('auth.errors.alreadyRegistered')
   if (m.includes('password')) return err.message
   return err.message
 }
@@ -71,7 +74,7 @@ async function submit() {
       return
     }
     if (!data.session) {
-      setError('Could not start a session. Please try again.')
+      setError(t('auth.errors.noSession'))
       return
     }
     await supabase.auth.getSession()
@@ -83,11 +86,11 @@ async function submit() {
     const em = email.value.trim()
     if (!em || !password.value) return
     if (password.value !== confirm.value) {
-      setError('Passwords do not match.')
+      setError(t('auth.errors.passwordMismatch'))
       return
     }
     if (password.value.length < 8) {
-      setError('Password must be at least 8 characters.')
+      setError(t('auth.errors.passwordTooShort'))
       return
     }
     loading.value = true
@@ -105,7 +108,7 @@ async function submit() {
     mode.value = 'signin'
     password.value = ''
     confirm.value = ''
-    setOk('Check your email to confirm your account, then sign in here.')
+    setOk(t('auth.login.checkEmail'))
     return
   }
 
@@ -115,7 +118,7 @@ async function submit() {
   const { error } = await auth.resetPassword(em)
   loading.value = false
   if (error) setError(formatAuthError(error))
-  else setOk('If an account exists for that email, we sent a reset link.')
+  else setOk(t('auth.login.resetSent'))
 }
 
 async function google() {
@@ -132,17 +135,8 @@ async function google() {
   }
 }
 
-const title = computed(() => ({
-  signin: 'Welcome back',
-  signup: 'Create account',
-  forgot: 'Reset password',
-})[mode.value])
-
-const subtitle = computed(() => ({
-  signin: 'Sign in to your Darwin console',
-  signup: 'Start building autonomous agents',
-  forgot: 'We will email you a link to choose a new password',
-})[mode.value])
+const title = computed(() => t(`auth.login.titles.${mode.value}`))
+const subtitle = computed(() => t(`auth.login.subtitles.${mode.value}`))
 </script>
 
 <template>
@@ -154,13 +148,14 @@ const subtitle = computed(() => ({
       />
     </div>
 
-    <div class="relative z-10 px-6 pt-6">
+    <div class="relative z-10 px-6 pt-6 flex items-center justify-between">
       <NuxtLink
-        to="/"
+        :to="localePath('/')"
         class="inline-flex items-center gap-1.5 text-sm transition-colors text-darwin-muted hover:text-darwin-ink"
       >
-        ← Back
+        {{ t('auth.login.back') }}
       </NuxtLink>
+      <UiLocaleSwitcher class="text-darwin-ink" />
     </div>
 
     <div class="relative z-10 flex-1 flex items-center justify-center px-6 pb-16">
@@ -189,7 +184,7 @@ const subtitle = computed(() => ({
               : 'text-darwin-muted hover:text-darwin-ink'"
             @click="switchMode('signin')"
           >
-            Sign in
+            {{ t('auth.login.tabs.signin') }}
           </button>
           <button
             type="button"
@@ -199,7 +194,7 @@ const subtitle = computed(() => ({
               : 'text-darwin-muted hover:text-darwin-ink'"
             @click="switchMode('signup')"
           >
-            Sign up
+            {{ t('auth.login.tabs.signup') }}
           </button>
         </div>
 
@@ -211,16 +206,16 @@ const subtitle = computed(() => ({
 
           <form class="space-y-3" novalidate @submit.prevent="submit">
             <div>
-              <label class="text-xs text-darwin-muted mb-1.5 block" for="login-email">Email address</label>
+              <label class="text-xs text-darwin-muted mb-1.5 block" for="login-email">{{ t('auth.fields.email') }}</label>
               <div class="relative">
-                <Mail :size="14" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-darwin-muted pointer-events-none" />
+                <Mail :size="14" class="absolute start-3.5 top-1/2 -translate-y-1/2 text-darwin-muted pointer-events-none" />
                 <input
                   id="login-email"
                   v-model="email"
                   type="email"
                   autocomplete="email"
                   placeholder="you@company.com"
-                  class="darwin-input pl-9"
+                  class="darwin-input ps-9"
                   :disabled="loading"
                 >
               </div>
@@ -228,21 +223,21 @@ const subtitle = computed(() => ({
 
             <template v-if="mode !== 'forgot'">
               <div>
-                <label class="text-xs text-darwin-muted mb-1.5 block" for="login-password">Password</label>
+                <label class="text-xs text-darwin-muted mb-1.5 block" for="login-password">{{ t('auth.fields.password') }}</label>
                 <div class="relative">
-                  <Lock :size="14" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-darwin-muted pointer-events-none" />
+                  <Lock :size="14" class="absolute start-3.5 top-1/2 -translate-y-1/2 text-darwin-muted pointer-events-none" />
                   <input
                     id="login-password"
                     v-model="password"
                     :type="showPw ? 'text' : 'password'"
                     :autocomplete="mode === 'signup' ? 'new-password' : 'current-password'"
-                    :placeholder="mode === 'signup' ? 'At least 8 characters' : 'Your password'"
-                    class="darwin-input pl-9 pr-10"
+                    :placeholder="t(mode === 'signup' ? 'auth.fields.newPasswordPlaceholder' : 'auth.fields.passwordPlaceholder')"
+                    class="darwin-input ps-9 pe-10"
                     :disabled="loading"
                   >
                   <button
                     type="button"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-darwin-muted hover:text-darwin-ink transition-colors"
+                    class="absolute end-3 top-1/2 -translate-y-1/2 text-darwin-muted hover:text-darwin-ink transition-colors"
                     tabindex="-1"
                     :aria-pressed="showPw"
                     @click="showPw = !showPw"
@@ -254,21 +249,21 @@ const subtitle = computed(() => ({
               </div>
 
               <div v-if="mode === 'signup'">
-                <label class="text-xs text-darwin-muted mb-1.5 block" for="login-confirm">Confirm password</label>
+                <label class="text-xs text-darwin-muted mb-1.5 block" for="login-confirm">{{ t('auth.fields.confirmPassword') }}</label>
                 <div class="relative">
-                  <Lock :size="14" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-darwin-muted pointer-events-none" />
+                  <Lock :size="14" class="absolute start-3.5 top-1/2 -translate-y-1/2 text-darwin-muted pointer-events-none" />
                   <input
                     id="login-confirm"
                     v-model="confirm"
                     :type="showConfirm ? 'text' : 'password'"
                     autocomplete="new-password"
-                    placeholder="Repeat password"
-                    class="darwin-input pl-9 pr-10"
+                    :placeholder="t('auth.fields.confirmPlaceholder')"
+                    class="darwin-input ps-9 pe-10"
                     :disabled="loading"
                   >
                   <button
                     type="button"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-darwin-muted hover:text-darwin-ink transition-colors"
+                    class="absolute end-3 top-1/2 -translate-y-1/2 text-darwin-muted hover:text-darwin-ink transition-colors"
                     tabindex="-1"
                     :aria-pressed="showConfirm"
                     @click="showConfirm = !showConfirm"
@@ -285,7 +280,7 @@ const subtitle = computed(() => ({
                   class="text-xs text-darwin-muted hover:text-darwin-accent transition-colors"
                   @click="switchMode('forgot')"
                 >
-                  Forgot password?
+                  {{ t('auth.login.forgot') }}
                 </button>
               </div>
             </template>
@@ -296,16 +291,14 @@ const subtitle = computed(() => ({
               :disabled="loading"
             >
               <Loader2 v-if="loading" :size="15" class="animate-spin" />
-              <span v-else-if="mode === 'signin'">Sign in</span>
-              <span v-else-if="mode === 'signup'">Create account</span>
-              <span v-else>Send reset link</span>
+              <span v-else>{{ t(`auth.login.submit.${mode}`) }}</span>
             </button>
           </form>
 
           <template v-if="mode !== 'forgot'">
             <div class="flex items-center gap-3 my-5">
               <div class="flex-1 h-px" style="background: var(--darwin-border)" />
-              <span class="text-[10px] text-darwin-muted uppercase tracking-wider">or</span>
+              <span class="text-[10px] text-darwin-muted uppercase tracking-wider">{{ t('auth.login.or') }}</span>
               <div class="flex-1 h-px" style="background: var(--darwin-border)" />
             </div>
 
@@ -321,7 +314,7 @@ const subtitle = computed(() => ({
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg>
-              Continue with Google
+              {{ t('auth.login.google') }}
             </button>
           </template>
 
@@ -331,7 +324,7 @@ const subtitle = computed(() => ({
               class="text-xs text-darwin-muted hover:text-darwin-ink transition-colors"
               @click="switchMode('signin')"
             >
-              ← Back to sign in
+              {{ t('auth.login.backToSignIn') }}
             </button>
           </div>
 
@@ -349,12 +342,10 @@ const subtitle = computed(() => ({
           </Transition>
         </div>
 
-        <p class="text-center text-[11px] text-darwin-muted mt-5">
-          By continuing you agree to our
-          <a href="#" class="underline hover:text-darwin-ink transition-colors">Terms</a>
-          &amp;
-          <a href="#" class="underline hover:text-darwin-ink transition-colors">Privacy Policy</a>.
-        </p>
+        <i18n-t keypath="auth.login.legal" tag="p" class="text-center text-[11px] text-darwin-muted mt-5" scope="global">
+          <template #terms><a href="#" class="underline hover:text-darwin-ink transition-colors">{{ t('auth.login.terms') }}</a></template>
+          <template #privacy><a href="#" class="underline hover:text-darwin-ink transition-colors">{{ t('auth.login.privacy') }}</a></template>
+        </i18n-t>
       </div>
     </div>
   </div>

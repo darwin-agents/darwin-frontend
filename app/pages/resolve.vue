@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({ layout: false })
-useHead({ title: 'Action required' })
+const { t } = useI18n()
+useHead({ title: () => t('resolve.pageTitle') })
 </script>
 
 <template>

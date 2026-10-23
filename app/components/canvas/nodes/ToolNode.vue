@@ -16,7 +16,7 @@ const accent = computed(() => {
 
 <template>
   <g>
-    <NodeShell :event="event" :accent="accent" label="Tool" />
+    <NodeShell :event="event" :accent="accent" label-id="tool" />
     <foreignObject x="-10" y="-10" width="20" height="20">
       <Wrench :size="14" :style="{ display: 'block', margin: 'auto', color: accent }" />
     </foreignObject>

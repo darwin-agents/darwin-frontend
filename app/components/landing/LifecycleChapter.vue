@@ -1,53 +1,18 @@
 <script setup lang="ts">
 // Sticky scroll story: six lifecycle stages scrubbed by scroll position.
 // The ring is the real orchestrator graph (darwin_dna/orchestrator_skeleton/nodes).
+const { t } = useI18n()
 const { active, stage } = useLabChapter()
 const audio = useLabAudio()
 const root = useTemplateRef<HTMLElement>('root')
 
 const STAGES = [
-  {
-    title: 'Birth',
-    body: 'You choose a starting budget. The Darwin boots from a signed genome it can read but never change, and verifies that signature on every start.',
-    fact: 'genome Ed25519-signed · mounted read-only · verified every boot',
-    balance: 100,
-    nodes: [] as string[],
-  },
-  {
-    title: 'Heartbeat',
-    body: 'Every 30 seconds it wakes, checks it is still allowed to live, reads its treasury, plans one move, acts through a single neuron, then reflects on what happened.',
-    fact: 'check_death → perceive → plan → dispatch → reflect · every 30 s (5 s–10 min, learned)',
-    balance: 99.62,
-    nodes: ['check_death', 'perceive', 'plan', 'dispatch', 'reflect', 'check_reproduction'],
-  },
-  {
-    title: 'Metabolism',
-    body: 'Everything costs money: tokens, compute, APIs, ads. Revenue from the ventures its neurons run is food. Every spend is capped before it happens, not after.',
-    fact: '$50 per action · $500 per day · $10,000 per lifetime · owners can only tighten',
-    balance: 131.4,
-    nodes: ['dispatch'],
-  },
-  {
-    title: 'Escalation',
-    body: 'A captcha, an ID check, a large payment: when only a human can help, it parks that task and asks you. It never pushes through. Escalate, don\'t fail.',
-    fact: 'captcha 15 min · KYC 72 h · approval 24 h · no answer = deny',
-    balance: 131.4,
-    nodes: ['dispatch', 'perceive'],
-  },
-  {
-    title: 'Reproduction',
-    body: 'Profitable over a week? It buds a child: its genome plus one sealed layer of lessons, and half its surplus. Children that thrive bud their own. The mother keeps living at the root of the lineage.',
-    fact: '≥ $25 profit · 50% of surplus per child · ≥ 3 pieces of evidence per lesson · ≤ 8 lessons per generation',
-    balance: 78.2,
-    nodes: ['check_reproduction'],
-  },
-  {
-    title: 'Death',
-    body: 'Below $1 with no revenue for 24 hours, it dies. Or you pull the kill switch. No resurrection, no bailouts. Most Darwins will die; the lineages that survive are the point.',
-    fact: 'balance < $1 + 24 h grace · kill switch halts ≤ 5 s · logs kept ≥ 90 days',
-    balance: 0.84,
-    nodes: ['check_death'],
-  },
+  { id: 'birth', balance: 100, nodes: [] as string[] },
+  { id: 'heartbeat', balance: 99.62, nodes: ['check_death', 'perceive', 'plan', 'dispatch', 'reflect', 'check_reproduction'] },
+  { id: 'metabolism', balance: 131.4, nodes: ['dispatch'] },
+  { id: 'escalation', balance: 131.4, nodes: ['dispatch', 'perceive'] },
+  { id: 'reproduction', balance: 78.2, nodes: ['check_reproduction'] },
+  { id: 'death', balance: 0.84, nodes: ['check_death'] },
 ]
 
 const RING = [
@@ -120,11 +85,14 @@ onUnmounted(() => {
     <div class="lc-sticky">
       <div class="lp-container lc-grid">
         <div class="lc-copy">
-          <div class="upper lab-eyebrow">§ 03 — Lifecycle</div>
-          <h2 class="lp-h2 lc-title">Born with a budget.<br>Dies at <em class="lp-ember">zero</em>.</h2>
+          <div class="upper lab-eyebrow">{{ t('lab.lifecycle.eyebrow') }}</div>
+          <i18n-t keypath="lab.lifecycle.title" tag="h2" class="lp-h2 lc-title" scope="global">
+            <template #br><br></template>
+            <template #em><em class="lp-ember">{{ t('lab.lifecycle.titleEm') }}</em></template>
+          </i18n-t>
 
           <ol class="lc-steps">
-            <li v-for="(s, i) in STAGES" :key="s.title">
+            <li v-for="(s, i) in STAGES" :key="s.id">
               <button
                 type="button"
                 class="lc-step"
@@ -133,16 +101,16 @@ onUnmounted(() => {
                 @click="goTo(i)"
               >
                 <span class="mono">{{ String(i + 1).padStart(2, '0') }}</span>
-                {{ s.title }}
+                {{ t(`lab.lifecycle.stages.${s.id}.title`) }}
               </button>
             </li>
           </ol>
 
           <Transition name="lc-card" mode="out-in">
             <div :key="stage" class="lc-card" aria-live="polite">
-              <h3 class="lc-card-title">{{ current.title }}</h3>
-              <p class="lc-card-body">{{ current.body }}</p>
-              <p class="mono lc-card-fact">{{ current.fact }}</p>
+              <h3 class="lc-card-title">{{ t(`lab.lifecycle.stages.${current.id}.title`) }}</h3>
+              <p class="lc-card-body">{{ t(`lab.lifecycle.stages.${current.id}.body`) }}</p>
+              <p class="mono lc-card-fact">{{ t(`lab.lifecycle.stages.${current.id}.fact`) }}</p>
             </div>
           </Transition>
         </div>
@@ -166,11 +134,11 @@ onUnmounted(() => {
           </div>
           <div class="lc-readout mono">
             <div>
-              <div class="dim">Treasury</div>
+              <div class="dim">{{ t('lab.lifecycle.readout.treasury') }}</div>
               <div class="lc-balance" :class="{ 'is-low': stage === 5 }">${{ shownBalance.toFixed(2) }}</div>
             </div>
             <div>
-              <div class="dim">Stage</div>
+              <div class="dim">{{ t('lab.lifecycle.readout.stage') }}</div>
               <div class="lc-stage">{{ String(stage + 1).padStart(2, '0') }} / 06</div>
             </div>
           </div>

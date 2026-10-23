@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({ layout: false })
-useHead({ title: 'Spawn a Darwin' })
+const { t } = useI18n()
+useHead({ title: () => t('spawn.pageTitle') })
 
 const auth = useAuthStore()
 </script>
@@ -14,15 +15,15 @@ const auth = useAuthStore()
           <UiDarwinLogo :size="28" />
         </NuxtLink>
         <div class="h-4 w-px bg-darwin-border" />
-        <h1 class="text-sm font-medium text-darwin-ink">Spawn Agent</h1>
+        <h1 class="text-sm font-medium text-darwin-ink">{{ t('spawn.heading') }}</h1>
       </div>
     </header>
 
     <main class="py-8">
       <SpawnForm v-if="auth.userId" />
       <div v-else class="text-center py-20">
-        <p class="text-sm text-darwin-muted">Sign in to spawn an agent.</p>
-        <NuxtLink to="/login" class="darwin-btn-primary mt-4 text-sm">Sign in</NuxtLink>
+        <p class="text-sm text-darwin-muted">{{ t('spawn.signInPrompt') }}</p>
+        <NuxtLink to="/login" class="darwin-btn-primary mt-4 text-sm">{{ t('spawn.signIn') }}</NuxtLink>
       </div>
     </main>
   </div>

@@ -3,6 +3,7 @@ import { Zap, Loader2 } from 'lucide-vue-next'
 
 const props = defineProps<{ darwinId: string }>()
 
+const { t } = useI18n()
 const agent = useAgentStore()
 const toast = useToast()
 const uplinkMessage = ref('')
@@ -15,9 +16,9 @@ async function sendUplink() {
   try {
     await agent.postUplink(props.darwinId, msg)
     uplinkMessage.value = ''
-    toast('Directive sent.', 'success')
+    toast(t('console.uplink.sent'), 'success')
   } catch {
-    toast('Could not send the directive.', 'error')
+    toast(t('console.uplink.failed'), 'error')
   } finally {
     sending.value = false
   }
@@ -28,7 +29,7 @@ async function sendUplink() {
   <div class="space-y-3">
     <textarea
       v-model="uplinkMessage"
-      placeholder="Inject a mid-lifecycle directive... e.g. 'Pivot to aerospace momentum for 4 hours.'"
+      :placeholder="t('console.uplink.placeholder')"
       class="darwin-input resize-none h-24"
     />
     <button
@@ -39,7 +40,7 @@ async function sendUplink() {
     >
       <Loader2 v-if="sending" :size="14" class="animate-spin" />
       <Zap v-else :size="14" />
-      Inject Uplink
+      {{ t('console.uplink.submit') }}
     </button>
   </div>
 </template>

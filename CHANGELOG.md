@@ -11,6 +11,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Eight languages** — the whole UI (landing lab, sign-in, dashboard, spawn wizard, canvas, console, panels) is translated into the 8 most-spoken languages: English, Mandarin Chinese, Hindi, Spanish, Arabic (right-to-left), French, Bengali and Portuguese, with `@nuxtjs/i18n`. The landing page gets per-language URLs (`/es`, `/zh`, …) with `hreflang`/`x-default`, self-canonicals, `og:locale` and localized JSON-LD; app routes keep one URL and follow the saved language. Browser-side detection (`plugins/locale.client.ts`) keeps ISR caches language-neutral. `<UiLocaleSwitcher>` in the landing nav/footer, sign-in and dashboard. Dates, relative times and amounts in the app use the active locale (`Intl`). `tests/i18n.test.ts` checks key/placeholder parity and compilation across all locales.
 - **Immersive landing lab** — `/` rebuilt as a guided observation of a living specimen:
   - `SpecimenOrganism`: one fixed WebGL shader organism (noise membrane, nucleus, 13 orbiting organelles = neurons, nutrient flow) that follows the visitor, morphs per chapter (split on reproduction, decay on death, amber on escalation) and can sit in a layout slot via `data-specimen-anchor`.
   - Airlock gate on first visit (`LabGate`), chapter rail + reading-progress bar (`LabHud`), live specimen readout in the nav (`LabTelemetry`), and opt-in synthesized lab sound (`useLabAudio`, Web Audio, no files).
@@ -49,6 +50,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **`/login` is client-rendered** (was ISR) so it can render in the visitor's saved language; it stays `noindex`.
 - **Spawn form validation UX** — frontend now enforces backend `SpawnRequest` constraints at input time (directive min length **10**, name max **100**) and surfaces FastAPI 422 details (`detail[0].loc/msg`) as a readable inline message instead of a generic spawn failure.
 - **Canvas viewport layout** — timeline SVG height follows the visible pane (`ResizeObserver`) so the dotted canvas fills the area below the header; page shell uses `h-dvh` for reliable full-viewport height. Genesis timeline adds `CANVAS_ORIGIN_PAD_X` horizontal inset so the first event node is not clipped at the left edge.
 - **Canvas “Latest” control** — floating button on the chart pans scroll so the newest event sits near the right edge (clamped to content); it appears when you’ve panned away from the tail and ignores drag capture (`mousedown` stopped).

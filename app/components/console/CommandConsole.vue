@@ -3,15 +3,11 @@ import { X, ChevronDown, Terminal } from 'lucide-vue-next'
 
 const props = defineProps<{ darwinId: string }>()
 
+const { t } = useI18n()
 const panels = useCanvasPanels()
 const openSection = ref<string | null>('uplink')
 
-const sections = [
-  { id: 'uplink', label: 'Cognitive Uplink' },
-  { id: 'vault', label: 'Secrets Vault' },
-  { id: 'budget', label: 'Metabolic Injection' },
-  { id: 'auto', label: 'Autonomy' },
-]
+const sections = [{ id: 'uplink' }, { id: 'vault' }, { id: 'budget' }, { id: 'auto' }]
 
 function toggle(id: string) {
   openSection.value = openSection.value === id ? null : id
@@ -47,7 +43,7 @@ onUnmounted(() => window.removeEventListener('keydown', onEscape))
       <div class="flex items-center justify-between px-5 py-4 border-b border-darwin-border shrink-0">
         <h2 class="text-sm font-semibold text-darwin-ink flex items-center gap-2">
           <Terminal :size="14" class="text-darwin-accent" />
-          Command Console
+          {{ t('console.title') }}
         </h2>
         <button
           type="button"
@@ -71,7 +67,7 @@ onUnmounted(() => window.removeEventListener('keydown', onEscape))
             :class="openSection === s.id ? 'text-darwin-ink bg-darwin-bg-3' : 'text-darwin-muted hover:text-darwin-ink-soft'"
             @click="toggle(s.id)"
           >
-            {{ s.label }}
+            {{ t(`console.sections.${s.id}`) }}
             <ChevronDown
               :size="14"
               class="transition-transform"

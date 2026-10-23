@@ -31,6 +31,7 @@ The frontend never talks to Modal or the agent directly. It only talks to `darwi
 | HTTP client | `$fetch` (Nuxt built-in) |
 | Auth | `@nuxtjs/supabase` — email + password, Google OAuth, password reset |
 | Icons | `lucide-vue-next` |
+| i18n | `@nuxtjs/i18n` — 8 languages, see [Languages](#languages) |
 | Landing visuals | `three` (one fixed shader organism + 2 scenes, paused off-screen), Canvas2D, Web Audio, CSS scroll-driven animations |
 | Deployment | Vercel (Nitro: Node functions + ISR for `/` and `/login`) |
 
@@ -77,12 +78,14 @@ darwin-frontend/
 │   │   ├── spawn.vue             # New agent wizard
 │   │   ├── resolve.vue           # Mobile interstitial (JWT-gated)
 │   │   └── canvas/[id].vue       # Infinite Canvas
+│   ├── plugins/                  # pwa (service worker), locale (browser-side language detection)
 │   ├── stores/                   # agent, canvas, notification, auth (Pinia)
 │   ├── types/                    # events, agent, canvas, database.types (Supabase)
 │   └── utils/                    # formatDuration (formatRelativeTime), labSim (treasury gates + colony model)
+├── i18n/locales/                 # en (source), zh, hi, es, ar, fr, bn, pt
 ├── server/routes/api/v1/[...path].ts  # Proxy → darwin-backend (BACKEND_URL stays server-side)
 ├── supabase/migrations/          # SQL for tables this app owns (waitlist)
-├── tests/labSim.test.ts          # node --test tests/labSim.test.ts
+├── tests/                        # node --test tests/*.test.ts (labSim, i18n)
 ├── nuxt.config.ts
 ├── tailwind.config.ts
 └── vercel.json
@@ -145,8 +148,8 @@ pnpm preview       # preview the .output/server locally
 
 | Route | Rendering | Auth required |
 |---|---|---|
-| `/` | ISR (60s) | No |
-| `/login` | ISR (60s) | No (signed-in users are sent to `/dashboard`) |
+| `/`, `/zh`, `/hi`, `/es`, `/ar`, `/fr`, `/bn`, `/pt` | ISR (60s) | No |
+| `/login` | CSR | No (signed-in users are sent to `/dashboard`) |
 | `/confirm` | CSR | No (auth callback) |
 | `/reset-password` | CSR | No (recovery link) |
 | `/resolve` | CSR | No (JWT-gated) |
@@ -192,8 +195,8 @@ X = CANVAS_ORIGIN_PAD_X + (event.timestamp_ms - genesis_timestamp_ms) / MS_PER_P
 ## Deployment
 
 Deploys to Vercel with zero configuration. The `nuxt build` output is auto-detected:
-- ISR pages (`/`, `/login`) → Node functions with 60s revalidation
-- CSR pages (`/dashboard`, `/spawn`, `/canvas/**`, `/confirm`, `/resolve`, `/reset-password`) → SPA shell
+- ISR pages (`/` and its 7 language prefixes) → Node functions with 60s revalidation
+- CSR pages (`/login`, `/dashboard`, `/spawn`, `/canvas/**`, `/confirm`, `/resolve`, `/reset-password`) → SPA shell
 - `/api/v1/**` → Node function proxying to `BACKEND_URL`
 
 ```bash
@@ -235,11 +238,23 @@ How it fits together:
 ## SEO, GEO & PWA
 
 - **Head & social.** `nuxt.config.ts` sets icons, manifest, theme colour and default Open Graph/Twitter tags (`/og.png`, 1200×630); `app.vue` adds the title template, canonical URL and `og:url` from `runtimeConfig.public.siteUrl` (`NUXT_PUBLIC_SITE_URL`, default `https://darwinagents.com`).
-- **Indexing.** `/` is the only indexable page (`public/sitemap.xml`). App routes send `X-Robots-Tag: noindex, nofollow` via `routeRules` and are disallowed in `public/robots.txt`.
+- **Indexing.** The landing page in its 8 languages is the only indexable content (`public/sitemap.xml`); each language emits `hreflang` alternates, `x-default`, a self-canonical and `og:locale` via `useLocaleHead()` in `app.vue`. App routes send `X-Robots-Tag: noindex, nofollow` via `routeRules` and are disallowed in `public/robots.txt`.
 - **Structured data.** The landing page emits JSON-LD: both organizations (Nexow, Inc.; Specimen Labs, Inc.), `WebSite`, `SoftwareApplication`, and a `FAQPage` generated from the same `FAQ` array as the visible FAQ chapter (from `darwin-agents/docs/marketing/08-faq.md`).
 - **GEO (generative engine optimization).** `public/llms.txt` is a plain-markdown fact sheet for AI answer engines, linked from `<head>` and the footer; content is server-rendered, so crawlers that don't run JS see everything (the airlock gate only exists with JS). Keep its numbers in sync with the page.
 - **PWA.** `public/site.webmanifest` (standalone, maskable icons) + a minimal `public/sw.js` (registered in `plugins/pwa.client.ts`, production only) that makes the app installable and serves `public/offline.html` when a navigation fails; it caches nothing else. `<UiInstallButton>` (landing nav, dashboard) uses the native install prompt where supported and shows "Share → Add to Home Screen" on iOS. Bump `CACHE` in `sw.js` when `offline.html` changes.
 - **Logo & icons.** The mark is a mother cell (ember nucleus) budding a daughter that carries the same spark. In the app it is always `<UiDarwinLogo>` (`components/ui/DarwinLogo.vue`; membranes use `currentColor`, `mono` for empty states). Static copies — `favicon.svg`, `offline.html`, and the rendered `favicon.ico` (16/32/48), `apple-touch-icon.png`, maskable `icon-192/512.png` and `og.png` — must be regenerated if its geometry changes.
+
+---
+
+## Languages
+
+The UI ships in the 8 most-spoken languages: English (source), Mandarin Chinese (`zh`, Simplified), Hindi (`hi`), Spanish (`es`), Arabic (`ar`, right-to-left), French (`fr`), Bengali (`bn`) and Portuguese (`pt`, Brazilian). Messages live in `i18n/locales/<code>.json`; `en.json` is the source of truth.
+
+- **URLs.** Only the landing page is localized by URL (`/` English, `/es`, `/zh`, …) so each language is cached and indexed on its own. App routes (`/login`, `/dashboard`, `/canvas/…`, …) keep one URL and render in the visitor's language.
+- **Detection.** `plugins/locale.client.ts` runs in the browser only — the landing page is ISR-cached, so a server-side redirect would be cached for everyone. On an unprefixed URL it switches to the saved language (`darwin-locale` cookie) or the browser's; a prefixed URL is an explicit choice and is remembered. `<UiLocaleSwitcher>` sits in the landing nav and footer, the sign-in page and the dashboard.
+- **Writing copy.** Use `const { t } = useI18n()`; sentences with styled words use `<i18n-t>` slots (`"The metaphor is {em}."`), never `v-html`. In messages `@ | { }` are syntax — keep emails and braces in code. Add every new key to all 8 files.
+- **Scripts.** `main.css` drops letter-spacing and synthetic italics and loosens heading line-height for Arabic, Hindi, Bengali and Chinese; layout uses logical properties where RTL matters.
+- **Check.** `node --test tests/i18n.test.ts` fails on missing/extra keys, mismatched placeholders, messages that don't compile, and keys used in `app/` that `en.json` lacks.
 
 ---
 

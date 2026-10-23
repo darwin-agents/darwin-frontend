@@ -8,7 +8,7 @@ defineProps<{ event: DarwinEvent }>()
 
 <template>
   <g>
-    <NodeShell :event="event" accent="#991b1b" label="End" />
+    <NodeShell :event="event" accent="#991b1b" label-id="end" />
     <foreignObject x="-10" y="-10" width="20" height="20">
       <Skull :size="14" style="display: block; margin: auto; color: #7f1d1d" />
     </foreignObject>
