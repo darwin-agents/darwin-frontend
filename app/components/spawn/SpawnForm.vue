@@ -88,6 +88,7 @@ async function deploy() {
     const agentStore = useAgentStore()
     agentStore.setInitialBudgetFromSpawn(form.budget)
     if (res.darwin_id) await navigateTo(`/canvas/${res.darwin_id}`)
+    else errorMsg.value = 'Spawn accepted but no agent id came back. Check the dashboard.'
   } catch (e: any) {
     const detail = e?.data?.detail
     if (Array.isArray(detail) && detail.length) {
@@ -113,55 +114,55 @@ async function deploy() {
           type="button"
           class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all"
           :class="step === s.num
-            ? 'bg-violet-500/10 text-violet-300 border border-violet-500/20'
+            ? 'bg-darwin-accent/10 text-darwin-accent-deep border border-darwin-accent/20'
             : step > s.num
-              ? 'text-slate-400'
-              : 'text-slate-600'"
+              ? 'text-darwin-ink-soft'
+              : 'text-darwin-muted'"
           @click="s.num < step ? step = s.num : null"
         >
           <div
             class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-semibold shrink-0"
             :class="step > s.num
-              ? 'bg-violet-600 text-white'
+              ? 'bg-darwin-accent text-darwin-bg'
               : step === s.num
-                ? 'bg-violet-500/20 text-violet-300 border border-violet-500/40'
-                : 'bg-white/[0.04] text-slate-600 border border-white/[0.08]'"
+                ? 'bg-darwin-accent/20 text-darwin-accent-deep border border-darwin-accent/40'
+                : 'bg-darwin-bg-2 text-darwin-muted border border-darwin-border'"
           >
             <Check v-if="step > s.num" :size="10" />
             <span v-else>{{ s.num }}</span>
           </div>
           <span class="hidden sm:inline">{{ s.label }}</span>
         </button>
-        <ChevronRight v-if="i < steps.length - 1" :size="12" class="text-slate-700 shrink-0" />
+        <ChevronRight v-if="i < steps.length - 1" :size="12" class="text-darwin-muted shrink-0" />
       </template>
     </nav>
 
     <!-- Step 1: Identity -->
     <div v-if="step === 1" class="space-y-5 animate-fade-in">
       <div>
-        <h2 class="text-lg font-semibold text-white mb-1">Identity</h2>
-        <p class="text-sm text-slate-500">Name your agent and define its mission.</p>
+        <h2 class="text-lg font-semibold text-darwin-ink mb-1">Identity</h2>
+        <p class="text-sm text-darwin-muted">Name your agent and define its mission.</p>
       </div>
 
       <div>
-        <label class="text-xs text-slate-500 mb-1.5 block">Agent name</label>
+        <label class="text-xs text-darwin-muted mb-1.5 block">Agent name</label>
         <input v-model="form.name" placeholder="e.g. Market Scout Alpha" class="darwin-input" />
       </div>
 
       <div>
-        <label class="text-xs text-slate-500 mb-1.5 block">Mission directive</label>
+        <label class="text-xs text-darwin-muted mb-1.5 block">Mission directive</label>
         <textarea
           v-model="form.directive"
           placeholder="Describe what this agent should accomplish..."
           class="darwin-input min-h-[160px] resize-y"
         />
-        <p class="text-[11px] text-slate-600 mt-1.5">
+        <p class="text-[11px] text-darwin-muted mt-1.5">
           This becomes the seed of the agent's system prompt. Be specific about goals and constraints (minimum 10 characters).
         </p>
       </div>
 
       <div>
-        <label class="text-xs text-slate-500 mb-2 block">LLM model (trunk default)</label>
+        <label class="text-xs text-darwin-muted mb-2 block">LLM model (trunk default)</label>
         <div class="space-y-2">
           <label
             v-for="m in models"
@@ -169,16 +170,16 @@ async function deploy() {
             class="flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all"
             :class="form.model === m.id
               ? m.color + ' border'
-              : 'border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04]'"
+              : 'border-darwin-border bg-darwin-bg-2 hover:bg-darwin-bg-3'"
           >
-            <input v-model="form.model" type="radio" :value="m.id" class="accent-violet-600" />
+            <input v-model="form.model" type="radio" :value="m.id" class="accent-darwin-accent" />
             <div class="flex-1">
-              <span class="text-sm text-white">{{ m.label }}</span>
-              <span class="text-xs text-slate-500 ml-2">{{ m.note }}</span>
+              <span class="text-sm text-darwin-ink">{{ m.label }}</span>
+              <span class="text-xs text-darwin-muted ml-2">{{ m.note }}</span>
             </div>
           </label>
         </div>
-        <div class="flex items-start gap-2 mt-3 text-[11px] text-slate-600">
+        <div class="flex items-start gap-2 mt-3 text-[11px] text-darwin-muted">
           <Info :size="12" class="shrink-0 mt-0.5" />
           <span>The agent may upgrade or downgrade this model per neuron or thought based on task complexity.</span>
         </div>
@@ -188,14 +189,14 @@ async function deploy() {
     <!-- Step 2: Budget -->
     <div v-if="step === 2" class="space-y-5 animate-fade-in">
       <div>
-        <h2 class="text-lg font-semibold text-white mb-1">Budget</h2>
-        <p class="text-sm text-slate-500">Set the spending cap for this agent.</p>
+        <h2 class="text-lg font-semibold text-darwin-ink mb-1">Budget</h2>
+        <p class="text-sm text-darwin-muted">Set the spending cap for this agent.</p>
       </div>
 
       <div class="darwin-card p-6">
         <div class="flex items-baseline justify-between mb-4">
-          <label class="text-xs text-slate-500">Initial budget</label>
-          <span class="text-2xl font-semibold text-white font-mono">${{ form.budget }}</span>
+          <label class="text-xs text-darwin-muted">Initial budget</label>
+          <span class="text-2xl font-semibold text-darwin-ink font-mono">${{ form.budget }}</span>
         </div>
         <input
           v-model.number="form.budget"
@@ -203,15 +204,15 @@ async function deploy() {
           min="5"
           max="500"
           step="5"
-          class="w-full accent-violet-600 cursor-pointer"
+          class="w-full accent-darwin-accent cursor-pointer"
         />
-        <div class="flex justify-between text-[10px] text-slate-600 mt-1">
+        <div class="flex justify-between text-[10px] text-darwin-muted mt-1">
           <span>$5</span>
           <span>$500</span>
         </div>
       </div>
 
-      <div class="flex items-start gap-2 text-[11px] text-slate-600 bg-white/[0.02] rounded-lg p-3 border border-white/[0.06]">
+      <div class="flex items-start gap-2 text-[11px] text-darwin-muted bg-darwin-bg-2 rounded-lg p-3 border border-darwin-border">
         <Info :size="12" class="shrink-0 mt-0.5" />
         <span>Charges are hard-capped by the Visa network when a VCC is configured. The agent cannot exceed this budget.</span>
       </div>
@@ -220,8 +221,8 @@ async function deploy() {
     <!-- Step 3: Tools -->
     <div v-if="step === 3" class="space-y-5 animate-fade-in">
       <div>
-        <h2 class="text-lg font-semibold text-white mb-1">Tools</h2>
-        <p class="text-sm text-slate-500">Select which capabilities the agent has access to.</p>
+        <h2 class="text-lg font-semibold text-darwin-ink mb-1">Tools</h2>
+        <p class="text-sm text-darwin-muted">Select which capabilities the agent has access to.</p>
       </div>
 
       <div class="space-y-2">
@@ -230,16 +231,16 @@ async function deploy() {
           :key="t.key"
           class="flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-all"
           :class="form.tools[t.key]
-            ? 'border-violet-500/20 bg-violet-500/[0.04]'
-            : 'border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04]'"
+            ? 'border-darwin-accent/20 bg-darwin-accent/[0.04]'
+            : 'border-darwin-border bg-darwin-bg-2 hover:bg-darwin-bg-3'"
         >
           <div>
-            <p class="text-sm font-medium text-white">{{ t.label }}</p>
-            <p class="text-xs text-slate-500 mt-0.5">{{ t.desc }}</p>
+            <p class="text-sm font-medium text-darwin-ink">{{ t.label }}</p>
+            <p class="text-xs text-darwin-muted mt-0.5">{{ t.desc }}</p>
           </div>
           <div
             class="w-9 h-5 rounded-full relative transition-colors cursor-pointer shrink-0 ml-4"
-            :class="form.tools[t.key] ? 'bg-violet-600' : 'bg-white/10'"
+            :class="form.tools[t.key] ? 'bg-darwin-accent' : 'bg-darwin-bg-3'"
             @click.prevent="form.tools[t.key] = !form.tools[t.key]"
           >
             <span
@@ -255,46 +256,46 @@ async function deploy() {
     <!-- Step 4: Review -->
     <div v-if="step === 4" class="space-y-5 animate-fade-in">
       <div>
-        <h2 class="text-lg font-semibold text-white mb-1">Review & Deploy</h2>
-        <p class="text-sm text-slate-500">Confirm the configuration before spawning.</p>
+        <h2 class="text-lg font-semibold text-darwin-ink mb-1">Review & Deploy</h2>
+        <p class="text-sm text-darwin-muted">Confirm the configuration before spawning.</p>
       </div>
 
-      <div class="darwin-card divide-y divide-white/[0.06]">
+      <div class="darwin-card divide-y divide-darwin-border">
         <div class="p-4 flex items-center justify-between">
-          <span class="text-xs text-slate-500">Name</span>
-          <span class="text-sm text-white font-medium">{{ form.name }}</span>
+          <span class="text-xs text-darwin-muted">Name</span>
+          <span class="text-sm text-darwin-ink font-medium">{{ form.name }}</span>
         </div>
         <div class="p-4 flex items-center justify-between">
-          <span class="text-xs text-slate-500">Model</span>
-          <span class="text-sm text-white">{{ selectedModel?.label }}</span>
+          <span class="text-xs text-darwin-muted">Model</span>
+          <span class="text-sm text-darwin-ink">{{ selectedModel?.label }}</span>
         </div>
         <div class="p-4 flex items-center justify-between">
-          <span class="text-xs text-slate-500">Budget</span>
-          <span class="text-sm text-white font-mono">${{ form.budget }}</span>
+          <span class="text-xs text-darwin-muted">Budget</span>
+          <span class="text-sm text-darwin-ink font-mono">${{ form.budget }}</span>
         </div>
         <div class="p-4 flex items-center justify-between">
-          <span class="text-xs text-slate-500">Tools</span>
+          <span class="text-xs text-darwin-muted">Tools</span>
           <div class="flex gap-1.5">
             <span
               v-for="t in enabledTools"
               :key="t"
-              class="darwin-badge text-violet-300 bg-violet-500/10 border-violet-500/20"
+              class="darwin-badge text-darwin-accent-deep bg-darwin-accent/10 border-darwin-accent/20"
             >{{ t }}</span>
           </div>
         </div>
         <div class="p-4">
-          <span class="text-xs text-slate-500 block mb-2">Directive preview</span>
-          <pre class="text-xs text-slate-300 whitespace-pre-wrap leading-relaxed max-h-32 overflow-auto font-mono">{{ promptPreview || '—' }}</pre>
+          <span class="text-xs text-darwin-muted block mb-2">Directive preview</span>
+          <pre class="text-xs text-darwin-ink-soft whitespace-pre-wrap leading-relaxed max-h-32 overflow-auto font-mono">{{ promptPreview || '—' }}</pre>
         </div>
       </div>
 
-      <div v-if="errorMsg" class="rounded-lg px-3 py-2.5 text-xs bg-red-500/[0.08] text-red-300 border border-red-500/20">
+      <div v-if="errorMsg" class="rounded-lg px-3 py-2.5 text-xs bg-red-50 text-red-800 border-red-600/20 border">
         {{ errorMsg }}
       </div>
     </div>
 
     <!-- Navigation -->
-    <div class="flex items-center justify-between mt-8 pt-6 border-t border-white/[0.06]">
+    <div class="flex items-center justify-between mt-8 pt-6 border-t border-darwin-border">
       <button
         v-if="step > 1"
         type="button"

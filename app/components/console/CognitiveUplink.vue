@@ -4,6 +4,7 @@ import { Zap, Loader2 } from 'lucide-vue-next'
 const props = defineProps<{ darwinId: string }>()
 
 const agent = useAgentStore()
+const toast = useToast()
 const uplinkMessage = ref('')
 const sending = ref(false)
 
@@ -14,6 +15,9 @@ async function sendUplink() {
   try {
     await agent.postUplink(props.darwinId, msg)
     uplinkMessage.value = ''
+    toast('Directive sent.', 'success')
+  } catch {
+    toast('Could not send the directive.', 'error')
   } finally {
     sending.value = false
   }

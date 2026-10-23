@@ -9,7 +9,7 @@ const max = computed(() => Math.max(...canvas.heartbeatSamples, 1))
     <div
       v-for="(s, i) in canvas.heartbeatSamples"
       :key="i"
-      class="w-1.5 bg-violet-500/60 rounded-sm transition-all duration-300"
+      class="w-1.5 bg-darwin-accent/60 rounded-sm transition-all duration-300"
       :style="{ height: `${(s / max) * 100}%` }"
     />
   </div>

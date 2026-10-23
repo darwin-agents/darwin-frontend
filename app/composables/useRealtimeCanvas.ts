@@ -13,10 +13,12 @@ export function useRealtimeCanvas(darwinId: Ref<string>) {
 
   let channel: ReturnType<typeof supabase.channel> | null = null
 
-  function routeEvent(event: DarwinEvent) {
+  /** `live: false` replays history: agent state/balance already come from fetchAgent. */
+  function routeEvent(event: DarwinEvent, live = true) {
     canvas.appendEvent(event)
 
     if (
+      live &&
       ['AGENT_SPAWNED', 'AGENT_WOKE', 'AGENT_HIBERNATED', 'AGENT_TERMINATED'].includes(
         event.event_type,
       )
@@ -24,7 +26,7 @@ export function useRealtimeCanvas(darwinId: Ref<string>) {
       agent.handleLifecycleEvent(event)
     }
 
-    if (['LEDGER_DEBIT', 'LEDGER_CREDIT'].includes(event.event_type)) {
+    if (live && ['LEDGER_DEBIT', 'LEDGER_CREDIT'].includes(event.event_type)) {
       const p = event.payload as { balance_after?: number }
       if (typeof p.balance_after === 'number') agent.updateBalance(p.balance_after)
     }

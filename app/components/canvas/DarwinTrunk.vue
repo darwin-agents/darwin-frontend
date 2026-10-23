@@ -27,8 +27,8 @@ const trunkSegments = computed(() => {
     .sort((a, b) => a.timestamp_ms - b.timestamp_ms)
   const out: { x1: number; x2: number }[] = []
   for (let i = 0; i < sorted.length - 1; i++) {
-    const x1 = timestampToX(sorted[i].timestamp_ms)
-    const x2 = timestampToX(sorted[i + 1].timestamp_ms)
+    const x1 = timestampToX(sorted[i]!.timestamp_ms)
+    const x2 = timestampToX(sorted[i + 1]!.timestamp_ms)
     if (Math.abs(x2 - x1) < 0.5) continue
     out.push({ x1, x2 })
   }

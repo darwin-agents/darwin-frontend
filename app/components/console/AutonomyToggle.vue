@@ -2,10 +2,15 @@
 const props = defineProps<{ darwinId: string }>()
 
 const agent = useAgentStore()
+const toast = useToast()
 
 async function toggleAutonomy() {
   const next = !agent.isAutonomyEnabled
-  await agent.patchConfig(props.darwinId, { requires_approval: !next })
+  try {
+    await agent.patchConfig(props.darwinId, { requires_approval: !next })
+  } catch {
+    toast('Could not change autonomy mode.', 'error')
+  }
 }
 </script>
 
