@@ -8,7 +8,7 @@ Real-time canvas interface for Darwin Agents — a single-agent lifecycle visual
 
 The frontend has three parts:
 
-1. **Landing page** (`/`) — the public marketing site, with a waitlist form that writes to a Supabase `waitlist` table.
+1. **Landing page** (`/`) — an immersive "observation lab" for the public site: a living WebGL specimen that follows the visitor through 13 scroll chapters explaining the real `darwin-agents` technology (genome, soma, 13 neurons, treasury gates, evolution, kill switch, audit chain), with interactive experiments, synthesized lab sound, and a waitlist form that writes to a Supabase `waitlist` table. See [Landing lab](#landing-lab).
 
 2. **Infinite Canvas** — a horizontally-scrolling, zoomable SVG timeline of every decision, tool call, financial event, neuron branch, and human intervention in an agent's life. Time runs left to right. Updates arrive in < 200 ms via Supabase Realtime WebSocket — zero polling.
 
@@ -31,7 +31,7 @@ The frontend never talks to Modal or the agent directly. It only talks to `darwi
 | HTTP client | `$fetch` (Nuxt built-in) |
 | Auth | `@nuxtjs/supabase` — email + password, Google OAuth, password reset |
 | Icons | `lucide-vue-next` |
-| Landing visuals | `three` (WebGL scenes, paused when off-screen) |
+| Landing visuals | `three` (one fixed shader organism + 2 scenes, paused off-screen), Canvas2D, Web Audio, CSS scroll-driven animations |
 | Deployment | Vercel (Nitro: Node functions + ISR for `/` and `/login`) |
 
 ---
@@ -49,7 +49,9 @@ darwin-frontend/
 │   │   │   └── nodes/            # One component per event family
 │   │   ├── console/              # Command Console sections (uplink, vault, budget,
 │   │   │                         # autonomy, kill switch)
-│   │   ├── landing/              # Three.js scenes: DnaHelix, MoleculeCloud, AnatomyOrganScene
+│   │   ├── landing/              # Lab chapters + 3D: SpecimenOrganism, LabGate, LabHud, LabTelemetry,
+│   │   │                         # LabNotes, LifecycleChapter, PetriDish, NeuronConstellation,
+│   │   │                         # TreasuryGates, EvolutionLab, TrustLab, DnaHelix, AnatomyOrganScene
 │   │   ├── mobile/               # MobileInterstitial (2FA / CAPTCHA / approval relay)
 │   │   ├── panels/               # Entity, Skills, Ledger, Assets slide-overs
 │   │   ├── spawn/                # SpawnForm (4-step wizard)
@@ -63,6 +65,8 @@ darwin-frontend/
 │   │   ├── useApprovalFlow.ts    # Approve / deny for APPROVAL_REQUESTED
 │   │   ├── useInterventionJWT.ts # Decode resolve?token= (base64url)
 │   │   ├── useRenderLoop.ts      # Visibility-aware WebGL render loop
+│   │   ├── useLabChapter.ts      # Active landing chapter + specimen config per chapter
+│   │   ├── useLabAudio.ts        # Synthesized lab sound (Web Audio, opt-in)
 │   │   └── useToast.ts           # Push toasts to <UiDarwinToast />
 │   ├── pages/
 │   │   ├── index.vue             # Landing + waitlist (ISR, 60s)
@@ -75,9 +79,10 @@ darwin-frontend/
 │   │   └── canvas/[id].vue       # Infinite Canvas
 │   ├── stores/                   # agent, canvas, notification, auth (Pinia)
 │   ├── types/                    # events, agent, canvas, database.types (Supabase)
-│   └── utils/formatDuration.ts   # formatRelativeTime
+│   └── utils/                    # formatDuration (formatRelativeTime), labSim (treasury gates + colony model)
 ├── server/routes/api/v1/[...path].ts  # Proxy → darwin-backend (BACKEND_URL stays server-side)
 ├── supabase/migrations/          # SQL for tables this app owns (waitlist)
+├── tests/labSim.test.ts          # node --test tests/labSim.test.ts
 ├── nuxt.config.ts
 ├── tailwind.config.ts
 └── vercel.json
@@ -196,6 +201,34 @@ vercel deploy
 ```
 
 Environment variables are set in the Vercel dashboard.
+
+---
+
+## Landing lab
+
+`/` is built as a guided observation of one specimen. Facts come from `darwin-agents` (`docs/overview`, `docs/engineering`, `src/darwin_dna`); plain-language copy on the surface, real tech and numbers in each chapter's **Lab notes**.
+
+| # | Chapter | Component | Interaction |
+|---|---|---|---|
+| — | Airlock | `LabGate` | First visit only (inline head script adds `html.lab-gate-open` before paint); enter with sound or silently |
+| 00 | Hero | `pages/index.vue` | Specimen in its slot, annotated |
+| 01 | Thesis | `pages/index.vue` | Biology ↔ Darwin map; hovering a row morphs the specimen |
+| 02 | Anatomy | `pages/index.vue` + `AnatomyOrganScene` | DNA core, soma, neurons, treasury, lineage |
+| 03 | Lifecycle | `LifecycleChapter` | Sticky; scroll scrubs birth → heartbeat → metabolism → escalation → reproduction → death around the 9 real graph nodes |
+| 04 | Selection | `PetriDish` | Live colony on the real rules (`utils/labSim.ts`); spawn, kill, market pressure |
+| 05 | Neurons | `NeuronConstellation` | The 13 registered neurons and their capability tags |
+| 06 | Treasury | `TreasuryGates` | Send sample payments through the 6 checks of `treasury_policy` |
+| 07 | Evolution | `EvolutionLab` | Mutation pipeline, accepted vs rejected patch, frozen fitness weights, lesson layers |
+| 08 | Trust | `TrustLab` | Guarded kill switch; SHA-256 audit chain hashed in the browser that you can tamper with |
+| 09–13 | Boundaries, operators, canvas, roadmap, waitlist | `pages/index.vue` | Real Phase 0–3 roadmap; waitlist form |
+
+How it fits together:
+
+- **One organism.** `SpecimenOrganism` is a single fixed WebGL canvas (`z-index: 1`) between section backgrounds and section content (`.lp-container` is `z-index: 2`; sections must not create stacking contexts). It lerps toward `CHAPTERS[active]` in `composables/useLabChapter.ts`; a chapter can pin it to an element with `data-specimen-anchor` (`data-specimen-fill` = diameter / element width). It hides itself — and skips rendering — in chapters with `presence: 0`.
+- **Chapters.** Sections carry `data-chapter="<id>"`; `observeChapters()` tracks the one under the viewport's centre line. Reveals are pure CSS (`.reveal`, `animation-timeline: view()`).
+- **Sound.** `useLabAudio` synthesizes everything (drone, heartbeat, blips, flatline) — no audio files, nothing plays before an explicit opt-in, suspended when the tab is hidden.
+- **Accessibility & performance.** All experiments are real buttons/inputs; canvases are `aria-hidden` with text equivalents. Under `prefers-reduced-motion` nothing loops (verified: 0 rAF/s). At most 3 WebGL contexts, all paused off-screen via `useRenderLoop`.
+- **Data on the page.** The ledger ticker, network stats and operator classes are illustrative. Everything else (caps, gates, neurons, fitness, reproduction, roadmap) matches the code; contested doc values use what the code enforces (20 % fee on withdrawn profit only, kill ≤ 5 s, parent survives reproduction).
 
 ---
 

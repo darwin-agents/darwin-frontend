@@ -11,6 +11,13 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Immersive landing lab** — `/` rebuilt as a guided observation of a living specimen:
+  - `SpecimenOrganism`: one fixed WebGL shader organism (noise membrane, nucleus, 13 orbiting organelles = neurons, nutrient flow) that follows the visitor, morphs per chapter (split on reproduction, decay on death, amber on escalation) and can sit in a layout slot via `data-specimen-anchor`.
+  - Airlock gate on first visit (`LabGate`), chapter rail + reading-progress bar (`LabHud`), live specimen readout in the nav (`LabTelemetry`), and opt-in synthesized lab sound (`useLabAudio`, Web Audio, no files).
+  - New chapters built from the real `darwin-agents` design: sticky lifecycle scrubber over the 9 real graph nodes, petri-dish selection simulation, the 13 neurons, an interactive 6-gate treasury, the evolution pipeline with frozen fitness weights and lesson layers, and a trust lab with a guarded kill switch and a browser-hashed SHA-256 audit chain you can tamper with.
+  - Real roadmap (Phase 0–3 with definitions of done), "what it is not" honesty strip, Lab notes with the technical spec per chapter, and a Nexow Studio × Specimen Labs footer.
+  - `utils/labSim.ts` models the treasury gates and colony rules; `tests/labSim.test.ts` (`node --test`) checks them.
+
 - **Landing waitlist** — the "Apply" form inserts into a Supabase `waitlist` table (`supabase/migrations/20261023000000_waitlist.sql`: unique email, insert-only RLS, no read policy) with sending/error states; duplicate emails count as success.
 - **`/confirm` page** — landing route for Google OAuth and sign-up confirmation links; waits for the session and forwards to `/dashboard`, with a fallback after 8 s.
 - **SEO** — `lang="en"`, title template, default description, landing `useSeoMeta` (OG/Twitter), and per-page titles.
@@ -34,6 +41,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Removed
 
 - Unused `NeuronInspectorCard`, `DarwinButton`, `DarwinBadge`, `DarwinCard`, `utils/eventColor`, `utils/formatCost`, `utils/tokenRoi`, `formatDuration()`, `types/finance`, stale spawn/list API types, `canvas.loadHistoricalEvents`, and the unused `APP_URL` env var.
+- `MoleculeCloud` and the five separate landing WebGL canvases (hero/feed/CTA helix and molecules), replaced by the single specimen; invented trust claims (public verifiers, red-team colony) and the invented roadmap.
 
 ### Changed
 
