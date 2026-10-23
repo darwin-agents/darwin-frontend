@@ -3,7 +3,12 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
-  modules: ['@pinia/nuxt', '@nuxtjs/supabase', '@nuxtjs/tailwindcss'],
+  modules: [
+    '@pinia/nuxt',
+    '@nuxtjs/supabase',
+    '@nuxtjs/tailwindcss',
+    "nitro-cloudflare-dev"
+  ],
 
   css: ['~/assets/css/main.css'],
 
@@ -58,4 +63,13 @@ export default defineNuxtConfig({
   imports: {
     dirs: ['stores', 'composables', 'utils'],
   },
+
+  nitro: {
+    preset: "cloudflare_module",
+
+    cloudflare: {
+      deployConfig: true,
+      nodeCompat: true
+    }
+  }
 })
