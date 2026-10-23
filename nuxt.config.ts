@@ -83,7 +83,7 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/login',
       callback: '/confirm',
-      exclude: ['/', '/login', '/confirm', '/resolve', '/reset-password'],
+      exclude: ['/', ...locales.slice(1).map((l) => `/${l.code}`), '/login', '/confirm', '/resolve', '/reset-password'],
     },
   },
 

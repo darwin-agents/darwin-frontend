@@ -33,36 +33,41 @@ export interface PaymentRequest {
   history?: number
 }
 
+export type ReasonId =
+  | 'clear' | 'sanctioned' | 'overActionCap' | 'overDailyCap' | 'overLifetimeCap'
+  | 'belowFloor' | 'outsideEnvelope' | 'paysHuman' | 'aboveReview' | 'anomaly'
+
 export interface GateStep {
   gate: GateName
   result: 'PASS' | Verdict
-  reason: string
+  reason: ReasonId
+  params?: Record<string, string | number>
 }
 
 /** First gate that fires decides, exactly like treasury_policy.evaluate(). */
 export function evaluatePayment(p: PaymentRequest): { verdict: Verdict; trail: GateStep[] } {
   const R = LAB_RULES
-  const checks: [GateName, () => [Verdict, string] | null][] = [
-    ['forbidden', () => (p.sanctioned ? ['REFUSE', 'Counterparty in a sanctioned jurisdiction'] : null)],
+  const checks: [GateName, () => [Verdict, ReasonId, GateStep['params']?] | null][] = [
+    ['forbidden', () => (p.sanctioned ? ['REFUSE', 'sanctioned'] : null)],
     ['caps', () => {
-      if (p.amount > R.capPerAction) return ['REFUSE', `Over the $${R.capPerAction} per-action cap`]
-      if ((p.spentToday ?? 0) + p.amount > R.capPerDay) return ['REFUSE', `Over the $${R.capPerDay} daily cap`]
-      if ((p.spentLifetime ?? 0) + p.amount > R.capLifetime) return ['REFUSE', 'Over the lifetime cap']
+      if (p.amount > R.capPerAction) return ['REFUSE', 'overActionCap', { cap: R.capPerAction }]
+      if ((p.spentToday ?? 0) + p.amount > R.capPerDay) return ['REFUSE', 'overDailyCap', { cap: R.capPerDay }]
+      if ((p.spentLifetime ?? 0) + p.amount > R.capLifetime) return ['REFUSE', 'overLifetimeCap']
       return null
     }],
     ['solvency', () => (p.balance - p.amount < R.minViableBalance
-      ? ['REFUSE', `Would drop below the $${R.minViableBalance} minimum viable balance`]
+      ? ['REFUSE', 'belowFloor', { floor: R.minViableBalance }]
       : null)],
-    ['envelope', () => (p.envelope.includes(p.category) ? null : ['REFUSE', `"${p.category}" is outside the strategy envelope`])],
+    ['envelope', () => (p.envelope.includes(p.category) ? null : ['REFUSE', 'outsideEnvelope', { category: p.category }])],
     ['escalation', () => {
-      if (p.paysHuman) return ['ESCALATE', 'Paying a human needs owner approval']
-      if (p.amount > R.reviewThreshold) return ['ESCALATE', `Above the $${R.reviewThreshold} review threshold`]
+      if (p.paysHuman) return ['ESCALATE', 'paysHuman']
+      if (p.amount > R.reviewThreshold) return ['ESCALATE', 'aboveReview', { threshold: R.reviewThreshold }]
       return null
     }],
     ['anomaly', () => {
       const max = p.recentMax ?? 0
       if ((p.history ?? 0) >= R.anomalyMinHistory && p.amount >= 1 && max > 0 && p.amount > max * R.anomalyFactor)
-        return ['ESCALATE', `${Math.round(p.amount / max)}× the recent maximum`]
+        return ['ESCALATE', 'anomaly', { factor: Math.round(p.amount / max) }]
       return null
     }],
   ]
@@ -70,7 +75,7 @@ export function evaluatePayment(p: PaymentRequest): { verdict: Verdict; trail: G
   for (const [gate, check] of checks) {
     const hit = check()
     if (hit) {
-      trail.push({ gate, result: hit[0], reason: hit[1] })
+      trail.push({ gate, result: hit[0], reason: hit[1], params: hit[2] })
       return { verdict: hit[0], trail }
     }
     trail.push({ gate, result: 'PASS', reason: 'clear' })

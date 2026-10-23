@@ -8,6 +8,7 @@ const props = defineProps<{
   darwinId: string
 }>()
 
+const { t } = useI18n()
 const notifications = useNotificationStore()
 const { approve, deny } = useApprovalFlow(() => props.darwinId)
 const toast = useToast()
@@ -22,10 +23,10 @@ const accent = computed(() => {
   return '#b45309'
 })
 
-const label = computed(() => {
-  if (props.event.event_type.includes('CAPTCHA')) return 'CAPTCHA'
-  if (props.event.event_type.includes('APPROVAL')) return 'Approve'
-  return 'Human'
+const labelId = computed(() => {
+  if (props.event.event_type.includes('CAPTCHA')) return 'captcha'
+  if (props.event.event_type.includes('APPROVAL')) return 'approve'
+  return 'human'
 })
 
 async function respond(e: Event, action: typeof approve) {
@@ -33,14 +34,14 @@ async function respond(e: Event, action: typeof approve) {
   try {
     await action(props.event)
   } catch {
-    toast('Could not send your decision. Please try again.', 'error')
+    toast(t('canvas.nodes.decisionFailed'), 'error')
   }
 }
 </script>
 
 <template>
   <g>
-    <NodeShell :event="event" :accent="accent" :label="label" :pulse="isPending" />
+    <NodeShell :event="event" :accent="accent" :label-id="labelId" :pulse="isPending" />
     <foreignObject x="-10" y="-10" width="20" height="20">
       <ShieldQuestion v-if="isApproval" :size="14" style="display: block; margin: auto; color: #92400e" />
       <ScanFace v-else-if="event.event_type.includes('CAPTCHA')" :size="14" style="display: block; margin: auto; color: #c2410c" />
@@ -53,14 +54,14 @@ async function respond(e: Event, action: typeof approve) {
           class="px-2 py-1 text-[10px] font-medium rounded-lg bg-darwin-accent text-darwin-bg hover:bg-darwin-accent-deep transition-colors shadow-sm"
           @click="respond($event, approve)"
         >
-          ✓ Approve
+          {{ t('canvas.nodes.approveAction') }}
         </button>
         <button
           type="button"
           class="px-2 py-1 text-[10px] font-medium rounded-lg bg-darwin-bg-2 text-darwin-ink border border-darwin-border hover:bg-darwin-bg-3 transition-colors"
           @click="respond($event, deny)"
         >
-          ✕ Deny
+          {{ t('canvas.nodes.denyAction') }}
         </button>
       </div>
     </foreignObject>

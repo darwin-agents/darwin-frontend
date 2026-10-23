@@ -2,17 +2,11 @@
 // Airlock shown on a visitor's first arrival. An inline head script (pages/index.vue)
 // adds `lab-gate-open` to <html> before first paint only when the visitor hasn't
 // entered before, so returning visitors and no-JS crawlers never see it.
+const { t } = useI18n()
 const audio = useLabAudio()
 const enterBtn = useTemplateRef<HTMLButtonElement>('enter')
 
-const LOG = [
-  'Specimen Labs · containment online',
-  'Genome signature verified · Ed25519',
-  'Constitution loaded · 10 principles · 7 forbidden classes',
-  'Treasury gate armed · 6 checks',
-  'Kill switch armed · halt ≤ 5 s',
-  'Specimen DRW-0847 · heartbeat detected',
-]
+const LOG = ['containment', 'genome', 'constitution', 'treasury', 'killSwitch', 'heartbeat']
 
 function enter(withSound: boolean) {
   void audio.setEnabled(withSound).then(() => { if (withSound) audio.chime() })
@@ -36,19 +30,19 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
     <div class="lab-gate-inner">
       <UiDarwinLogo :size="52" class="lab-gate-logo" style="color: #f3eee2" />
       <div id="lab-gate-title" class="lab-gate-title">Darwin Agents</div>
-      <p class="lab-gate-sub">You are entering an observation lab for digital organisms.</p>
+      <p class="lab-gate-sub">{{ t('lab.gate.sub') }}</p>
       <ol class="lab-gate-log">
         <li v-for="(line, i) in LOG" :key="line" :style="{ animationDelay: `${0.25 + i * 0.28}s` }">
-          <span class="lab-gate-ok">●</span> {{ line }}
+          <span class="lab-gate-ok">●</span> {{ t(`lab.gate.log.${line}`) }}
         </li>
       </ol>
       <div class="lab-gate-actions">
         <button ref="enter" type="button" class="lab-gate-btn lab-gate-btn-primary" @click="enter(true)">
-          Enter with sound
+          {{ t('lab.gate.enterWithSound') }}
         </button>
-        <button type="button" class="lab-gate-btn" @click="enter(false)">Enter silently</button>
+        <button type="button" class="lab-gate-btn" @click="enter(false)">{{ t('lab.gate.enterSilently') }}</button>
       </div>
-      <p class="lab-gate-hint">Headphones recommended · sound can be toggled any time</p>
+      <p class="lab-gate-hint">{{ t('lab.gate.hint') }}</p>
     </div>
   </div>
 </template>
@@ -70,7 +64,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   color: rgba(243, 238, 226, 0.75); margin-bottom: 40px; list-style: none; padding: 0;
 }
 .lab-gate-log li { opacity: 0; animation: lab-gate-line 0.35s ease forwards; }
-.lab-gate-ok { color: #7ad08f; margin-right: 8px; }
+.lab-gate-ok { color: #7ad08f; margin-inline-end: 8px; }
 .lab-gate-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
 .lab-gate-btn {
   padding: 16px 28px; border-radius: 100px; font-size: 14px; font-weight: 500;

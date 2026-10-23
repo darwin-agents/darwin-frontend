@@ -3,6 +3,7 @@ import type { Cell, Colony } from '~/utils/labSim'
 
 // Natural selection you can poke: utils/labSim.ts runs the real rules ($1 floor,
 // $25 profit to reproduce, child gets half the surplus); this draws it.
+const { t } = useI18n()
 const audio = useLabAudio()
 const canvasRef = useTemplateRef<HTMLCanvasElement>('canvas')
 const TICK = 0.125 // 8 market ticks per second
@@ -162,14 +163,12 @@ onMounted(() => {
     <div class="lp-container">
       <div class="lab-head">
         <div>
-          <div class="upper lab-eyebrow">§ 04 — Selection</div>
-          <h2 class="lp-h2 reveal">Watch selection <em class="lp-ember">happen</em>.</h2>
+          <div class="upper lab-eyebrow">{{ t('lab.petri.eyebrow') }}</div>
+          <i18n-t keypath="lab.petri.title" tag="h2" class="lp-h2 reveal" scope="global">
+            <template #em><em class="lp-ember">{{ t('lab.petri.titleEm') }}</em></template>
+          </i18n-t>
         </div>
-        <p class="lab-lead reveal">
-          Each dot is a Darwin with its own strategy. Good strategies earn more than they burn,
-          grow, and split. Poor ones starve. Nobody tunes them — the market does. Push the
-          pressure up, spawn a few, or pull a kill switch by clicking a cell.
-        </p>
+        <p class="lab-lead reveal">{{ t('lab.petri.lead') }}</p>
       </div>
 
       <div class="pd-grid">
@@ -178,42 +177,38 @@ onMounted(() => {
             ref="canvas"
             class="pd-dish"
             role="img"
-            aria-label="Simulated colony of Darwins: cells grow, split when profitable and fade when broke."
+            :aria-label="t('lab.petri.dishLabel')"
             @click="onClick"
           />
         </div>
 
         <div class="pd-panel">
           <div class="pd-stats mono">
-            <div><span class="dim">Alive</span><b>{{ stats.alive }}</b></div>
-            <div><span class="dim">Born</span><b>{{ stats.births }}</b></div>
-            <div><span class="dim">Died</span><b>{{ stats.deaths }}</b></div>
-            <div><span class="dim">Top generation</span><b>{{ stats.topGen }}</b></div>
+            <div><span class="dim">{{ t('lab.petri.stats.alive') }}</span><b>{{ stats.alive }}</b></div>
+            <div><span class="dim">{{ t('lab.petri.stats.born') }}</span><b>{{ stats.births }}</b></div>
+            <div><span class="dim">{{ t('lab.petri.stats.died') }}</span><b>{{ stats.deaths }}</b></div>
+            <div><span class="dim">{{ t('lab.petri.stats.topGen') }}</span><b>{{ stats.topGen }}</b></div>
           </div>
 
           <div class="pd-fitness">
-            <div class="mono dim pd-label">Mean strategy quality · {{ Math.round(stats.fitness * 100) }}%</div>
+            <div class="mono dim pd-label">{{ t('lab.petri.meanQuality', { pct: Math.round(stats.fitness * 100) }) }}</div>
             <svg viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true">
               <polyline :points="sparkline" fill="none" stroke="#ff5b1f" stroke-width="1.2" vector-effect="non-scaling-stroke" />
             </svg>
           </div>
 
           <label class="pd-slider">
-            <span class="mono dim pd-label">Market pressure · {{ Math.round(pressure * 100) }}%</span>
+            <span class="mono dim pd-label">{{ t('lab.petri.pressure', { pct: Math.round(pressure * 100) }) }}</span>
             <input v-model.number="pressure" type="range" min="0" max="1" step="0.05">
           </label>
 
           <div class="pd-actions">
-            <button type="button" class="lp-btn lp-btn-ember" @click="spawn">Spawn a Darwin · $100</button>
-            <button type="button" class="lp-btn-outline" @click="running = !running">{{ running ? 'Pause' : 'Run' }}</button>
-            <button type="button" class="lp-btn-outline" @click="reset">Reset</button>
+            <button type="button" class="lp-btn lp-btn-ember" @click="spawn">{{ t('lab.petri.spawn') }}</button>
+            <button type="button" class="lp-btn-outline" @click="running = !running">{{ running ? t('lab.petri.pause') : t('lab.petri.run') }}</button>
+            <button type="button" class="lp-btn-outline" @click="reset">{{ t('lab.petri.reset') }}</button>
           </div>
 
-          <p class="mono pd-rules">
-            Rules from the genome: dies under $1 after a grace period · reproduces at ≥ $25 profit ·
-            child gets 50% of the surplus and a mutated strategy · kills are final.
-            Simplified model; real Darwins trade on real markets.
-          </p>
+          <p class="mono pd-rules">{{ t('lab.petri.rules') }}</p>
         </div>
       </div>
     </div>

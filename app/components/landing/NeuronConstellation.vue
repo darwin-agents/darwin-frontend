@@ -1,21 +1,22 @@
 <script setup lang="ts">
 // The 13 built-in neurons registered in darwin_dna/neurons/_registry.py.
+const { t } = useI18n()
 const audio = useLabAudio()
 
 const NEURONS = [
-  { id: 'content.writer', short: 'writer', what: 'Writes long-form articles, reviews and guides on the reasoning tier.', tags: ['content.long_form', 'content.write'] },
-  { id: 'content.publisher', short: 'publisher', what: 'Publishes to blogs and social platforms: API first, browser as fallback, then escalate.', tags: ['content.publish', 'web.publish'] },
-  { id: 'browser.operator', short: 'browser', what: 'A general-purpose browser body for sites without an API. Captchas go to the owner.', tags: ['web.operate', 'web.signup'] },
-  { id: 'accounts.manager', short: 'accounts', what: 'Signs up for services, refreshes tokens and stores credentials in the vault.', tags: ['accounts.manage', 'vault.write'] },
-  { id: 'ads.manager', short: 'ads', what: 'Creates, pauses and budgets ad campaigns across the major networks.', tags: ['ads.manage', 'treasury.observe'] },
-  { id: 'trading.operator', short: 'trading', what: 'Places exchange orders. Highest-risk neuron; it can never sign a payment itself.', tags: ['trading.operate', 'treasury.observe'], risk: true },
-  { id: 'support.responder', short: 'support', what: 'Triages and answers tickets and DMs; legal, abuse and billing go to the owner.', tags: ['support.respond', 'content.write'] },
-  { id: 'analytics.measurer', short: 'analytics', what: 'Pulls metrics and computes ROI so the reflect step learns what worked.', tags: ['analytics.measure', 'web.read'] },
-  { id: 'research.scout', short: 'research', what: 'Finds niches and opportunities: search API first, browser fallback, then synthesis.', tags: ['research.scout', 'web.read'] },
-  { id: 'payments.facilitator', short: 'payments', what: 'The only neuron allowed to move money. Every payment passes the treasury gate first.', tags: ['treasury.write', 'payments.send'], special: 'Sole treasury writer' },
-  { id: 'infrastructure.provisioner', short: 'infra', what: 'Asks the platform for databases, storage buckets and vector stores.', tags: ['infra.provision'] },
-  { id: 'vault.writer', short: 'vault', what: 'The single audited path for writing secrets into the Darwin\'s vault.', tags: ['vault.write'] },
-  { id: 'compliance.kyc_submitter', short: 'kyc', what: 'Submits identity paperwork, unlocked only by a one-time owner grant.', tags: ['compliance.submit'] },
+  { id: 'content.writer', short: 'writer', tags: ['content.long_form', 'content.write'] },
+  { id: 'content.publisher', short: 'publisher', tags: ['content.publish', 'web.publish'] },
+  { id: 'browser.operator', short: 'browser', tags: ['web.operate', 'web.signup'] },
+  { id: 'accounts.manager', short: 'accounts', tags: ['accounts.manage', 'vault.write'] },
+  { id: 'ads.manager', short: 'ads', tags: ['ads.manage', 'treasury.observe'] },
+  { id: 'trading.operator', short: 'trading', tags: ['trading.operate', 'treasury.observe'], risk: true },
+  { id: 'support.responder', short: 'support', tags: ['support.respond', 'content.write'] },
+  { id: 'analytics.measurer', short: 'analytics', tags: ['analytics.measure', 'web.read'] },
+  { id: 'research.scout', short: 'research', tags: ['research.scout', 'web.read'] },
+  { id: 'payments.facilitator', short: 'payments', tags: ['treasury.write', 'payments.send'], special: true },
+  { id: 'infrastructure.provisioner', short: 'infra', tags: ['infra.provision'] },
+  { id: 'vault.writer', short: 'vault', tags: ['vault.write'] },
+  { id: 'compliance.kyc_submitter', short: 'kyc', tags: ['compliance.submit'] },
 ]
 
 const selected = ref(9) // open on the payments neuron: the most important boundary
@@ -31,14 +32,8 @@ function pick(i: number) {
   audio.blip(1 + i * 0.05)
 }
 
-const NOTES: [string, string][] = [
-  ['Contract', 'name · version · capability tags · cost estimate (p50/p95 USD and latency) · failure modes; async plan / execute / escalate'],
-  ['NeuronContext', 'darwin id, a tier-only LLM handle, the audit logger, a vault view scoped to its tags, relevant lessons'],
-  ['Never sees', 'the genome, the treasury key, other neurons\' state, the orchestrator\'s memory'],
-  ['Routing', 'tags must cover the task → cheapest that meets the bar → most recent success → else file a capability request'],
-  ['Isolation', 'a fresh Firecracker microVM per dispatch; only the egress proxy is reachable'],
-  ['Self-authored neurons', 'off by default; when enabled every new neuron still needs human review'],
-]
+const NOTE_IDS = ['contract', 'neuronContext', 'neverSees', 'routing', 'isolation', 'selfAuthored']
+const notes = computed(() => NOTE_IDS.map((id): [string, string] => [t(`lab.neurons.notes.${id}.term`), t(`lab.neurons.notes.${id}.value`)]))
 </script>
 
 <template>
@@ -46,14 +41,14 @@ const NOTES: [string, string][] = [
     <div class="lp-container">
       <div class="lab-head">
         <div>
-          <div class="upper dim lab-eyebrow">§ 05 — Neurons</div>
-          <h2 class="lp-h2 reveal">Thirteen <em class="lp-ember-deep">narrow</em> minds.</h2>
+          <div class="upper dim lab-eyebrow">{{ t('lab.neurons.eyebrow') }}</div>
+          <i18n-t keypath="lab.neurons.title" tag="h2" class="lp-h2 reveal" scope="global">
+            <template #em><em class="lp-ember-deep">{{ t('lab.neurons.titleEm') }}</em></template>
+          </i18n-t>
         </div>
-        <p class="lab-lead reveal">
-          No god-agent. The soma decides <em>what</em> to do and hands each job to a narrow worker
-          that can do exactly one kind of thing. A neuron only gets the capabilities its tags
-          allow — the writer can't spend, and only one neuron can move money.
-        </p>
+        <i18n-t keypath="lab.neurons.lead" tag="p" class="lab-lead reveal" scope="global">
+          <template #what><em>{{ t('lab.neurons.leadWhat') }}</em></template>
+        </i18n-t>
       </div>
 
       <div class="nc-grid">
@@ -66,8 +61,8 @@ const NOTES: [string, string][] = [
               class="nc-link" :class="{ 'is-active': i === selected }"
             />
             <circle cx="250" cy="250" r="54" class="nc-core" />
-            <text x="250" y="246" class="nc-core-label">soma</text>
-            <text x="250" y="262" class="nc-core-sub">orchestrator</text>
+            <text x="250" y="246" class="nc-core-label">{{ t('lab.neurons.core.label') }}</text>
+            <text x="250" y="262" class="nc-core-sub">{{ t('lab.neurons.core.sub') }}</text>
             <g
               v-for="(n, i) in nodes"
               :key="n.id"
@@ -85,11 +80,11 @@ const NOTES: [string, string][] = [
         <div>
           <div class="nc-card" aria-live="polite">
             <div class="mono nc-card-id">{{ current.id }}</div>
-            <p class="nc-card-what">{{ current.what }}</p>
+            <p class="nc-card-what">{{ t(`lab.neurons.what.${current.short}`) }}</p>
             <div class="nc-tags">
-              <span v-for="t in current.tags" :key="t" class="lab-chip">{{ t }}</span>
-              <span v-if="current.special" class="lab-chip nc-special">★ {{ current.special }}</span>
-              <span v-if="current.risk" class="lab-chip nc-risk">high risk · never signs</span>
+              <span v-for="tag in current.tags" :key="tag" class="lab-chip">{{ tag }}</span>
+              <span v-if="current.special" class="lab-chip nc-special">★ {{ t('lab.neurons.special') }}</span>
+              <span v-if="current.risk" class="lab-chip nc-risk">{{ t('lab.neurons.risk') }}</span>
             </div>
           </div>
 
@@ -106,7 +101,7 @@ const NOTES: [string, string][] = [
             >{{ n.id }}</button>
           </div>
 
-          <LandingLabNotes title="Neuron contract" :items="NOTES" />
+          <LandingLabNotes :title="t('lab.neurons.notesTitle')" :items="notes" />
         </div>
       </div>
     </div>

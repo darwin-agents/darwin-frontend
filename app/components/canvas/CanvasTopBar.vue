@@ -6,6 +6,7 @@ import {
 
 defineProps<{ darwinId: string }>()
 
+const { t } = useI18n()
 const agent = useAgentStore()
 const panels = useCanvasPanels()
 
@@ -24,12 +25,12 @@ const stateClass = computed(() => {
 })
 
 const panelButtons = computed(() => [
-  { label: 'Console',  icon: Terminal, toggle: () => panels.toggleConsole(),     active: panels.showCommandConsole },
-  { label: 'Entities', icon: Database, toggle: () => panels.toggleEntityPanel(), active: panels.showEntityPanel },
-  { label: 'Skills',   icon: Star,     toggle: () => panels.toggleSkillsPanel(), active: panels.showSkillsPanel },
-  { label: 'Ledger',   icon: Receipt,  toggle: () => panels.toggleLedgerPanel(), active: panels.showLedgerPanel },
-  { label: 'Assets',   icon: FileBox,  toggle: () => panels.toggleAssetsPanel(), active: panels.showAssetsPanel },
-])
+  { id: 'console',  icon: Terminal, toggle: () => panels.toggleConsole(),     active: panels.showCommandConsole },
+  { id: 'entities', icon: Database, toggle: () => panels.toggleEntityPanel(), active: panels.showEntityPanel },
+  { id: 'skills',   icon: Star,     toggle: () => panels.toggleSkillsPanel(), active: panels.showSkillsPanel },
+  { id: 'ledger',   icon: Receipt,  toggle: () => panels.toggleLedgerPanel(), active: panels.showLedgerPanel },
+  { id: 'assets',   icon: FileBox,  toggle: () => panels.toggleAssetsPanel(), active: panels.showAssetsPanel },
+].map((pb) => ({ ...pb, label: t(`canvas.topBar.panels.${pb.id}`) })))
 </script>
 
 <template>
@@ -44,12 +45,12 @@ const panelButtons = computed(() => [
     <!-- Agent info -->
     <div class="min-w-0 flex items-center gap-2.5">
       <div class="min-w-0">
-        <p class="text-sm font-medium text-darwin-ink truncate leading-tight">{{ agent.agent?.name ?? 'Agent' }}</p>
+        <p class="text-sm font-medium text-darwin-ink truncate leading-tight">{{ agent.agent?.name ?? t('canvas.topBar.agentFallback') }}</p>
         <p class="text-[10px] text-darwin-muted font-mono truncate">{{ darwinId.slice(0, 12) }}…</p>
       </div>
       <span class="darwin-badge border" :class="stateClass">
         <component :is="stateIcon" :size="10" class="mr-1" :class="agent.state === 'PROVISIONING' ? 'animate-spin' : ''" />
-        {{ agent.state }}
+        {{ t(`canvas.topBar.states.${agent.state}`) }}
       </span>
     </div>
 
@@ -65,7 +66,7 @@ const panelButtons = computed(() => [
     <div class="flex items-center gap-1">
       <button
         v-for="pb in panelButtons"
-        :key="pb.label"
+        :key="pb.id"
         type="button"
         :aria-label="pb.label"
         :aria-pressed="pb.active"

@@ -9,6 +9,7 @@ import NeuralThread from '~/components/canvas/NeuralThread.vue'
 
 defineProps<{ darwinId: string }>()
 
+const { t } = useI18n()
 const canvas = useCanvasStore()
 const { scrollX } = storeToRefs(canvas)
 const { visibleTrunkEvents, visibleLaneEvents } = useVirtualScroll()
@@ -147,12 +148,12 @@ onUnmounted(() => {
           v-if="showJumpToLatest"
           type="button"
           class="pointer-events-auto absolute bottom-4 right-4 z-30 flex cursor-pointer items-center gap-1.5 rounded-full border border-darwin-border bg-darwin-surface/95 px-3 py-2 text-xs font-medium text-darwin-ink shadow-lg backdrop-blur-sm transition-colors hover:bg-darwin-bg-3"
-          aria-label="Jump to latest event"
+          :aria-label="t('canvas.viewport.jumpToLatest')"
           @mousedown.stop.prevent
           @click.stop.prevent="scrollToLatestEvent"
         >
           <ChevronsRight :size="14" class="text-darwin-accent shrink-0" />
-          <span class="hidden sm:inline">Latest</span>
+          <span class="hidden sm:inline">{{ t('canvas.viewport.latest') }}</span>
         </button>
       </Transition>
     </div>

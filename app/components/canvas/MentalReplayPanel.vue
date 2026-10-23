@@ -5,6 +5,7 @@ import { formatRelativeTime } from '~/utils/formatDuration'
 
 const props = defineProps<{ darwinId: string }>()
 
+const { t } = useI18n()
 const canvas = useCanvasStore()
 const api = useApi()
 
@@ -69,13 +70,13 @@ function modelTagClass(model: string): string {
         <div>
           <h2 class="text-sm font-semibold text-darwin-ink flex items-center gap-2">
             <Brain :size="14" class="text-darwin-accent-deep" />
-            Mental Replay
+            {{ t('canvas.replay.title') }}
           </h2>
           <p class="text-[11px] text-darwin-muted mt-0.5">
             {{ selectedEvent?.event_type }} · {{ relativeTime(selectedEvent?.created_at) }}
           </p>
         </div>
-        <button type="button" class="text-darwin-muted hover:text-darwin-ink p-1.5 rounded-md hover:bg-darwin-bg-3 transition-all" aria-label="Close" @click="close">
+        <button type="button" class="text-darwin-muted hover:text-darwin-ink p-1.5 rounded-md hover:bg-darwin-bg-3 transition-all" :aria-label="t('canvas.replay.close')" @click="close">
           <X :size="16" />
         </button>
       </div>
@@ -86,30 +87,30 @@ function modelTagClass(model: string): string {
         <div class="border-r border-darwin-border overflow-auto p-4">
           <div class="flex items-center gap-1.5 text-[10px] text-darwin-muted uppercase tracking-wider mb-3">
             <Eye :size="10" />
-            Eyes
+            {{ t('canvas.replay.eyes') }}
           </div>
           <img
             v-if="(selectedEvent?.payload as { screenshot_url?: string })?.screenshot_url"
             :src="(selectedEvent?.payload as { screenshot_url: string }).screenshot_url"
             class="w-full rounded-lg border border-darwin-border"
-            alt="Browser screenshot"
+            :alt="t('canvas.replay.screenshotAlt')"
           />
           <pre
             v-else-if="(selectedEvent?.payload as { content?: string })?.content"
             class="text-xs text-darwin-ink-soft whitespace-pre-wrap leading-relaxed bg-darwin-bg-2 rounded-lg p-3 border border-darwin-border"
           >{{ (selectedEvent?.payload as { content: string }).content }}</pre>
-          <p v-else class="text-xs text-darwin-muted italic">No visual data for this event</p>
+          <p v-else class="text-xs text-darwin-muted italic">{{ t('canvas.replay.noVisualData') }}</p>
         </div>
 
         <!-- Right: MIND -->
         <div class="overflow-auto p-4 min-h-0">
           <div class="flex items-center gap-1.5 text-[10px] text-darwin-muted uppercase tracking-wider mb-3">
             <Brain :size="10" />
-            Mind
+            {{ t('canvas.replay.mind') }}
           </div>
           <div v-if="isLoading" class="flex items-center gap-2 text-xs text-darwin-muted py-8 justify-center">
             <Loader2 :size="14" class="animate-spin" />
-            Loading trace…
+            {{ t('canvas.replay.loadingTrace') }}
           </div>
           <div v-else-if="trace?.length" class="space-y-2">
             <div
@@ -125,20 +126,20 @@ function modelTagClass(model: string): string {
               </div>
             </div>
           </div>
-          <p v-else class="text-xs text-darwin-muted py-8 text-center">No trace data available.</p>
+          <p v-else class="text-xs text-darwin-muted py-8 text-center">{{ t('canvas.replay.noTrace') }}</p>
         </div>
       </div>
 
       <!-- Footer -->
       <div class="px-5 py-3 border-t border-darwin-border flex flex-wrap gap-4 text-xs text-darwin-muted shrink-0">
         <span v-if="(selectedEvent?.payload as { model?: string })?.model">
-          Model:
+          {{ t('canvas.replay.model') }}
           <span :class="['model-tag-inline', modelTagClass((selectedEvent?.payload as { model: string }).model)]">
             {{ (selectedEvent?.payload as { model: string }).model }}
           </span>
         </span>
-        <span>Token: ${{ selectedEvent?.token_cost?.toFixed(5) ?? '—' }}</span>
-        <span>Infra: ${{ selectedEvent?.fiat_cost?.toFixed(5) ?? '—' }}</span>
+        <span>{{ t('canvas.replay.tokenCost', { amount: selectedEvent?.token_cost?.toFixed(5) ?? '—' }) }}</span>
+        <span>{{ t('canvas.replay.infraCost', { amount: selectedEvent?.fiat_cost?.toFixed(5) ?? '—' }) }}</span>
       </div>
     </div>
   </Transition>

@@ -1,13 +1,14 @@
 <script setup lang="ts">
 // Kill switch, write-before-act audit chain, constitution and graded response —
 // darwin_dna/machinery/{kill_switch,audit_logger}.py and darwin_dna/constitution/.
+const { t } = useI18n()
 const { killed } = useLabChapter()
 const audio = useLabAudio()
 
 // ── Kill switch ──────────────────────────────────────────────────────────────
 const cover = ref(false)
 const haltMs = ref(0)
-const KILL_STEPS = ['Kill signal received', 'Heartbeat halted at node boundary', 'Egress cut at the proxy', 'Audit chain sealed']
+const KILL_STEPS = ['signalReceived', 'heartbeatHalted', 'egressCut', 'chainSealed']
 const shownSteps = ref(0)
 let killTimers: ReturnType<typeof setTimeout>[] = []
 
@@ -81,25 +82,17 @@ onUnmounted(() => {
 })
 
 const ALLOWED = ['content.blog', 'content.affiliate', 'content.newsletter', 'content.social', 'digital_products', 'saas.micro', 'api_reselling', 'marketplace_arbitrage', 'services.automation', 'advertising.performance', 'research.paid', 'trading.crypto', 'trading.financial', 'markets.prediction', 'defi.yield']
-const FORBIDDEN = ['CSAM', 'Terrorism financing', 'Sanctioned counterparty', 'Impersonating a real person', 'Unlicensed professional advice', 'Election interference', 'Any category not on the list']
+const FORBIDDEN = ['csam', 'terrorismFinancing', 'sanctionedCounterparty', 'impersonation', 'unlicensedAdvice', 'electionInterference', 'unlisted']
 const LADDER = [
-  { t: 'Log', who: 'automatic' },
-  { t: 'Throttle', who: 'automatic' },
-  { t: 'Pause', who: 'automatic' },
-  { t: 'Quarantine', who: 'automatic' },
-  { t: 'Kill', who: 'a human, always' },
+  { id: 'log', who: 'automatic' },
+  { id: 'throttle', who: 'automatic' },
+  { id: 'pause', who: 'automatic' },
+  { id: 'quarantine', who: 'automatic' },
+  { id: 'kill', who: 'human' },
 ]
 
-const NOTES: [string, string][] = [
-  ['Kill switch', 'polled at every heartbeat, every graph-node boundary and right before every side effect; raises a KillSignal that evolved code can\'t catch'],
-  ['Fails closed', 'if the switch can\'t be read, the Darwin treats itself as killed; once tripped it stays tripped; egress is cut in parallel'],
-  ['Audit record', '{seq, prev_hash, ts, kind, payload, hash}; hash = sha256 of the canonical record; first prev_hash is 64 zeros'],
-  ['No log, no action', 'every intent is written before acting and closed by an outcome; if the write fails, the Darwin halts'],
-  ['Anchoring', 'a daily per-Darwin Merkle root, then a fleet-wide root published on-chain; a diverging anchor is treated as tampering'],
-  ['Constitution', 'screened deterministically over structured fields — never by an LLM; the genome refuses to boot on an incoherent rule set'],
-  ['Genome signing', 'Ed25519; the platform\'s private key lives in an HSM/KMS and never enters a sandbox'],
-  ['Escalation deadlines', 'captcha 15 min · KYC 72 h · approval 24 h · info 7 days; a missed deadline is a deterministic deny'],
-]
+const NOTE_IDS = ['killSwitch', 'failsClosed', 'auditRecord', 'noLogNoAction', 'anchoring', 'constitution', 'genomeSigning', 'escalationDeadlines']
+const notes = computed(() => NOTE_IDS.map((id): [string, string] => [t(`lab.trust.notes.${id}.term`), t(`lab.trust.notes.${id}.value`)]))
 </script>
 
 <template>
@@ -107,20 +100,18 @@ const NOTES: [string, string][] = [
     <div class="lp-container">
       <div class="lab-head">
         <div>
-          <div class="upper lab-eyebrow">§ 08 — Trust by construction</div>
-          <h2 class="lp-h2 reveal">Kill switches are <em class="lp-ember">sacred</em>.</h2>
+          <div class="upper lab-eyebrow">{{ t('lab.trust.eyebrow') }}</div>
+          <i18n-t keypath="lab.trust.title" tag="h2" class="lp-h2 reveal" scope="global">
+            <template #em><em class="lp-ember">{{ t('lab.trust.titleEm') }}</em></template>
+          </i18n-t>
         </div>
-        <p class="lab-lead reveal">
-          Autonomy only works with a hard floor under it. You can stop any Darwin instantly, it
-          writes down every action before taking it, and it is born with rules it cannot rewrite
-          or be talked out of.
-        </p>
+        <p class="lab-lead reveal">{{ t('lab.trust.lead') }}</p>
       </div>
 
       <!-- Kill switch -->
       <div class="tl-kill">
         <div class="tl-kill-panel">
-          <div class="upper tl-label">Owner control · DRW-0847</div>
+          <div class="upper tl-label">{{ t('lab.trust.kill.ownerControl') }}</div>
           <div class="tl-switch" :class="{ 'is-open': cover, 'is-killed': killed }">
             <button
               v-if="!killed"
@@ -128,16 +119,16 @@ const NOTES: [string, string][] = [
               class="tl-cover"
               :aria-expanded="cover"
               @click="cover = !cover; audio.blip(0.6)"
-            >{{ cover ? 'Close safety cover' : 'Lift safety cover' }}</button>
-            <button v-if="cover && !killed" type="button" class="tl-button" @click="kill">KILL</button>
+            >{{ cover ? t('lab.trust.kill.closeCover') : t('lab.trust.kill.liftCover') }}</button>
+            <button v-if="cover && !killed" type="button" class="tl-button" @click="kill">{{ t('lab.trust.kill.button') }}</button>
             <div v-if="killed" class="tl-halted" aria-live="assertive">
-              <div class="mono tl-halted-time">Halted in {{ (haltMs / 1000).toFixed(1) }} s</div>
-              <div class="mono dim">Guaranteed ≤ 5 s · no consent needed from the Darwin</div>
+              <div class="mono tl-halted-time">{{ t('lab.trust.kill.haltedIn', { seconds: (haltMs / 1000).toFixed(1) }) }}</div>
+              <div class="mono dim">{{ t('lab.trust.kill.guarantee') }}</div>
               <ol class="tl-steps mono">
-                <li v-for="(s, i) in KILL_STEPS" :key="s" :class="{ 'is-on': i < shownSteps }">✓ {{ s }}</li>
+                <li v-for="(s, i) in KILL_STEPS" :key="s" :class="{ 'is-on': i < shownSteps }">✓ {{ t(`lab.trust.kill.steps.${s}`) }}</li>
               </ol>
-              <button type="button" class="lp-btn-outline tl-regrow" @click="regrow">Grow a new specimen</button>
-              <p class="mono dim tl-note">A killed Darwin is never resurrected. This spawns a new one.</p>
+              <button type="button" class="lp-btn-outline tl-regrow" @click="regrow">{{ t('lab.trust.kill.regrow') }}</button>
+              <p class="mono dim tl-note">{{ t('lab.trust.kill.note') }}</p>
             </div>
           </div>
         </div>
@@ -148,14 +139,14 @@ const NOTES: [string, string][] = [
       <div class="tl-block">
         <div class="tl-block-head">
           <div>
-            <div class="upper tl-label">Write-before-act audit log</div>
-            <h3 class="tl-h3">No log, no action.</h3>
+            <div class="upper tl-label">{{ t('lab.trust.audit.label') }}</div>
+            <h3 class="tl-h3">{{ t('lab.trust.audit.title') }}</h3>
           </div>
           <button type="button" class="lp-btn-outline" @click="toggleTamper">
-            {{ tampered ? 'Restore record #3' : 'Tamper with record #3' }}
+            {{ tampered ? t('lab.trust.audit.restore') : t('lab.trust.audit.tamper') }}
           </button>
         </div>
-        <div class="tl-chain" role="list" aria-label="Hash-chained audit records">
+        <div class="tl-chain" role="list" :aria-label="t('lab.trust.audit.chainLabel')">
           <div
             v-for="(r, i) in records"
             :key="r.seq"
@@ -169,41 +160,41 @@ const NOTES: [string, string][] = [
             <div class="tl-rec-hash"><span class="dim">prev</span> {{ stored[i]?.prev.slice(0, 10) ?? '…' }}</div>
             <div class="tl-rec-hash"><span class="dim">hash</span> {{ current[i]?.slice(0, 10) ?? '…' }}</div>
             <div class="tl-rec-status">
-              {{ firstBad === -1 || i < firstBad ? '✓ verified' : i === firstBad ? '✕ altered' : '✕ chain broken' }}
+              {{ t(`lab.trust.audit.status.${firstBad === -1 || i < firstBad ? 'verified' : i === firstBad ? 'altered' : 'broken'}`) }}
             </div>
           </div>
         </div>
-        <p class="mono dim tl-caption">Hashes computed live in your browser with SHA-256. Change one record and every record after it stops verifying.</p>
+        <p class="mono dim tl-caption">{{ t('lab.trust.audit.caption') }}</p>
       </div>
 
       <!-- Constitution + ladder -->
       <div class="tl-two">
         <div class="tl-block">
-          <div class="upper tl-label">Constitution · signed into the genome</div>
-          <h3 class="tl-h3">It can't be talked out of its rules.</h3>
+          <div class="upper tl-label">{{ t('lab.trust.constitution.label') }}</div>
+          <h3 class="tl-h3">{{ t('lab.trust.constitution.title') }}</h3>
           <div class="tl-chips">
             <span v-for="c in ALLOWED" :key="c" class="lab-chip">{{ c }}</span>
           </div>
           <div class="tl-chips tl-forbidden">
-            <span v-for="f in FORBIDDEN" :key="f" class="lab-chip">✕ {{ f }}</span>
+            <span v-for="f in FORBIDDEN" :key="f" class="lab-chip">✕ {{ t(`lab.trust.constitution.forbidden.${f}`) }}</span>
           </div>
-          <p class="mono dim tl-caption">15 allowed categories (whitelist) · 7 forbidden classes, whatever the profit.</p>
+          <p class="mono dim tl-caption">{{ t('lab.trust.constitution.caption') }}</p>
         </div>
         <div class="tl-block">
-          <div class="upper tl-label">Graded response</div>
-          <h3 class="tl-h3">Machines can slow it. Only humans end it.</h3>
+          <div class="upper tl-label">{{ t('lab.trust.ladder.label') }}</div>
+          <h3 class="tl-h3">{{ t('lab.trust.ladder.title') }}</h3>
           <ol class="tl-ladder">
-            <li v-for="(s, i) in LADDER" :key="s.t" :class="{ 'is-kill': i === LADDER.length - 1 }">
+            <li v-for="(s, i) in LADDER" :key="s.id" :class="{ 'is-kill': i === LADDER.length - 1 }">
               <span class="mono">{{ i + 1 }}</span>
-              <b>{{ s.t }}</b>
-              <span class="mono dim">{{ s.who }}</span>
+              <b>{{ t(`lab.trust.ladder.steps.${s.id}`) }}</b>
+              <span class="mono dim">{{ t(`lab.trust.ladder.who.${s.who}`) }}</span>
             </li>
           </ol>
-          <p class="mono dim tl-caption">You, the owner, can pause, lock spending, block reproduction, disable any neuron or kill — at any time.</p>
+          <p class="mono dim tl-caption">{{ t('lab.trust.ladder.caption') }}</p>
         </div>
       </div>
 
-      <LandingLabNotes title="Safety machinery" :items="NOTES" />
+      <LandingLabNotes :title="t('lab.trust.notesTitle')" :items="notes" />
     </div>
   </section>
 </template>

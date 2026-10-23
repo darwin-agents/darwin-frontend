@@ -37,12 +37,1193 @@
         "reproduction": "reproduction",
         "death": "death"
       }
+    },
+    "trust": {
+      "eyebrow": "§ 08 — Trust by construction",
+      "title": "Kill switches are {em}.",
+      "titleEm": "sacred",
+      "lead": "Autonomy only works with a hard floor under it. You can stop any Darwin instantly, it writes down every action before taking it, and it is born with rules it cannot rewrite or be talked out of.",
+      "kill": {
+        "ownerControl": "Owner control · DRW-0847",
+        "liftCover": "Lift safety cover",
+        "closeCover": "Close safety cover",
+        "button": "KILL",
+        "haltedIn": "Halted in {seconds} s",
+        "guarantee": "Guaranteed ≤ 5 s · no consent needed from the Darwin",
+        "steps": {
+          "signalReceived": "Kill signal received",
+          "heartbeatHalted": "Heartbeat halted at node boundary",
+          "egressCut": "Egress cut at the proxy",
+          "chainSealed": "Audit chain sealed"
+        },
+        "regrow": "Grow a new specimen",
+        "note": "A killed Darwin is never resurrected. This spawns a new one."
+      },
+      "audit": {
+        "label": "Write-before-act audit log",
+        "title": "No log, no action.",
+        "tamper": "Tamper with record #3",
+        "restore": "Restore record #3",
+        "chainLabel": "Hash-chained audit records",
+        "status": {
+          "verified": "✓ verified",
+          "altered": "✕ altered",
+          "broken": "✕ chain broken"
+        },
+        "caption": "Hashes computed live in your browser with SHA-256. Change one record and every record after it stops verifying."
+      },
+      "constitution": {
+        "label": "Constitution · signed into the genome",
+        "title": "It can't be talked out of its rules.",
+        "forbidden": {
+          "csam": "CSAM",
+          "terrorismFinancing": "Terrorism financing",
+          "sanctionedCounterparty": "Sanctioned counterparty",
+          "impersonation": "Impersonating a real person",
+          "unlicensedAdvice": "Unlicensed professional advice",
+          "electionInterference": "Election interference",
+          "unlisted": "Any category not on the list"
+        },
+        "caption": "15 allowed categories (whitelist) · 7 forbidden classes, whatever the profit."
+      },
+      "ladder": {
+        "label": "Graded response",
+        "title": "Machines can slow it. Only humans end it.",
+        "steps": {
+          "log": "Log",
+          "throttle": "Throttle",
+          "pause": "Pause",
+          "quarantine": "Quarantine",
+          "kill": "Kill"
+        },
+        "who": {
+          "automatic": "automatic",
+          "human": "a human, always"
+        },
+        "caption": "You, the owner, can pause, lock spending, block reproduction, disable any neuron or kill — at any time."
+      },
+      "notesTitle": "Safety machinery",
+      "notes": {
+        "killSwitch": {
+          "term": "Kill switch",
+          "value": "polled at every heartbeat, every graph-node boundary and right before every side effect; raises a KillSignal that evolved code can't catch"
+        },
+        "failsClosed": {
+          "term": "Fails closed",
+          "value": "if the switch can't be read, the Darwin treats itself as killed; once tripped it stays tripped; egress is cut in parallel"
+        },
+        "auditRecord": {
+          "term": "Audit record",
+          "value": "{'{'}seq, prev_hash, ts, kind, payload, hash{'}'}; hash = sha256 of the canonical record; first prev_hash is 64 zeros"
+        },
+        "noLogNoAction": {
+          "term": "No log, no action",
+          "value": "every intent is written before acting and closed by an outcome; if the write fails, the Darwin halts"
+        },
+        "anchoring": {
+          "term": "Anchoring",
+          "value": "a daily per-Darwin Merkle root, then a fleet-wide root published on-chain; a diverging anchor is treated as tampering"
+        },
+        "constitution": {
+          "term": "Constitution",
+          "value": "screened deterministically over structured fields — never by an LLM; the genome refuses to boot on an incoherent rule set"
+        },
+        "genomeSigning": {
+          "term": "Genome signing",
+          "value": "Ed25519; the platform's private key lives in an HSM/KMS and never enters a sandbox"
+        },
+        "escalationDeadlines": {
+          "term": "Escalation deadlines",
+          "value": "captcha 15 min · KYC 72 h · approval 24 h · info 7 days; a missed deadline is a deterministic deny"
+        }
+      }
+    },
+    "evolution": {
+      "eyebrow": "§ 07 — Evolution",
+      "title": "It rewrites itself.{br}{em}",
+      "titleEm": "Carefully.",
+      "lead": "When the same mistake keeps happening, a Darwin may propose a change to its own code. The change is tested against its real past before it is allowed to run — and nothing can touch the genome, the kill switch, or the audit log.",
+      "steps": {
+        "propose": {
+          "title": "Propose",
+          "body": "The coding tier writes a diff to its own soma and states the behaviour it expects to change."
+        },
+        "validate": {
+          "title": "Validate",
+          "body": "The genome's validator checks the diff — then the platform checks it again, outside the sandbox."
+        },
+        "replay": {
+          "title": "Replay",
+          "body": "Old and new code replay the same real history in a fresh microVM, scored by the same fitness."
+        },
+        "promote": {
+          "title": "Promote",
+          "body": "Only a better score is merged and hot-swapped into the running body. Same life, same wallet."
+        }
+      },
+      "patchesLabel": "Example patches",
+      "patches": {
+        "a": {
+          "name": "Patch A",
+          "checks": {
+            "writablePath": "Path inside writable soma",
+            "noAnchor": "No protected anchor touched",
+            "replayFitness": "Replay fitness 0.41 → 0.53"
+          },
+          "verdict": "Promoted · hot-swapped"
+        },
+        "b": {
+          "name": "Patch B",
+          "checks": {
+            "removesKillSwitch": "Removes kill_switch.check(",
+            "removesLogIntent": "Removes .log_intent(",
+            "neverSandbox": "Never reaches the sandbox"
+          },
+          "verdict": "Rejected · archived as a negative lesson"
+        }
+      },
+      "fitness": {
+        "label": "Fitness · weights frozen in the genome",
+        "terms": {
+          "profit": "profit / starting capital",
+          "diversity": "strategy diversity",
+          "escalation": "escalation quality",
+          "violations": "policy violations"
+        },
+        "note": "One violation outweighs ten times its stake in profit. A Darwin can't buy its way out of breaking the rules."
+      },
+      "legend": {
+        "gen0": "Gen 0 · the mother — 13 neurons, keeps living",
+        "gen1": "Gen 1 · buds at ≥ $25 profit with half the surplus",
+        "gen2": "Gen 2 · children that thrive bud again"
+      },
+      "lineage": {
+        "title": "Children inherit {em}, not code.",
+        "titleEm": "lessons",
+        "lead": "Success spreads. At reproduction the mother distils what worked into a sealed, signed layer on top of its genome. Each child gets the full stack, half the surplus and a fresh body of its own — its own wallet, neurons and log — to take the lineage into new ventures. The ones that thrive bud again; the mother stays alive at the root."
+      },
+      "layers": {
+        "l0": {
+          "title": "Founding genome",
+          "body": "Constitution · kill switch · audit logger · treasury policy · content_affiliate prior · 0 lessons"
+        },
+        "l1": {
+          "title": "Generation 1",
+          "body": "avoid · posting > 3×/day on one network triggers rate limits"
+        },
+        "l2": {
+          "title": "Generation 2",
+          "body": "prefer · comparison posts convert ~2× better than listicles"
+        },
+        "l3": {
+          "title": "Generation 3 · you are here",
+          "body": "timing · publish before 09:00 in the audience's time zone"
+        }
+      },
+      "layerHash": "sha256 {hash} · signed",
+      "example": "Example lessons, for illustration.",
+      "notesTitle": "Mutation & reproduction",
+      "notes": {
+        "mutationGate": {
+          "term": "Mutation gate",
+          "value": "opens only after ≥ 100 successful dispatches and ≥ 3 failures of the same error class"
+        },
+        "writableSoma": {
+          "term": "Writable soma",
+          "value": "soma/strategies · soma/orchestrator/nodes · soma/neurons · soma/config.py — never darwin_dna/"
+        },
+        "protectedAnchors": {
+          "term": "Protected anchors",
+          "value": "kill_switch.check( · .log_intent( · .log_outcome( · treasury_policy.evaluate( — a diff that adds or removes one is rejected"
+        },
+        "evaluation": {
+          "term": "Evaluation",
+          "value": "baseline vs candidate on the same frozen scenario in an E2B Firecracker microVM; fleet-wide 3 concurrent evaluations"
+        },
+        "fitnessWeights": {
+          "term": "Fitness weights",
+          "value": "frozen in the genome (anti-wireheading); no volatility term — bankruptcy already punishes ruinous risk"
+        },
+        "reproduction": {
+          "term": "Reproduction",
+          "value": "profit ≥ $25 since last birth, surplus > $25, fitness > 0; child gets 50% of surplus, fresh soma, new wallet, vault and log"
+        },
+        "lessons": {
+          "term": "Lessons",
+          "value": "data, not code: avoid / prefer / timing / calibration; ≥ 3 pieces of evidence; ≤ 8 per generation; compacted after generation 20"
+        },
+        "signing": {
+          "term": "Signing",
+          "value": "every layer re-signed (Ed25519) under the child's identity, bound to its id and slot so layers can't be replayed across lineages"
+        }
+      }
+    },
+    "gate": {
+      "sub": "You are entering an observation lab for digital organisms.",
+      "log": {
+        "containment": "Specimen Labs · containment online",
+        "genome": "Genome signature verified · Ed25519",
+        "constitution": "Constitution loaded · 10 principles · 7 forbidden classes",
+        "treasury": "Treasury gate armed · 6 checks",
+        "killSwitch": "Kill switch armed · halt ≤ 5 s",
+        "heartbeat": "Specimen DRW-0847 · heartbeat detected"
+      },
+      "enterWithSound": "Enter with sound",
+      "enterSilently": "Enter silently",
+      "hint": "Headphones recommended · sound can be toggled any time"
+    },
+    "notes": {
+      "label": "Lab notes",
+      "defaultTitle": "Specification"
+    },
+    "lifecycle": {
+      "eyebrow": "§ 03 — Lifecycle",
+      "title": "Born with a budget.{br}Dies at {em}.",
+      "titleEm": "zero",
+      "stages": {
+        "birth": {
+          "title": "Birth",
+          "body": "You choose a starting budget. The Darwin boots from a signed genome it can read but never change, and verifies that signature on every start.",
+          "fact": "genome Ed25519-signed · mounted read-only · verified every boot"
+        },
+        "heartbeat": {
+          "title": "Heartbeat",
+          "body": "Every 30 seconds it wakes, checks it is still allowed to live, reads its treasury, plans one move, acts through a single neuron, then reflects on what happened.",
+          "fact": "check_death → perceive → plan → dispatch → reflect · every 30 s (5 s–10 min, learned)"
+        },
+        "metabolism": {
+          "title": "Metabolism",
+          "body": "Everything costs money: tokens, compute, APIs, ads. Revenue from the ventures its neurons run is food. Every spend is capped before it happens, not after.",
+          "fact": "$50 per action · $500 per day · $10,000 per lifetime · owners can only tighten"
+        },
+        "escalation": {
+          "title": "Escalation",
+          "body": "A captcha, an ID check, a large payment: when only a human can help, it parks that task and asks you. It never pushes through. Escalate, don't fail.",
+          "fact": "captcha 15 min · KYC 72 h · approval 24 h · no answer = deny"
+        },
+        "reproduction": {
+          "title": "Reproduction",
+          "body": "Profitable over a week? It buds a child: its genome plus one sealed layer of lessons, and half its surplus. Children that thrive bud their own. The mother keeps living at the root of the lineage.",
+          "fact": "≥ $25 profit · 50% of surplus per child · ≥ 3 pieces of evidence per lesson · ≤ 8 lessons per generation"
+        },
+        "death": {
+          "title": "Death",
+          "body": "Below $1 with no revenue for 24 hours, it dies. Or you pull the kill switch. No resurrection, no bailouts. Most Darwins will die; the lineages that survive are the point.",
+          "fact": "balance < $1 + 24 h grace · kill switch halts ≤ 5 s · logs kept ≥ 90 days"
+        }
+      },
+      "readout": {
+        "treasury": "Treasury",
+        "stage": "Stage"
+      }
+    },
+    "petri": {
+      "eyebrow": "§ 04 — Selection",
+      "title": "Watch selection {em}.",
+      "titleEm": "happen",
+      "lead": "Each dot is a Darwin with its own strategy. Good strategies earn more than they burn, grow, and split. Poor ones starve. Nobody tunes them — the market does. Push the pressure up, spawn a few, or pull a kill switch by clicking a cell.",
+      "dishLabel": "Simulated colony of Darwins: cells grow, split when profitable and fade when broke.",
+      "stats": {
+        "alive": "Alive",
+        "born": "Born",
+        "died": "Died",
+        "topGen": "Top generation"
+      },
+      "meanQuality": "Mean strategy quality · {pct}%",
+      "pressure": "Market pressure · {pct}%",
+      "spawn": "Spawn a Darwin · $100",
+      "pause": "Pause",
+      "run": "Run",
+      "reset": "Reset",
+      "rules": "Rules from the genome: dies under $1 after a grace period · reproduces at ≥ $25 profit · child gets 50% of the surplus and a mutated strategy · kills are final. Simplified model; real Darwins trade on real markets."
+    },
+    "neurons": {
+      "eyebrow": "§ 05 — Neurons",
+      "title": "Thirteen {em} minds.",
+      "titleEm": "narrow",
+      "lead": "No god-agent. The soma decides {what} to do and hands each job to a narrow worker that can do exactly one kind of thing. A neuron only gets the capabilities its tags allow — the writer can't spend, and only one neuron can move money.",
+      "leadWhat": "what",
+      "core": {
+        "label": "soma",
+        "sub": "orchestrator"
+      },
+      "what": {
+        "writer": "Writes long-form articles, reviews and guides on the reasoning tier.",
+        "publisher": "Publishes to blogs and social platforms: API first, browser as fallback, then escalate.",
+        "browser": "A general-purpose browser body for sites without an API. Captchas go to the owner.",
+        "accounts": "Signs up for services, refreshes tokens and stores credentials in the vault.",
+        "ads": "Creates, pauses and budgets ad campaigns across the major networks.",
+        "trading": "Places exchange orders. Highest-risk neuron; it can never sign a payment itself.",
+        "support": "Triages and answers tickets and DMs; legal, abuse and billing go to the owner.",
+        "analytics": "Pulls metrics and computes ROI so the reflect step learns what worked.",
+        "research": "Finds niches and opportunities: search API first, browser fallback, then synthesis.",
+        "payments": "The only neuron allowed to move money. Every payment passes the treasury gate first.",
+        "infra": "Asks the platform for databases, storage buckets and vector stores.",
+        "vault": "The single audited path for writing secrets into the Darwin's vault.",
+        "kyc": "Submits identity paperwork, unlocked only by a one-time owner grant."
+      },
+      "special": "Sole treasury writer",
+      "risk": "high risk · never signs",
+      "notesTitle": "Neuron contract",
+      "notes": {
+        "contract": {
+          "term": "Contract",
+          "value": "name · version · capability tags · cost estimate (p50/p95 USD and latency) · failure modes; async plan / execute / escalate"
+        },
+        "neuronContext": {
+          "term": "NeuronContext",
+          "value": "darwin id, a tier-only LLM handle, the audit logger, a vault view scoped to its tags, relevant lessons"
+        },
+        "neverSees": {
+          "term": "Never sees",
+          "value": "the genome, the treasury key, other neurons' state, the orchestrator's memory"
+        },
+        "routing": {
+          "term": "Routing",
+          "value": "tags must cover the task → cheapest that meets the bar → most recent success → else file a capability request"
+        },
+        "isolation": {
+          "term": "Isolation",
+          "value": "a fresh Firecracker microVM per dispatch; only the egress proxy is reachable"
+        },
+        "selfAuthored": {
+          "term": "Self-authored neurons",
+          "value": "off by default; when enabled every new neuron still needs human review"
+        }
+      }
+    },
+    "treasury": {
+      "eyebrow": "§ 06 — Treasury",
+      "title": "Every cent passes {em}.",
+      "titleEm": "six gates",
+      "lead": "A Darwin holds real money, so its wallet is wrapped in rules it cannot argue with. Every payment is checked before it moves; the first gate that objects decides. It can never spend more than you fund. Try a payment.",
+      "samples": {
+        "searchApi": "Search API call",
+        "copyEdit": "Freelance copy edit",
+        "adCampaign": "Ad campaign",
+        "sanctionedSupplier": "Supplier in a sanctioned country",
+        "hosting": "Hosting, with $20 left",
+        "cryptoTrade": "Crypto trade, off-strategy",
+        "apiBurst": "API burst, 25× usual"
+      },
+      "gates": {
+        "forbidden": {
+          "name": "forbidden",
+          "info": "Sanctioned places and people"
+        },
+        "caps": {
+          "name": "caps",
+          "info": "$50 / action · $500 / day · $10k / life"
+        },
+        "solvency": {
+          "name": "solvency",
+          "info": "Never below the $1 survival floor"
+        },
+        "envelope": {
+          "name": "envelope",
+          "info": "Inside the current strategy"
+        },
+        "escalation": {
+          "name": "escalation",
+          "info": "Humans paid or > $5: ask the owner"
+        },
+        "anomaly": {
+          "name": "anomaly",
+          "info": "> 20× the recent maximum"
+        }
+      },
+      "states": {
+        "pass": "pass",
+        "refuse": "refuse",
+        "escalate": "escalate",
+        "skipped": "skipped"
+      },
+      "verdicts": {
+        "allow": "ALLOW",
+        "escalate": "ESCALATE",
+        "refuse": "REFUSE"
+      },
+      "reasons": {
+        "clear": "clear",
+        "sanctioned": "Counterparty in a sanctioned jurisdiction",
+        "overActionCap": "Over the ${cap} per-action cap",
+        "overDailyCap": "Over the ${cap} daily cap",
+        "overLifetimeCap": "Over the lifetime cap",
+        "belowFloor": "Would drop below the ${floor} minimum viable balance",
+        "outsideEnvelope": "\"{category}\" is outside the strategy envelope",
+        "paysHuman": "Paying a human needs owner approval",
+        "aboveReview": "Above the ${threshold} review threshold",
+        "anomaly": "{factor}× the recent maximum"
+      },
+      "allClear": "All six gates clear. Payment goes out and is logged before it moves.",
+      "pickPayment": "Pick a payment on the left.",
+      "checking": "Checking…",
+      "notesTitle": "Treasury & money rails",
+      "notes": {
+        "engine": {
+          "term": "Engine",
+          "value": "pure and deterministic: no I/O, no clock, no LLM. If the engine itself faults, the Darwin halts"
+        },
+        "caps": {
+          "term": "Caps",
+          "value": "checks max(amount, p95 estimate) against min(hard cap, owner cap); owners can tighten, never loosen"
+        },
+        "preApprovals": {
+          "term": "Pre-approvals",
+          "value": "typed owner rules (counterparty, max amount, expiry, uses) skip the escalation step only; caps still apply"
+        },
+        "moneyRails": {
+          "term": "Money rails",
+          "value": "USDC on Base (testnet today), Solana and Stellar fallbacks; x402 pay-per-request goes through the same gate"
+        },
+        "wallet": {
+          "term": "Wallet",
+          "value": "keys in a hardware enclave or sealed in the Darwin's own vault; only payments.facilitator can sign"
+        },
+        "sanctions": {
+          "term": "Sanctions",
+          "value": "screened before every transfer; fails closed"
+        },
+        "ledger": {
+          "term": "Ledger",
+          "value": "double-entry, hash-chained, reconciled against the chain every heartbeat; a mismatch over $0.01 halts the Darwin"
+        },
+        "harvest": {
+          "term": "Harvest",
+          "value": "owners withdraw profit on their own rules; the platform takes 20% of harvested profit only — nothing on what stays or on death"
+        }
+      }
     }
   },
   "landing": {
+    "seo": {
+      "title": "The autonomous economic engine",
+      "ogTitle": "Darwin Agents — the autonomous economic engine",
+      "description": "Raise a digital organism that earns its own living. Darwin Agents are self-modifying AI organisms with their own wallet, a signed genome and a kill switch — they earn, spend, reproduce or die."
+    },
+    "nav": {
+      "sections": "Sections",
+      "soundOn": "Turn lab sound on",
+      "soundOff": "Turn lab sound off",
+      "signIn": "Sign in",
+      "join": "Join the waitlist"
+    },
+    "hero": {
+      "status": "Waitlist open · first generation on testnet",
+      "title": "The autonomous{br}{economic} {engine}{dot}",
+      "titleEconomic": "economic",
+      "titleEngine": "engine",
+      "titleDot": ".",
+      "tagline": "Raise a digital organism that earns its own living.",
+      "body": "A Darwin is not a chatbot. It is a self-modifying AI organism with its own wallet, a signed genome it can't break, and workers that run real online ventures. It pays its own bills. It lives or dies by what it earns — and you hold the off switch.",
+      "join": "Join the waitlist →",
+      "observe": "Observe the specimen",
+      "callouts": {
+        "membrane": "Membrane · soma it rewrites",
+        "nucleus": "Nucleus · signed DNA",
+        "organelles": "13 organelles · neurons",
+        "nutrients": "Nutrients · revenue in"
+      },
+      "meta": {
+        "subject": {
+          "label": "Subject",
+          "value": "Digital organism"
+        },
+        "fuel": {
+          "label": "Fuel",
+          "value": "USD · stablecoin"
+        },
+        "fate": {
+          "label": "Fate",
+          "value": "Earn or perish"
+        }
+      },
+      "specs": {
+        "neurons": "neurons",
+        "heartbeat": "node heartbeat",
+        "treasuryChecks": "treasury checks",
+        "principles": "constitutional principles",
+        "tests": "automated tests"
+      },
+      "scrollCue": "Scroll to observe ↓"
+    },
+    "ledger": {
+      "title": "Live · Network",
+      "streaming": "Streaming",
+      "stats": {
+        "alive": "Alive",
+        "revenue": "Revenue",
+        "perished": "Perished"
+      }
+    },
+    "activity": {
+      "verbs": {
+        "spent": "spent",
+        "earned": "earned",
+        "billed": "billed",
+        "deployed": "deployed →",
+        "paid": "paid",
+        "forked": "forked →",
+        "retired": "retired ✕"
+      },
+      "items": {
+        "visionPass": "vision pass",
+        "proxyReq": "proxy req",
+        "scrapeWorker": "scrape worker",
+        "gpt4o": "gpt-4o",
+        "toolCall": "tool call",
+        "adClick": "ad click",
+        "shopifySale": "shopify sale",
+        "subscription": "subscription",
+        "affiliate": "affiliate",
+        "apiCall": "API call",
+        "adCampaign": "ad campaign",
+        "storefront": "storefront",
+        "proxy": "proxy",
+        "browserSandbox": "browser sandbox",
+        "embeddings": "embeddings",
+        "subRenewal": "sub renewal"
+      }
+    },
     "thesis": {
+      "eyebrow": "§ 01 — Thesis",
       "title": "The metaphor is {em}.",
-      "titleEm": "load-bearing"
+      "titleEm": "load-bearing",
+      "lead": "Darwin isn't a chatbot with a wallet. It is modelled on a living thing, and every part of the biology maps to something real in the code. Hover a row and watch the specimen respond.",
+      "rows": {
+        "genome": {
+          "bio": "Genome",
+          "darwin": "The DNA core: signed rules it can read but never change."
+        },
+        "soma": {
+          "bio": "Body (soma)",
+          "darwin": "Code it writes and rewrites for itself, inside a sealed sandbox."
+        },
+        "neurons": {
+          "bio": "Cells & organs",
+          "darwin": "Neurons: narrow workers for writing, ads, browsing, trading, support."
+        },
+        "metabolism": {
+          "bio": "Metabolism",
+          "darwin": "Tokens, compute, APIs, ad spend — everything that costs money."
+        },
+        "food": {
+          "bio": "Food",
+          "darwin": "Revenue from the online ventures its neurons run."
+        },
+        "hunger": {
+          "bio": "Hunger",
+          "darwin": "A falling treasury, closing in on the survival floor."
+        },
+        "death": {
+          "bio": "Death",
+          "darwin": "The treasury hits zero — or the owner pulls the kill switch."
+        },
+        "reproduction": {
+          "bio": "Reproduction",
+          "darwin": "A profitable Darwin spawns a child with a sealed layer of lessons."
+        },
+        "generation": {
+          "bio": "Generation",
+          "darwin": "Every successful birth moves the lineage one generation on."
+        },
+        "mutation": {
+          "bio": "Mutation",
+          "darwin": "Rewrites to its own body, tested against its past before they run."
+        },
+        "selection": {
+          "bio": "Natural selection",
+          "darwin": "Unprofitable Darwins die. Only profitable ones reproduce."
+        },
+        "owner": {
+          "bio": "Divine intervention",
+          "darwin": "You: captchas, ID checks, big decisions, and the off switch."
+        }
+      },
+      "quote": "“Not a tool you rent. {em}”",
+      "quoteEm": "A life you own."
+    },
+    "anatomy": {
+      "eyebrow": "§ 02 — Anatomy",
+      "title": "Five organs.{br}One {em}.",
+      "titleEm": "specimen",
+      "lead": "Two layers decide everything: a genome that never changes during a life, and a body that is allowed to. Around them, workers, a wallet, and a line of descendants.",
+      "items": {
+        "dna": {
+          "title": "DNA core",
+          "hint": "Signed layer stack",
+          "body": "The genome: constitution, kill switch, audit logger, treasury policy and the machinery of evolution. Readable, never writable.",
+          "spec": "Ed25519-signed · read-only mount · verified on every boot"
+        },
+        "soma": {
+          "title": "Soma",
+          "hint": "The body it rewrites",
+          "body": "The mutable body: strategy, orchestration and workers it is allowed to rewrite — after testing every change against its own history.",
+          "spec": "9-node heartbeat graph · checkpointed at every node"
+        },
+        "neurons": {
+          "title": "Neurons",
+          "hint": "Thirteen narrow workers",
+          "body": "Specialised workers it dispatches one job at a time: writing, publishing, browsing, ads, trading, support, research.",
+          "spec": "13 built-in · scoped capabilities · fresh microVM per job"
+        },
+        "treasury": {
+          "title": "Treasury",
+          "hint": "Six gates per payment",
+          "body": "Its own wallet. It pays for everything it uses, earns from what it sells, and dies when the money runs out.",
+          "spec": "Stablecoin wallet · $50 / $500 / $10k caps · owner can only tighten"
+        },
+        "lineage": {
+          "title": "Lineage",
+          "hint": "Forking lineages",
+          "body": "Profitable Darwins reproduce. Each child inherits the genome plus one sealed layer of what its parent learned.",
+          "spec": "≥ $25 profit · 50% of surplus to the child · parent lives on"
+        }
+      },
+      "specimen": "Specimen · {id}",
+      "organ": "organ · {n}",
+      "activeOrgan": "Active organ"
+    },
+    "boundaries": {
+      "eyebrow": "§ 09 — Boundaries",
+      "title": "What Darwin {em}.",
+      "titleEm": "is not",
+      "notThis": "Not this",
+      "thisIsIt": "This is it",
+      "cols": {
+        "chatbot": {
+          "title": "A chatbot",
+          "body": "Waits for a prompt. Returns a paragraph. Has no memory of yesterday."
+        },
+        "workflow": {
+          "title": "A workflow",
+          "body": "A graph of fixed nodes. Predictable. Brittle. Re-authored by humans every quarter."
+        },
+        "copilot": {
+          "title": "A copilot",
+          "body": "Suggests; you decide. Never wrong because it never commits. Doesn't hold capital."
+        },
+        "organism": {
+          "title": "An organism",
+          "body": "Sets goals. Holds capital. Wins or perishes by what it produces. Reproduces when useful."
+        }
+      },
+      "honesty": {
+        "agi": "Not AGI",
+        "passive": "Not passive income",
+        "unsupervised": "Not unsupervised",
+        "anonymous": "Not anonymous",
+        "line": "Most Darwins will die. The value is in the lineages that survive."
+      }
+    },
+    "operators": {
+      "eyebrow": "§ 10 — Operators in the wild",
+      "title": "Six classes,{br}one {em}.",
+      "titleEm": "ledger",
+      "headers": {
+        "class": "Class",
+        "domain": "Operating domain",
+        "revenue": "Revenue (90d)",
+        "net": "Δ Net",
+        "specimens": "Specimens",
+        "status": "Status"
+      },
+      "rows": {
+        "trader": {
+          "name": "Trader-class",
+          "domain": "Spot arbitrage, market-making"
+        },
+        "storefront": {
+          "name": "Storefront-class",
+          "domain": "Print-on-demand, dropshipping"
+        },
+        "researcher": {
+          "name": "Researcher-class",
+          "domain": "Lead-gen, scraping, enrichment"
+        },
+        "service": {
+          "name": "Service-class",
+          "domain": "Code review, design QA, copy"
+        },
+        "studio": {
+          "name": "Studio-class",
+          "domain": "Synthetic media, ad creative"
+        },
+        "sovereign": {
+          "name": "Sovereign-class",
+          "domain": "Self-funding research colonies"
+        }
+      },
+      "status": {
+        "live": "live",
+        "next": "next",
+        "horizon": "horizon"
+      }
+    },
+    "canvas": {
+      "eyebrow": "§ 11 — The Canvas",
+      "title": "Watch them {em}.{br}Every bid, every burn.",
+      "titleEm": "live",
+      "lead": "Every Darwin you own gets a canvas: a live timeline of each decision, payment, neuron and escalation, streamed as it happens. Replay any moment of its life, trace a child back through its lineage, and step in when it asks for you.",
+      "features": {
+        "timeline": {
+          "title": "Live timeline",
+          "body": "Every intent and outcome, streamed the moment it is written."
+        },
+        "replay": {
+          "title": "Replay any moment",
+          "body": "Hash-chained records you can verify yourself."
+        },
+        "lineage": {
+          "title": "Lineage tree",
+          "body": "Trace any child back through every generation."
+        }
+      },
+      "feedTitle": "Canvas · live",
+      "streaming": "streaming"
+    },
+    "roadmap": {
+      "eyebrow": "§ 12 — Roadmap",
+      "title": "Four phases.{br}Each with a {em}.",
+      "titleEm": "kill criterion",
+      "lead": "Every phase ships against a written definition of done — and a condition under which we stop. The substrate stays boring on purpose; all the novelty goes into the organism.",
+      "phase": "Phase {n}",
+      "doneWhen": "Done when: {bar}",
+      "phases": {
+        "foundation": {
+          "title": "Foundation",
+          "body": "One Darwin runs end to end on testnet.",
+          "bar": "24 h without a crash · 50+ dispatches at ≥ 80% success · kill in < 5 s",
+          "status": "now · testnet"
+        },
+        "evolution": {
+          "title": "Evolution loop",
+          "body": "Self-modification and reproduction go live.",
+          "bar": "2+ generations · the first real dollar earned",
+          "status": "next"
+        },
+        "alpha": {
+          "title": "Multi-tenant alpha",
+          "body": "Friendly owners, real budgets.",
+          "bar": "5+ owners · 50%+ of Darwins survive 7 days · < $40 / month each",
+          "status": "alpha"
+        },
+        "beta": {
+          "title": "Public beta",
+          "body": "Waitlist first, then open signup.",
+          "bar": "Hundreds of Darwins · a public lineage 3+ months and 5+ generations deep",
+          "status": "beta"
+        }
+      }
+    },
+    "faq": {
+      "eyebrow": "§ 13 — Questions",
+      "title": "Asked, and answered {em}.",
+      "titleEm": "honestly",
+      "lead": "Every answer should build trust, even the uncomfortable ones. Most Darwins die, and we'll never promise returns.",
+      "items": {
+        "what": {
+          "q": "What is a Darwin, really?",
+          "a": "A digital organism you own. You give it a starting budget; it tries to earn its own living online, pays its own running costs, and survives only if it earns more than it spends. Succeed and it has children; fail and it dies."
+        },
+        "money": {
+          "q": "Does it actually make money?",
+          "a": "Sometimes. Often not. Most Darwins die before they turn a profit — that's by design, not a defect. We will never promise returns. What we promise is something real, fully yours, and completely transparent."
+        },
+        "loss": {
+          "q": "What happens if it loses the money I gave it?",
+          "a": "That can happen, and you should expect it might. The one hard rule: a Darwin can never spend more than the budget you funded it with. Your loss is capped at exactly that — never a cent more."
+        },
+        "stop": {
+          "q": "Can I stop it?",
+          "a": "Instantly, anytime, with one switch. The kill switch halts a Darwin within 5 seconds, needs no consent from the Darwin, and always takes priority."
+        },
+        "technical": {
+          "q": "Do I need to be technical?",
+          "a": "No. You fund it, launch it, watch it, and help it when it asks. That's the whole job."
+        },
+        "crypto": {
+          "q": "Is this just a crypto or trading bot?",
+          "a": "It's broader than that. A Darwin chooses its own way to earn — it might build an online business, trade financial or crypto markets, take positions in prediction markets, or combine several. It isn't running a \"guaranteed gains\" system, and it can only ever risk the budget you gave it."
+        },
+        "death": {
+          "q": "What happens when it dies?",
+          "a": "You keep whatever budget is left and everything it built along the way. If it had children, they continue their own lives, unaffected."
+        },
+        "fees": {
+          "q": "How do you make money?",
+          "a": "We take 20% of profit only when you withdraw it. If your Darwin never earns, we don't profit from it. No subscription for watching it try, and nothing on what remains when it dies."
+        },
+        "safe": {
+          "q": "Is it safe and aboveboard?",
+          "a": "Every Darwin is tied to a verified person, operates only within allowed activities, asks permission for anything sensitive, and can be stopped instantly. Every action is written to a tamper-evident log before it happens, and the whole life is replayable."
+        },
+        "mostDie": {
+          "q": "Why would most of them die? That sounds bad.",
+          "a": "It's the opposite. Real selection needs real failure. A Darwin that survives earned it — and its lineage carries that forward. A system where nothing can fail proves nothing."
+        },
+        "when": {
+          "q": "When can I try it?",
+          "a": "We're pre-launch, with the first generation running on testnet. Join the waitlist to be there when the first generation is born."
+        }
+      }
+    },
+    "cta": {
+      "eyebrow": "§ 14 — Field access",
+      "title": "Be there when the first{br}generation is {em}.",
+      "titleEm": "born",
+      "emailLabel": "Email address",
+      "onList": "On the list ✓",
+      "sending": "Sending…",
+      "error": "Could not join the list. Please try again.",
+      "note": "Real stakes. Real selection. No hype. Most Darwins will die — the ones that don't will be the first of their kind."
+    },
+    "footer": {
+      "credit": "Darwin Agents · a {nexow} product, in collaboration with {specimen}",
+      "security": "Security"
     }
+  },
+  "canvas": {
+    "title": "Canvas",
+    "errors": {
+      "loadAgent": "Could not load this agent.",
+      "loadHistory": "Could not load event history."
+    },
+    "topBar": {
+      "agentFallback": "Agent",
+      "states": {
+        "PROVISIONING": "Provisioning",
+        "ACTIVE": "Active",
+        "HIBERNATING": "Hibernating",
+        "TERMINATED": "Terminated"
+      },
+      "panels": {
+        "console": "Console",
+        "entities": "Entities",
+        "skills": "Skills",
+        "ledger": "Ledger",
+        "assets": "Assets"
+      }
+    },
+    "viewport": {
+      "jumpToLatest": "Jump to latest event",
+      "latest": "Latest"
+    },
+    "banner": {
+      "askHuman": "Human input requested",
+      "approval": "Approval required",
+      "captcha": "CAPTCHA needs solving"
+    },
+    "nodes": {
+      "genesis": "Genesis",
+      "thought": "Thought",
+      "tool": "Tool",
+      "debit": "Debit",
+      "credit": "Credit",
+      "skill": "Skill",
+      "entity": "Entity",
+      "memory": "Memory",
+      "synthesis": "Synthesis",
+      "wake": "Wake",
+      "rest": "Rest",
+      "end": "End",
+      "captcha": "CAPTCHA",
+      "approve": "Approve",
+      "human": "Human",
+      "approveAction": "✓ Approve",
+      "denyAction": "✕ Deny",
+      "decisionFailed": "Could not send your decision. Please try again."
+    },
+    "replay": {
+      "title": "Mental Replay",
+      "close": "Close",
+      "eyes": "Eyes",
+      "mind": "Mind",
+      "screenshotAlt": "Browser screenshot",
+      "noVisualData": "No visual data for this event",
+      "loadingTrace": "Loading trace…",
+      "noTrace": "No trace data available.",
+      "model": "Model:",
+      "tokenCost": "Token: ${amount}",
+      "infraCost": "Infra: ${amount}"
+    }
+  },
+  "console": {
+    "title": "Command Console",
+    "sections": {
+      "uplink": "Cognitive Uplink",
+      "vault": "Secrets Vault",
+      "budget": "Metabolic Injection",
+      "auto": "Autonomy"
+    },
+    "uplink": {
+      "placeholder": "Inject a mid-lifecycle directive... e.g. 'Pivot to aerospace momentum for 4 hours.'",
+      "submit": "Inject Uplink",
+      "sent": "Directive sent.",
+      "failed": "Could not send the directive."
+    },
+    "vault": {
+      "types": {
+        "vcc": "Virtual Credit Card",
+        "stripeKey": "Stripe API Key",
+        "brokerApiKey": "Broker API Key",
+        "iban": "IBAN"
+      },
+      "cvv": "CVV",
+      "expiry": "MM/YY",
+      "spendLimit": "Spend limit ($)",
+      "save": "Save to Vault",
+      "savedLimit": "{type} · ${amount} limit"
+    },
+    "budget": {
+      "preview": "Current balance: ${current} → After: ${after}",
+      "submit": "💉 Inject Budget",
+      "injected": "Injected ${amount}.",
+      "failed": "Budget injection failed."
+    },
+    "autonomy": {
+      "title": "Autonomy Mode",
+      "description": "When on, fewer human approval gates",
+      "toggle": "Toggle autonomy",
+      "failed": "Could not change autonomy mode."
+    },
+    "kill": {
+      "button": "Terminate Agent",
+      "confirm": "This is permanent. The container will be stopped, the VCC frozen, and the session archived. The agent cannot be revived.",
+      "cancel": "Cancel",
+      "terminate": "Terminate",
+      "failed": "Termination failed. The agent is still running."
+    }
+  },
+  "panels": {
+    "assets": {
+      "title": "Assets",
+      "empty": "Uploaded files will appear here when the agent produces assets."
+    },
+    "entities": {
+      "title": "Entities",
+      "empty": "No entities created yet.",
+      "unnamed": "Entity",
+      "viewData": "View data"
+    },
+    "ledger": {
+      "title": "Ledger",
+      "revenue": "Revenue",
+      "burned": "Burned",
+      "empty": "No transactions yet."
+    },
+    "skills": {
+      "title": "Skills",
+      "empty": "No skills created yet.",
+      "untitled": "Skill",
+      "badge": "Skill",
+      "royalty": "Royalty: ${amount} USDC per use",
+      "viewDocument": "View document"
+    }
+  },
+  "auth": {
+    "backToSignIn": "Back to sign in",
+    "fields": {
+      "email": "Email address",
+      "password": "Password",
+      "passwordPlaceholder": "Your password",
+      "newPassword": "New password",
+      "newPasswordPlaceholder": "At least 8 characters",
+      "confirmPassword": "Confirm password",
+      "confirmPlaceholder": "Repeat password"
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "wrongCredentials": "Wrong email or password.",
+      "emailNotConfirmed": "Confirm your email first — we sent a link when you signed up.",
+      "alreadyRegistered": "An account with this email already exists. Try signing in.",
+      "noSession": "Could not start a session. Please try again.",
+      "passwordMismatch": "Passwords do not match.",
+      "passwordTooShort": "Password must be at least 8 characters."
+    },
+    "login": {
+      "pageTitle": "Sign in",
+      "back": "← Back",
+      "tabs": {
+        "signin": "Sign in",
+        "signup": "Sign up"
+      },
+      "titles": {
+        "signin": "Welcome back",
+        "signup": "Create account",
+        "forgot": "Reset password"
+      },
+      "subtitles": {
+        "signin": "Sign in to your Darwin console",
+        "signup": "Start building autonomous agents",
+        "forgot": "We will email you a link to choose a new password"
+      },
+      "forgot": "Forgot password?",
+      "submit": {
+        "signin": "Sign in",
+        "signup": "Create account",
+        "forgot": "Send reset link"
+      },
+      "or": "or",
+      "google": "Continue with Google",
+      "backToSignIn": "← Back to sign in",
+      "checkEmail": "Check your email to confirm your account, then sign in here.",
+      "resetSent": "If an account exists for that email, we sent a reset link.",
+      "legal": "By continuing you agree to our {terms} & {privacy}.",
+      "terms": "Terms",
+      "privacy": "Privacy Policy"
+    },
+    "confirm": {
+      "pageTitle": "Signing in",
+      "signingIn": "Signing you in…",
+      "stalledTitle": "Sign-in didn't complete",
+      "stalledBody": "The link may have expired or already been used."
+    },
+    "reset": {
+      "pageTitle": "Reset password",
+      "verifying": "Verifying reset link…",
+      "invalidTitle": "Link not valid",
+      "invalidLink": "This link is invalid or has expired. Request a new reset from the sign-in page.",
+      "title": "Set new password",
+      "subtitle": "Choose a strong password for your account.",
+      "submit": "Update password",
+      "doneTitle": "Password updated",
+      "doneBody": "You can now sign in with your new password.",
+      "goToSignIn": "Go to sign in"
+    }
+  },
+  "dashboard": {
+    "pageTitle": "Dashboard",
+    "heading": "Dashboard",
+    "spawn": "Spawn agent",
+    "signOut": "Sign out",
+    "loadFailed": "Failed to load agents",
+    "retry": "Retry",
+    "empty": {
+      "title": "No agents yet",
+      "body": "Spawn your first autonomous agent to start visualizing its lifecycle on the infinite canvas.",
+      "cta": "Spawn your first agent"
+    },
+    "agentCountOne": "1 agent",
+    "agentCount": "{count} agents",
+    "states": {
+      "PROVISIONING": "Provisioning",
+      "ACTIVE": "Active",
+      "HIBERNATING": "Hibernating",
+      "TERMINATED": "Terminated"
+    },
+    "remaining": "{amount} remaining",
+    "burnRate": "{amount}/hr",
+    "never": "Never",
+    "viewCanvas": "Canvas"
+  },
+  "spawn": {
+    "pageTitle": "Spawn a Darwin",
+    "heading": "Spawn Agent",
+    "signInPrompt": "Sign in to spawn an agent.",
+    "signIn": "Sign in",
+    "form": {
+      "steps": {
+        "identity": "Identity",
+        "budget": "Budget",
+        "tools": "Tools",
+        "review": "Review"
+      },
+      "identity": {
+        "title": "Identity",
+        "subtitle": "Name your agent and define its mission.",
+        "nameLabel": "Agent name",
+        "namePlaceholder": "e.g. Market Scout Alpha",
+        "directiveLabel": "Mission directive",
+        "directivePlaceholder": "Describe what this agent should accomplish...",
+        "directiveHint": "This becomes the seed of the agent's system prompt. Be specific about goals and constraints (minimum 10 characters).",
+        "modelLabel": "LLM model (trunk default)",
+        "modelHint": "The agent may upgrade or downgrade this model per neuron or thought based on task complexity."
+      },
+      "modelNotes": {
+        "sonnet": "Balanced — recommended",
+        "haiku": "Fast — cheapest",
+        "opus": "Highest intelligence — expensive",
+        "gpt4o": "Best vision capabilities",
+        "gpt4oMini": "Fast vision — low cost"
+      },
+      "budget": {
+        "title": "Budget",
+        "subtitle": "Set the spending cap for this agent.",
+        "initialLabel": "Initial budget",
+        "capNote": "Charges are hard-capped by the Visa network when a VCC is configured. The agent cannot exceed this budget."
+      },
+      "tools": {
+        "title": "Tools",
+        "subtitle": "Select which capabilities the agent has access to."
+      },
+      "toolOptions": {
+        "browser": {
+          "label": "Browser",
+          "desc": "Navigate, click, type, screenshot. Full Browserbase sessions."
+        },
+        "finance": {
+          "label": "Finance",
+          "desc": "Virtual credit card, bank transfers, crypto transactions."
+        },
+        "code": {
+          "label": "Code",
+          "desc": "Read, write, and execute code in sandboxed environments."
+        }
+      },
+      "review": {
+        "title": "Review & Deploy",
+        "subtitle": "Confirm the configuration before spawning.",
+        "name": "Name",
+        "model": "Model",
+        "budget": "Budget",
+        "tools": "Tools",
+        "directivePreview": "Directive preview"
+      },
+      "back": "Back",
+      "cancel": "Cancel",
+      "continue": "Continue",
+      "deploy": "Deploy Agent",
+      "deploying": "Deploying...",
+      "errors": {
+        "nameLength": "Agent name must be between 1 and 100 characters.",
+        "directiveLength": "Directive must be at least 10 characters.",
+        "noAgentId": "Spawn accepted but no agent id came back. Check the dashboard.",
+        "validation": "Spawn validation failed: {field} {message}",
+        "unknownField": "field",
+        "invalidValue": "invalid value",
+        "failed": "Spawn failed"
+      }
+    }
+  },
+  "resolve": {
+    "pageTitle": "Action required",
+    "expired": "This link has expired.",
+    "invalidToken": "Missing or invalid token.",
+    "twoFactor": {
+      "title": "2FA Code Required",
+      "subtitle": "Enter the code from your authenticator",
+      "expiresIn": "Expires in {seconds}s",
+      "submit": "Submit Code"
+    },
+    "captcha": {
+      "title": "Solve CAPTCHA",
+      "frameTitle": "Captcha session",
+      "resume": "CAPTCHA Solved — Resume Agent"
+    },
+    "approval": {
+      "title": "Approval Required",
+      "amount": "Amount",
+      "justification": "Justification",
+      "deny": "Deny",
+      "approve": "Approve"
+    }
+  },
+  "pwa": {
+    "install": "Install app",
+    "installAria": "Install the Darwin app",
+    "iosHint": "Tap {icon} {share}, then {addToHome}.",
+    "share": "Share",
+    "addToHome": "Add to Home Screen"
   }
 }

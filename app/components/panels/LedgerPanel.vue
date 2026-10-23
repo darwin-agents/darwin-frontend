@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { X, Receipt, TrendingUp, TrendingDown } from 'lucide-vue-next'
 
+const { t } = useI18n()
 const canvas = useCanvasStore()
 const panels = useCanvasPanels()
 
@@ -29,7 +30,7 @@ const totalBurned = computed(() =>
       <div class="flex items-center justify-between px-5 py-4 border-b border-darwin-border shrink-0">
         <h2 class="text-sm font-semibold text-darwin-ink flex items-center gap-2">
           <Receipt :size="14" class="text-darwin-accent" />
-          Ledger
+          {{ t('panels.ledger.title') }}
         </h2>
         <button type="button" class="text-darwin-muted hover:text-darwin-ink p-1.5 rounded-md hover:bg-darwin-bg-3 transition-all" @click="panels.closeLedgerPanel()">
           <X :size="16" />
@@ -41,14 +42,14 @@ const totalBurned = computed(() =>
         <div class="rounded-lg bg-darwin-bg border border-darwin-border p-3 text-center">
           <div class="flex items-center justify-center gap-1 text-[10px] text-darwin-muted mb-1">
             <TrendingUp :size="10" />
-            Revenue
+            {{ t('panels.ledger.revenue') }}
           </div>
           <p class="text-lg font-semibold text-darwin-ink font-mono">${{ totalRevenue.toFixed(2) }}</p>
         </div>
         <div class="rounded-lg bg-darwin-bg border border-darwin-border p-3 text-center">
           <div class="flex items-center justify-center gap-1 text-[10px] text-darwin-muted mb-1">
             <TrendingDown :size="10" />
-            Burned
+            {{ t('panels.ledger.burned') }}
           </div>
           <p class="text-lg font-semibold text-darwin-ink font-mono">${{ totalBurned.toFixed(2) }}</p>
         </div>
@@ -56,7 +57,7 @@ const totalBurned = computed(() =>
 
       <!-- Transactions -->
       <div v-if="!transactions.length" class="flex-1 flex items-center justify-center">
-        <p class="text-xs text-darwin-muted">No transactions yet.</p>
+        <p class="text-xs text-darwin-muted">{{ t('panels.ledger.empty') }}</p>
       </div>
       <div v-else class="flex-1 overflow-auto">
         <div
