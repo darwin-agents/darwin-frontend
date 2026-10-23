@@ -9,6 +9,32 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- **Landing waitlist** — the "Apply" form inserts into a Supabase `waitlist` table (`supabase/migrations/20261023000000_waitlist.sql`: unique email, insert-only RLS, no read policy) with sending/error states; duplicate emails count as success.
+- **`/confirm` page** — landing route for Google OAuth and sign-up confirmation links; waits for the session and forwards to `/dashboard`, with a fallback after 8 s.
+- **SEO** — `lang="en"`, title template, default description, landing `useSeoMeta` (OG/Twitter), and per-page titles.
+- **`useToast`** — composable feeding the existing `DarwinToast` host (now mounted in `app.vue`); console actions (kill, uplink, budget, autonomy) and approve/deny report failures instead of failing silently.
+- **`useRenderLoop`** — landing Three.js scenes only animate while on screen and draw a single static frame under `prefers-reduced-motion`.
+
+### Fixed
+
+- **`/dashboard` auth guard** — it was the Supabase module's `callback` route and therefore exempt from the redirect middleware; `callback` is now `/confirm`, so signed-out visitors go to `/login`. Signed-in visitors to `/login` go to `/dashboard`.
+- **Landing hydration mismatch** — the canvas feed was seeded with random rows during SSR; it now seeds on mount, and stats format with a fixed `en-US` locale.
+- **Landing mobile layout** — header fits 375 px (version tag hidden, smaller CTA), operator table shows per-cell labels instead of a misaligned header row, hero helix fades behind body text; footer links point at real sections instead of `#`.
+- **Canvas top bar** — panel toggle buttons now reflect the open panel (the button list was a one-time snapshot of reactive flags).
+- **`NEURON_SPAWNED` nodes** — mapped to `null` but still rendered as a "Tool" disc because of a `??` fallback; they are now hidden as intended.
+- **`/resolve` tokens** — JWT payloads are decoded as base64url (tokens containing `-`/`_` used to fail and show "expired"); missing/invalid tokens show the right message.
+- **Interventions** — pending approvals from history now produce banners and approve/deny buttons; approve/deny resolve the matching request (by `parent_event_id`) instead of only toggling config; notifications reset between canvases; Realtime subscribes before history loads so no events are dropped in between; canvas genesis uses the earliest timestamp rather than array order.
+- **Light theme leftovers** — `SpawnForm`, `MentalReplayPanel`, `MobileInterstitial`, `BudgetGauge`, and `HeartbeatBar` used dark-theme `white`/`slate`/`violet` utilities that were unreadable on sand; they now use `darwin-*` tokens.
+- **Tailwind tokens** — added `darwin.border-soft` (used but never generated), replaced the non-existent `/92` opacity step, and added the missing `fade-in` transition CSS.
+- **Defensive UI** — dashboard tolerates missing budget/burn fields; spawn shows an error if the response has no `darwin_id`; logout button has an accessible label.
+- **Type errors** — `vue-tsc` is clean (non-null index access in `DarwinTrunk`/`NeuralThread`, `session.user` cast in `stores/auth`).
+
+### Removed
+
+- Unused `NeuronInspectorCard`, `DarwinButton`, `DarwinBadge`, `DarwinCard`, `utils/eventColor`, `utils/formatCost`, `utils/tokenRoi`, `formatDuration()`, `types/finance`, stale spawn/list API types, `canvas.loadHistoricalEvents`, and the unused `APP_URL` env var.
+
 ### Changed
 
 - **Spawn form validation UX** — frontend now enforces backend `SpawnRequest` constraints at input time (directive min length **10**, name max **100**) and surfaces FastAPI 422 details (`detail[0].loc/msg`) as a readable inline message instead of a generic spawn failure.
@@ -37,7 +63,6 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- **Spawn form validation UX** — frontend now enforces backend `SpawnRequest` constraints at input time (directive min length **10**, name max **100**) and surfaces FastAPI 422 details (`detail[0].loc/msg`) as a readable inline message instead of a generic spawn failure.
 - **Landing anatomy** — specimen canvas uses organ-specific Three.js sculptures (torus‑knot field, jittered lattice, ring stack, crystal cloud, branching fork graph) keyed to each hover row; anatomy card no longer reuses `DnaHelix`/`MoleculeCloud`
 - **`SpawnForm`** — `POST /darwins/spawn` body matches backend `SpawnRequest` (`initial_budget`, `vcc_ref`, `llm_model`, `tool_set`, `requires_approval`); reads `darwin_id` from `SpawnResponse` for navigation (owner comes from the JWT, not the body)
 - **Canvas agent loading** — `stores/agent.fetchAgent()` now tolerates both backend `/darwins/{id}/state` payload variants (`budget_remaining_usd` or legacy `ledger_balance`, etc.), preventing false redirects/empty canvas when backend and frontend schema versions differ.
