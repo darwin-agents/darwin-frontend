@@ -3,19 +3,19 @@
 const audio = useLabAudio()
 
 const NEURONS = [
-  { id: 'content.writer', what: 'Writes long-form articles, reviews and guides on the reasoning tier.', tags: ['content.long_form', 'content.write'] },
-  { id: 'content.publisher', what: 'Publishes to blogs and social platforms: API first, browser as fallback, then escalate.', tags: ['content.publish', 'web.publish'] },
-  { id: 'browser.operator', what: 'A general-purpose browser body for sites without an API. Captchas go to the owner.', tags: ['web.operate', 'web.signup'] },
-  { id: 'accounts.manager', what: 'Signs up for services, refreshes tokens and stores credentials in the vault.', tags: ['accounts.manage', 'vault.write'] },
-  { id: 'ads.manager', what: 'Creates, pauses and budgets ad campaigns across the major networks.', tags: ['ads.manage', 'treasury.observe'] },
-  { id: 'trading.operator', what: 'Places exchange orders. Highest-risk neuron; it can never sign a payment itself.', tags: ['trading.operate', 'treasury.observe'], risk: true },
-  { id: 'support.responder', what: 'Triages and answers tickets and DMs; legal, abuse and billing go to the owner.', tags: ['support.respond', 'content.write'] },
-  { id: 'analytics.measurer', what: 'Pulls metrics and computes ROI so the reflect step learns what worked.', tags: ['analytics.measure', 'web.read'] },
-  { id: 'research.scout', what: 'Finds niches and opportunities: search API first, browser fallback, then synthesis.', tags: ['research.scout', 'web.read'] },
-  { id: 'payments.facilitator', what: 'The only neuron allowed to move money. Every payment passes the treasury gate first.', tags: ['treasury.write', 'payments.send'], special: 'Sole treasury writer' },
-  { id: 'infrastructure.provisioner', what: 'Asks the platform for databases, storage buckets and vector stores.', tags: ['infra.provision'] },
-  { id: 'vault.writer', what: 'The single audited path for writing secrets into the Darwin\'s vault.', tags: ['vault.write'] },
-  { id: 'compliance.kyc_submitter', what: 'Submits identity paperwork, unlocked only by a one-time owner grant.', tags: ['compliance.submit'] },
+  { id: 'content.writer', short: 'writer', what: 'Writes long-form articles, reviews and guides on the reasoning tier.', tags: ['content.long_form', 'content.write'] },
+  { id: 'content.publisher', short: 'publisher', what: 'Publishes to blogs and social platforms: API first, browser as fallback, then escalate.', tags: ['content.publish', 'web.publish'] },
+  { id: 'browser.operator', short: 'browser', what: 'A general-purpose browser body for sites without an API. Captchas go to the owner.', tags: ['web.operate', 'web.signup'] },
+  { id: 'accounts.manager', short: 'accounts', what: 'Signs up for services, refreshes tokens and stores credentials in the vault.', tags: ['accounts.manage', 'vault.write'] },
+  { id: 'ads.manager', short: 'ads', what: 'Creates, pauses and budgets ad campaigns across the major networks.', tags: ['ads.manage', 'treasury.observe'] },
+  { id: 'trading.operator', short: 'trading', what: 'Places exchange orders. Highest-risk neuron; it can never sign a payment itself.', tags: ['trading.operate', 'treasury.observe'], risk: true },
+  { id: 'support.responder', short: 'support', what: 'Triages and answers tickets and DMs; legal, abuse and billing go to the owner.', tags: ['support.respond', 'content.write'] },
+  { id: 'analytics.measurer', short: 'analytics', what: 'Pulls metrics and computes ROI so the reflect step learns what worked.', tags: ['analytics.measure', 'web.read'] },
+  { id: 'research.scout', short: 'research', what: 'Finds niches and opportunities: search API first, browser fallback, then synthesis.', tags: ['research.scout', 'web.read'] },
+  { id: 'payments.facilitator', short: 'payments', what: 'The only neuron allowed to move money. Every payment passes the treasury gate first.', tags: ['treasury.write', 'payments.send'], special: 'Sole treasury writer' },
+  { id: 'infrastructure.provisioner', short: 'infra', what: 'Asks the platform for databases, storage buckets and vector stores.', tags: ['infra.provision'] },
+  { id: 'vault.writer', short: 'vault', what: 'The single audited path for writing secrets into the Darwin\'s vault.', tags: ['vault.write'] },
+  { id: 'compliance.kyc_submitter', short: 'kyc', what: 'Submits identity paperwork, unlocked only by a one-time owner grant.', tags: ['compliance.submit'] },
 ]
 
 const selected = ref(9) // open on the payments neuron: the most important boundary
@@ -77,7 +77,7 @@ const NOTES: [string, string][] = [
               @click="pick(i)"
             >
               <circle :cx="n.x" :cy="n.y" r="13" />
-              <text :x="n.x" :y="n.y + (n.y > 250 ? 30 : -22)">{{ n.id.split('.')[1] }}</text>
+              <text :x="n.x" :y="n.y + (n.y > 250 ? 30 : -22)">{{ n.short }}</text>
             </g>
           </svg>
         </div>

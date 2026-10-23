@@ -75,7 +75,7 @@ varying vec3 vNormal; varying vec3 vView; varying float vDisp;
 ${NOISE}
 void main(){
   vec3 p = position;
-  float n = snoise(p * uFreq + vec3(uTime * 0.22)) * 0.17 + snoise(p * uFreq * 2.3 - vec3(uTime * 0.37)) * 0.06;
+  float n = snoise(p * uFreq + vec3(uTime * 0.2)) * 0.13 + snoise(p * uFreq * 2.3 - vec3(uTime * 0.33)) * 0.035;
   float disp = n * uNoise * (1.0 + uDecay * 1.6) + uPulse * 0.07;
   float toward = max(dot(normalize(p), normalize(vec3(uPointer, 0.7))), 0.0);
   disp += pow(toward, 7.0) * 0.1;
@@ -90,7 +90,7 @@ varying vec3 vNormal; varying vec3 vView; varying float vDisp;
 void main(){
   float fres = pow(1.0 - max(dot(vNormal, vView), 0.0), 2.0);
   vec3 body = mix(uBody, vec3(1.0, 0.7, 0.18), uAlert * 0.65);
-  vec3 rim = mix(vec3(0.1, 0.07, 0.05), vec3(1.0, 0.66, 0.42), uDark);
+  vec3 rim = mix(vec3(0.45, 0.14, 0.04), vec3(1.0, 0.66, 0.42), uDark);
   vec3 col = mix(body * (0.85 + uDark * 0.25), rim, fres * (1.0 - uCore * 0.5)) + vDisp * 0.9;
   col = mix(col, vec3(dot(col, vec3(0.3, 0.59, 0.11))) * 0.55, uDecay);
   gl_FragColor = vec4(col, (0.22 + uCore * 0.45 + fres * 0.62) * uOpacity);
@@ -121,7 +121,7 @@ onMounted(() => {
         uAlert: { value: 0 }, uOpacity: { value: 0 }, uDark: { value: 0 }, uCore: { value: core },
       },
     })
-  const membraneMat = makeMat('#ff5b1f', 0, 1.5)
+  const membraneMat = makeMat('#ff5b1f', 0, 1.25)
   const nucleusMat = makeMat('#c93f0a', 1, 2.6)
   const membraneGeo = new THREE.IcosahedronGeometry(1, mobile ? 24 : 64)
   const nucleusGeo = new THREE.IcosahedronGeometry(0.34, mobile ? 12 : 24)
@@ -182,19 +182,22 @@ onMounted(() => {
     }
     if (active.value === 'lifecycle') t = { ...t, ...STAGE[stage.value] }
     if (active.value === 'thesis' && focus.value) t = { ...t, ...FOCUS[focus.value] }
-    if (active.value === 'evolution') t.split = 0.45
     if (killed.value) t = { ...t, decay: 1, rate: 0, flow: 0, alert: 0, split: 0 }
     const r = anchor?.getBoundingClientRect()
-    if (r && r.width > 0 && r.bottom > 0 && r.top < innerHeight) {
+    if (r && r.width > 0) {
+      // Lives in its slot: follow it, and fade as the slot scrolls out of view.
       t.x = ((r.left + r.width / 2) / innerWidth) * 2 - 1
       t.y = 1 - ((r.top + r.height / 2) / innerHeight) * 2
       const fill = Number(anchor!.dataset.specimenFill ?? 0.6)
       t.scale = ((r.width * fill) / innerHeight) * halfH // world radius from pixel diameter
+      const visible = (Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) / r.height
+      t.presence *= Math.min(1, Math.max(0, visible * 1.6 - 0.3))
     } else if (innerWidth < 768) {
+      // Phones: no room beside the text, so only the finale keeps a faint specimen.
       t.x *= 0.25
       t.scale *= 0.72
+      t.presence = active.value === 'cta' ? Math.min(t.presence, 0.45) : 0
     }
-    if (innerWidth < 768 && !['hero', 'lifecycle', 'cta', 'trust'].includes(active.value)) t.presence = Math.min(t.presence, 0.3)
     return t
   }
 
@@ -226,6 +229,7 @@ onMounted(() => {
   let phase = 0
   let lastBeat = 0
   let lastVitals = 0
+  let cleared = false
 
   function frame(now: number) {
     const dt = Math.min((now - last) / 1000, 0.1)
@@ -249,8 +253,9 @@ onMounted(() => {
     }
     if (now - lastVitals > 250) {
       lastVitals = now
-      const bpm = Math.round(cur.rate * 60)
-      if (vitals.value.bpm !== bpm || vitals.value.alive === killed.value) vitals.value = { bpm, alive: !killed.value }
+      const bpm = cur.rate < 0.08 ? 0 : Math.round(cur.rate * 60)
+      const alive = !killed.value && bpm > 0
+      if (vitals.value.bpm !== bpm || vitals.value.alive !== alive) vitals.value = { bpm, alive }
     }
 
     const time = now / 1000
@@ -302,6 +307,12 @@ onMounted(() => {
     nutrientMat.opacity = cur.presence * (0.12 + Math.abs(cur.flow) * 0.55)
     nutrientMat.color.set(cur.flow < 0 ? '#8a857a' : '#ff5b1f')
 
+    // Nothing to see: keep lerping but skip the GPU work.
+    if (cur.presence < 0.004 && t.presence === 0) {
+      if (!cleared) { renderer.clear(); cleared = true }
+      return
+    }
+    cleared = false
     renderer.render(scene, camera)
   }
 

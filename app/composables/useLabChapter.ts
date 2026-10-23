@@ -12,18 +12,18 @@ export interface ChapterConfig {
 export const CHAPTERS = {
   hero: { label: 'Specimen', dark: false, x: 0.45, scale: 1.15, presence: 1 },
   thesis: { label: 'Thesis', dark: false, x: -0.5, scale: 0.8, presence: 0.75 },
-  anatomy: { label: 'Anatomy', dark: false, x: -0.35, scale: 0.6, presence: 0.2 },
+  anatomy: { label: 'Anatomy', dark: false, x: -0.35, scale: 0.6, presence: 0 },
   lifecycle: { label: 'Lifecycle', dark: true, x: 0.45, scale: 1, presence: 1 },
   selection: { label: 'Selection', dark: true, x: 0, scale: 0.5, presence: 0 },
-  neurons: { label: 'Neurons', dark: false, x: 0.45, scale: 0.7, presence: 0.35 },
-  treasury: { label: 'Treasury', dark: false, x: -0.45, scale: 0.6, presence: 0.3 },
-  evolution: { label: 'Evolution', dark: false, x: 0.45, scale: 0.6, presence: 0.3 },
+  neurons: { label: 'Neurons', dark: false, x: 0.45, scale: 0.7, presence: 0 },
+  treasury: { label: 'Treasury', dark: false, x: -0.45, scale: 0.6, presence: 0 },
+  evolution: { label: 'Evolution', dark: false, x: 0.45, scale: 0.6, presence: 0 },
   trust: { label: 'Trust', dark: true, x: 0.45, scale: 0.85, presence: 0.9 },
   boundaries: { label: 'Boundaries', dark: false, x: 0, scale: 0.5, presence: 0 },
   operators: { label: 'Operators', dark: false, x: 0, scale: 0.5, presence: 0 },
-  canvas: { label: 'Canvas', dark: true, x: -0.4, scale: 0.7, presence: 0.35 },
+  canvas: { label: 'Canvas', dark: true, x: -0.4, scale: 0.7, presence: 0 },
   roadmap: { label: 'Roadmap', dark: false, x: 0, scale: 0.5, presence: 0 },
-  cta: { label: 'Waitlist', dark: true, x: 0.3, scale: 1.25, presence: 1 },
+  cta: { label: 'Waitlist', dark: true, x: 0.5, scale: 1.0, presence: 1 },
 } satisfies Record<string, ChapterConfig>
 
 export type ChapterId = keyof typeof CHAPTERS

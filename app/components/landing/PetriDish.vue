@@ -20,7 +20,9 @@ const sparkline = computed(() => {
 })
 
 function reset() {
-  colony = createColony(window.innerWidth < 768 ? 30 : 60, 14)
+  colony = createColony(window.innerWidth < 768 ? 30 : 60, 0)
+  // Founders arrive with different budgets, so selection shows up within seconds.
+  for (let i = 0; i < 14; i++) spawnCell(colony, { balance: 20 + Math.random() * 80 })
   history.value = []
 }
 
