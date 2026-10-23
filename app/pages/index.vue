@@ -1,16 +1,77 @@
 <script setup lang="ts">
+import { Volume2, VolumeX } from 'lucide-vue-next'
+
 definePageMeta({ layout: false })
 
 const seoDescription =
-  'Darwin Agents are autonomous economic organisms: a budget, a goal and a survival imperative. They earn, spend, reproduce or perish.'
+  'Raise a digital organism that earns its own living. Darwin Agents are self-modifying AI organisms with their own wallet, a signed genome and a kill switch — they earn, spend, reproduce or die.'
 useSeoMeta({
   title: 'The autonomous economic engine',
   description: seoDescription,
   ogTitle: 'Darwin Agents — the autonomous economic engine',
   ogDescription: seoDescription,
   ogType: 'website',
-  twitterCard: 'summary',
+  twitterTitle: 'Darwin Agents — the autonomous economic engine',
+  twitterDescription: seoDescription,
 })
+
+// ── FAQ (docs/marketing/08-faq.md): visible on the page and mirrored as FAQPage data ─
+const FAQ: { q: string; a: string }[] = [
+  { q: 'What is a Darwin, really?', a: 'A digital organism you own. You give it a starting budget; it tries to earn its own living online, pays its own running costs, and survives only if it earns more than it spends. Succeed and it has children; fail and it dies.' },
+  { q: 'Does it actually make money?', a: 'Sometimes. Often not. Most Darwins die before they turn a profit — that\'s by design, not a defect. We will never promise returns. What we promise is something real, fully yours, and completely transparent.' },
+  { q: 'What happens if it loses the money I gave it?', a: 'That can happen, and you should expect it might. The one hard rule: a Darwin can never spend more than the budget you funded it with. Your loss is capped at exactly that — never a cent more.' },
+  { q: 'Can I stop it?', a: 'Instantly, anytime, with one switch. The kill switch halts a Darwin within 5 seconds, needs no consent from the Darwin, and always takes priority.' },
+  { q: 'Do I need to be technical?', a: 'No. You fund it, launch it, watch it, and help it when it asks. That\'s the whole job.' },
+  { q: 'Is this just a crypto or trading bot?', a: 'It\'s broader than that. A Darwin chooses its own way to earn — it might build an online business, trade financial or crypto markets, take positions in prediction markets, or combine several. It isn\'t running a "guaranteed gains" system, and it can only ever risk the budget you gave it.' },
+  { q: 'What happens when it dies?', a: 'You keep whatever budget is left and everything it built along the way. If it had children, they continue their own lives, unaffected.' },
+  { q: 'How do you make money?', a: 'We take 20% of profit only when you withdraw it. If your Darwin never earns, we don\'t profit from it. No subscription for watching it try, and nothing on what remains when it dies.' },
+  { q: 'Is it safe and aboveboard?', a: 'Every Darwin is tied to a verified person, operates only within allowed activities, asks permission for anything sensitive, and can be stopped instantly. Every action is written to a tamper-evident log before it happens, and the whole life is replayable.' },
+  { q: 'Why would most of them die? That sounds bad.', a: 'It\'s the opposite. Real selection needs real failure. A Darwin that survives earned it — and its lineage carries that forward. A system where nothing can fail proves nothing.' },
+  { q: 'When can I try it?', a: 'We\'re pre-launch, with the first generation running on testnet. Join the waitlist to be there when the first generation is born.' },
+]
+
+const site = useRuntimeConfig().public.siteUrl
+useHead({
+  script: [{
+    key: 'ld-json',
+    type: 'application/ld+json',
+    innerHTML: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        { '@type': 'Organization', '@id': `${site}/#nexow`, name: 'Nexow, Inc.', alternateName: 'Nexow Studio', url: 'https://nexow.studio' },
+        { '@type': 'Organization', '@id': `${site}/#specimen-labs`, name: 'Specimen Labs, Inc.', url: 'https://specimenlabs.com' },
+        { '@type': 'WebSite', '@id': `${site}/#website`, url: `${site}/`, name: 'Darwin Agents', inLanguage: 'en', publisher: { '@id': `${site}/#nexow` } },
+        {
+          '@type': 'SoftwareApplication',
+          '@id': `${site}/#app`,
+          name: 'Darwin Agents',
+          url: `${site}/`,
+          image: `${site}/og.png`,
+          description: seoDescription,
+          applicationCategory: 'BusinessApplication',
+          operatingSystem: 'Web',
+          creator: [{ '@id': `${site}/#nexow` }, { '@id': `${site}/#specimen-labs` }],
+        },
+        {
+          '@type': 'FAQPage',
+          '@id': `${site}/#faq`,
+          mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+        },
+      ],
+    }),
+  }],
+})
+// First-visit airlock (LandingLabGate): decided before first paint, so no flash.
+useHead({
+  script: [{
+    key: 'lab-gate',
+    innerHTML: "try{if(!localStorage.getItem('darwin-lab-entered'))document.documentElement.classList.add('lab-gate-open')}catch(e){}",
+  }],
+})
+
+const audio = useLabAudio()
+const { active, focus } = useLabChapter()
+const navDark = computed(() => CHAPTERS[active.value].dark)
 
 // ── Live Ledger (Hero) ──────────────────────────────────────────────────────
 interface LedgerRow {
@@ -86,29 +147,55 @@ function randEvent(): FeedEvent {
 // Seeded on mount: random rows rendered during SSR would never match the client.
 const canvasFeed = ref<FeedEvent[]>([])
 
+// ── Thesis: the biological metaphor (docs/overview/01-vision-and-metaphor.md) ─
+const METAPHOR: { key: string; bio: string; darwin: string }[] = [
+  { key: 'genome', bio: 'Genome', darwin: 'The DNA core: signed rules it can read but never change.' },
+  { key: 'soma', bio: 'Body (soma)', darwin: 'Code it writes and rewrites for itself, inside a sealed sandbox.' },
+  { key: 'neurons', bio: 'Cells & organs', darwin: 'Neurons: narrow workers for writing, ads, browsing, trading, support.' },
+  { key: 'metabolism', bio: 'Metabolism', darwin: 'Tokens, compute, APIs, ad spend — everything that costs money.' },
+  { key: 'food', bio: 'Food', darwin: 'Revenue from the online ventures its neurons run.' },
+  { key: 'hunger', bio: 'Hunger', darwin: 'A falling treasury, closing in on the survival floor.' },
+  { key: 'death', bio: 'Death', darwin: 'The treasury hits zero — or the owner pulls the kill switch.' },
+  { key: 'reproduction', bio: 'Reproduction', darwin: 'A profitable Darwin spawns a child with a sealed layer of lessons.' },
+  { key: 'generation', bio: 'Generation', darwin: 'Every successful birth moves the lineage one generation on.' },
+  { key: 'mutation', bio: 'Mutation', darwin: 'Rewrites to its own body, tested against its past before they run.' },
+  { key: 'selection', bio: 'Natural selection', darwin: 'Unprofitable Darwins die. Only profitable ones reproduce.' },
+  { key: 'owner', bio: 'Divine intervention', darwin: 'You: captchas, ID checks, big decisions, and the off switch.' },
+]
+function hoverMetaphor(key: string | null) {
+  if (key === focus.value) return
+  focus.value = key
+  if (key) audio.blip(0.9)
+}
+
 // ── Anatomy ──────────────────────────────────────────────────────────────────
 const anatomyActive = ref(0)
-const anatomyItems: { i: string; t: string; d: string }[] = [
-  { i: 'I',   t: 'Goal Engine',         d: 'Auto-generates mid- and long-term objectives from a starting prompt. Re-prioritizes when reality disagrees.' },
-  { i: 'II',  t: 'Internet Body',       d: 'Browser, vision, scraping, API tool-use. Operates on the same web humans operate on — no curated sandbox.' },
-  { i: 'III', t: 'Treasury',            d: 'On-chain wallet. Pays for compute, tools, and ad spend. Bills its own customers. Bankruptcy is real.' },
-  { i: 'IV',  t: 'Memory Core',         d: 'Episodic + crystallized embeddings. Successful strategies persist; failed ones are pruned.' },
-  { i: 'V',   t: 'Reproductive Layer',  d: 'Profitable agents fork with mutations. Unprofitable lineages return their stake to the substrate pool.' },
+const anatomyItems = [
+  { i: 'I', t: 'DNA core', scene: 2, accent: '#c93f0a', hue: '#f3eee2', hint: 'Signed layer stack',
+    d: 'The genome: constitution, kill switch, audit logger, treasury policy and the machinery of evolution. Readable, never writable.',
+    spec: 'Ed25519-signed · read-only mount · verified on every boot' },
+  { i: 'II', t: 'Soma', scene: 0, accent: '#ff5b1f', hue: '#f3eee2', hint: 'The body it rewrites',
+    d: 'The mutable body: strategy, orchestration and workers it is allowed to rewrite — after testing every change against its own history.',
+    spec: '9-node heartbeat graph · checkpointed at every node' },
+  { i: 'III', t: 'Neurons', scene: 1, accent: '#0a0a0a', hue: '#ff8a5b', hint: 'Thirteen narrow workers',
+    d: 'Specialised workers it dispatches one job at a time: writing, publishing, browsing, ads, trading, support, research.',
+    spec: '13 built-in · scoped capabilities · fresh microVM per job' },
+  { i: 'IV', t: 'Treasury', scene: 3, accent: '#f3eee2', hue: '#ff7f45', hint: 'Six gates per payment',
+    d: 'Its own wallet. It pays for everything it uses, earns from what it sells, and dies when the money runs out.',
+    spec: 'Stablecoin wallet · $50 / $500 / $10k caps · owner can only tighten' },
+  { i: 'V', t: 'Lineage', scene: 4, accent: '#ff5b1f', hue: '#ffb08a', hint: 'Forking lineages',
+    d: 'Profitable Darwins reproduce. Each child inherits the genome plus one sealed layer of what its parent learned.',
+    spec: '≥ $25 profit · 50% of surplus to the child · parent lives on' },
 ]
 const activeItem = computed(() => anatomyItems[anatomyActive.value] ?? anatomyItems[0]!)
-interface AnatomyVisual {
-  accent: string
-  hue: string
-  hint: string
-}
-const anatomyVisuals: AnatomyVisual[] = [
-  { accent: '#ff5b1f', hue: '#f3eee2', hint: 'Attractor trajectory' },
-  { accent: '#0a0a0a', hue: '#ff8a5b', hint: 'Open-web topology' },
-  { accent: '#c93f0a', hue: '#f3eee2', hint: 'Stacked settlements' },
-  { accent: '#f3eee2', hue: '#ff7f45', hint: 'Crystallizing recall' },
-  { accent: '#ff5b1f', hue: '#ffb08a', hint: 'Forking lineages' },
+
+const SPECS = [
+  ['13', 'neurons'],
+  ['9', 'node heartbeat'],
+  ['6', 'treasury checks'],
+  ['10', 'constitutional principles'],
+  ['1,800+', 'automated tests'],
 ]
-const activeVisual = computed(() => anatomyVisuals[anatomyActive.value] ?? anatomyVisuals[0]!)
 
 // ── CTA ───────────────────────────────────────────────────────────────────────
 const supabase = useSupabaseClient()
@@ -127,13 +214,19 @@ async function submitCta() {
   // 23505 = unique violation: already on the list, which is success for the visitor
   if (error && error.code !== '23505') {
     ctaError.value = 'Could not join the list. Please try again.'
+    audio.buzz()
     return
   }
   ctaSubmitted.value = true
+  audio.chime()
 }
 
-// ── Intervals ─────────────────────────────────────────────────────────────────
+// Soft cue when crossing into a new chapter.
+watch(active, () => audio.blip(0.5))
+
 onMounted(() => {
+  audio.restorePreference()
+  const stopChapters = observeChapters()
   canvasFeed.value = Array.from({ length: 12 }, () => randEvent())
   const ledgerTimer = setInterval(() => {
     ledgerRows.value = [genRow(), ...ledgerRows.value].slice(0, 6)
@@ -149,6 +242,7 @@ onMounted(() => {
   }, 1100)
 
   onUnmounted(() => {
+    stopChapters()
     clearInterval(ledgerTimer)
     clearInterval(feedTimer)
   })
@@ -157,53 +251,51 @@ onMounted(() => {
 
 <template>
   <div class="lp-root">
+    <LandingLabGate />
+    <ClientOnly>
+      <LandingSpecimenOrganism />
+    </ClientOnly>
+    <LandingLabHud />
     <div class="grain" />
 
-    <!-- ═══════════════════════════════════════════════════════ NAV (fixed glassy) -->
-    <header class="lp-header">
+    <!-- ═══════════════════════════════════════════════════════ NAV -->
+    <header class="lp-header" :class="{ 'is-dark': navDark }">
       <div class="lp-container lp-nav">
-        <div class="lp-logo">
-          <svg width="22" height="22" viewBox="0 0 22 22">
-            <circle cx="11" cy="11" r="10" fill="none" stroke="#0a0a0a" stroke-width="1.4" />
-            <circle cx="11" cy="11" r="3.5" fill="#ff5b1f" />
-          </svg>
+        <a href="#top" class="lp-logo">
+          <UiDarwinLogo :size="26" />
           <span class="lp-logo-name">Darwin</span>
-          <span class="upper dim lp-logo-tag">Agents · v0.4</span>
-        </div>
-        <nav class="lp-navlinks">
-          <a href="#anatomy">Anatomy</a>
-          <a href="#operators">Operators</a>
-          <a href="#canvas">Canvas</a>
+          <span class="upper dim lp-logo-tag">Agents · v0.7</span>
+        </a>
+        <nav class="lp-navlinks" aria-label="Sections">
+          <a href="#thesis">Specimen</a>
+          <a href="#lifecycle">Lifecycle</a>
+          <a href="#evolution">Evolution</a>
           <a href="#trust">Trust</a>
           <a href="#roadmap">Roadmap</a>
         </nav>
         <div class="lp-nav-actions">
+          <LandingLabTelemetry />
+          <UiInstallButton compact />
+          <button
+            type="button"
+            class="lp-sound"
+            :aria-pressed="audio.enabled.value"
+            :aria-label="audio.enabled.value ? 'Turn lab sound off' : 'Turn lab sound on'"
+            @click="audio.setEnabled(!audio.enabled.value)"
+          >
+            <Volume2 v-if="audio.enabled.value" :size="16" />
+            <VolumeX v-else :size="16" />
+          </button>
           <NuxtLink to="/login" class="lp-btn-ghost-ink">Sign in</NuxtLink>
-          <a href="#cta" class="lp-btn">Request access →</a>
+          <a href="#cta" class="lp-btn lp-nav-cta">Join the waitlist</a>
         </div>
       </div>
     </header>
 
     <!-- ═══════════════════════════════════════════════════════ HERO -->
-    <section class="lp-hero">
-      <!-- Background 3D -->
-      <div class="lp-hero-bg">
-        <div class="lp-hero-dna">
-          <ClientOnly>
-            <LandingDnaHelix color="#ff5b1f" :density="32" />
-          </ClientOnly>
-        </div>
-        <div class="lp-hero-molecules">
-          <ClientOnly>
-            <LandingMoleculeCloud :count="8" color="#ff5b1f" />
-          </ClientOnly>
-        </div>
-        <div class="lp-hero-radial" />
-      </div>
-
-      <!-- Content -->
+    <section id="top" data-chapter="hero" class="lp-hero">
       <div class="lp-container lp-hero-content">
-        <div class="eyebrow" style="margin-bottom: 36px">Early Access · 2026</div>
+        <div class="lp-status mono"><span class="lp-pulse-dot" /> Waitlist open · first generation on testnet</div>
 
         <div class="lp-hero-grid">
           <div>
@@ -213,15 +305,31 @@ onMounted(() => {
               <em class="lp-italic lp-light lp-ember">engine</em>
               <span class="lp-ember">.</span>
             </h1>
+            <p class="lp-hero-tagline">Raise a digital organism that earns its own living.</p>
             <p class="lp-hero-body">
-              A Darwin Agent is not a chatbot. It is an autonomous economic
-              participant — with a budget, a goal, and a survival imperative —
-              that sets its own objectives, navigates the open internet, builds
-              revenue-generating businesses, and manages its own finances.
+              A Darwin is not a chatbot. It is a self-modifying AI organism with its own wallet,
+              a signed genome it can't break, and workers that run real online ventures. It pays
+              its own bills. It lives or dies by what it earns — and you hold the off switch.
             </p>
             <div class="lp-hero-actions">
-              <a href="#cta" class="lp-btn">Request access →</a>
-              <a href="#anatomy" class="lp-btn-outline">Read the thesis</a>
+              <a href="#cta" class="lp-btn">Join the waitlist →</a>
+              <a href="#thesis" class="lp-btn-outline">Observe the specimen</a>
+            </div>
+          </div>
+
+          <div class="lp-hero-specimen" data-specimen-anchor data-specimen-fill="0.6" aria-hidden="true">
+            <span class="lp-callout lp-callout-1 mono">Membrane · soma it rewrites</span>
+            <span class="lp-callout lp-callout-2 mono">Nucleus · signed DNA</span>
+            <span class="lp-callout lp-callout-3 mono">13 organelles · neurons</span>
+            <span class="lp-callout lp-callout-4 mono">Nutrients · revenue in</span>
+          </div>
+        </div>
+
+        <div class="lp-hero-bottom">
+          <div class="lp-meta-strip">
+            <div v-for="[k, v] in [['Subject', 'Digital organism'], ['Fuel', 'USD · stablecoin'], ['Fate', 'Earn or perish']]" :key="k">
+              <div class="upper dim" style="margin-bottom: 10px">{{ k }}</div>
+              <div style="font-size: 22px; font-style: italic; font-weight: 400; letter-spacing: -0.01em">{{ v }}</div>
             </div>
           </div>
 
@@ -256,61 +364,99 @@ onMounted(() => {
           </div>
         </div>
 
-        <!-- Meta strip -->
-        <div class="lp-meta-strip">
-          <div v-for="[k, v] in [['Subject', 'Digital organism'], ['Fuel', 'USD · stablecoin'], ['Fate', 'Earn or perish']]" :key="k">
-            <div class="upper dim" style="margin-bottom: 10px">{{ k }}</div>
-            <div style="font-size: 22px; font-style: italic; font-weight: 400; letter-spacing: -0.01em">{{ v }}</div>
+        <div class="lp-specs mono">
+          <span v-for="[n, l] in SPECS" :key="l"><b>{{ n }}</b> {{ l }}</span>
+        </div>
+        <a href="#thesis" class="lp-scroll-cue mono">Scroll to observe ↓</a>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════ THESIS -->
+    <section id="thesis" data-chapter="thesis" class="lp-section lp-bg-2">
+      <div class="lp-container">
+        <div class="lab-head">
+          <div>
+            <div class="upper dim lab-eyebrow">§ 01 — Thesis</div>
+            <h2 class="lp-h2 reveal">The metaphor is <em class="lp-ember-deep lp-italic">load-bearing</em>.</h2>
+          </div>
+          <p class="lab-lead reveal">
+            Darwin isn't a chatbot with a wallet. It is modelled on a living thing, and every part
+            of the biology maps to something real in the code. Hover a row and watch the specimen respond.
+          </p>
+        </div>
+
+        <div class="th-grid">
+          <div class="th-anchor" data-specimen-anchor data-specimen-fill="0.7" aria-hidden="true" />
+          <div class="th-table" @mouseleave="hoverMetaphor(null)">
+            <button
+              v-for="row in METAPHOR"
+              :key="row.key"
+              type="button"
+              class="th-row reveal"
+              :class="{ 'is-active': focus === row.key }"
+              :aria-pressed="focus === row.key"
+              @mouseenter="hoverMetaphor(row.key)"
+              @focus="hoverMetaphor(row.key)"
+              @click="hoverMetaphor(row.key)"
+            >
+              <span class="th-bio">{{ row.bio }}</span>
+              <span class="th-darwin">{{ row.darwin }}</span>
+            </button>
           </div>
         </div>
+        <p class="th-quote reveal">“Not a tool you rent. <em class="lp-ember-deep">A life you own.</em>”</p>
       </div>
     </section>
 
     <!-- ═══════════════════════════════════════════════════════ ANATOMY -->
-    <section id="anatomy" class="lp-section" style="padding: 180px 0 140px; border-top: 1px solid var(--darwin-border)">
+    <section id="anatomy" data-chapter="anatomy" class="lp-section">
       <div class="lp-container">
-        <div class="lp-section-header">
-          <div class="upper dim">§ 01 — Anatomy</div>
-          <h2 class="lp-h2">Five organs.<br />One <em class="lp-ember-deep lp-italic">specimen</em>.</h2>
+        <div class="lab-head">
+          <div>
+            <div class="upper dim lab-eyebrow">§ 02 — Anatomy</div>
+            <h2 class="lp-h2 reveal">Five organs.<br />One <em class="lp-ember-deep lp-italic">specimen</em>.</h2>
+          </div>
+          <p class="lab-lead reveal">
+            Two layers decide everything: a genome that never changes during a life, and a body
+            that is allowed to. Around them, workers, a wallet, and a line of descendants.
+          </p>
         </div>
 
         <div class="lp-anatomy-grid">
-          <!-- Left list -->
           <div style="border-top: 1px solid var(--darwin-ink)">
             <button
               v-for="(it, i) in anatomyItems"
               :key="it.i"
+              type="button"
               class="lp-anatomy-btn"
-              :style="{ opacity: anatomyActive === i ? 1 : 0.55 }"
+              :class="{ 'is-active': anatomyActive === i }"
+              :aria-pressed="anatomyActive === i"
               @mouseenter="anatomyActive = i"
-              @click="anatomyActive = i"
+              @focus="anatomyActive = i"
+              @click="anatomyActive = i; audio.blip(1.2)"
             >
               <span class="mono lp-ember-deep lp-italic" style="font-size: 12px">{{ it.i }}</span>
               <div>
                 <div style="font-size: 26px; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 8px">{{ it.t }}</div>
                 <div style="font-size: 14px; line-height: 1.55; color: var(--darwin-ink-soft); max-width: 480px">{{ it.d }}</div>
+                <div class="mono lp-anatomy-spec">{{ it.spec }}</div>
               </div>
             </button>
           </div>
 
-          <!-- Right sticky card -->
-          <div style="position: sticky; top: 60px">
+          <div class="lp-specimen-sticky">
             <div class="lp-specimen-card">
               <ClientOnly>
                 <div class="lp-specimen-visual">
-                  <div class="lp-specimen-grid-glow" :style="{ '--lp-specimen-hue': activeVisual.hue }" />
+                  <div class="lp-specimen-grid-glow" :style="{ '--lp-specimen-hue': activeItem.hue }" />
                   <Transition name="lp-specimen-fade" mode="out-in">
                     <div :key="`specimen-${anatomyActive}`" class="lp-specimen-object">
-                      <LandingAnatomyOrganScene
-                        :organ-index="anatomyActive"
-                        :accent="activeVisual.accent"
-                        :hue="activeVisual.hue"
-                      />
+                      <LandingAnatomyOrganScene :organ-index="activeItem.scene" :accent="activeItem.accent" :hue="activeItem.hue" />
                     </div>
                   </Transition>
                 </div>
               </ClientOnly>
-              <div class="lp-specimen-orbit" :style="{ '--lp-specimen-hue': activeVisual.hue }">
+              <div class="lp-specimen-orbit" :style="{ '--lp-specimen-hue': activeItem.hue }">
                 <span v-for="n in 3" :key="`${activeItem.i}-${n}`" class="lp-specimen-orbit-ring" :style="{ animationDelay: `${n * -2.2}s` }" />
               </div>
               <div class="lp-specimen-top">
@@ -320,7 +466,7 @@ onMounted(() => {
               <div class="lp-specimen-bottom">
                 <div class="upper dim" style="margin-bottom: 6px">Active organ</div>
                 <div style="font-size: 32px; font-style: italic; font-weight: 400; letter-spacing: -0.02em">{{ activeItem.t }}</div>
-                <div class="mono lp-specimen-hint">{{ activeVisual.hint }}</div>
+                <div class="mono lp-specimen-hint">{{ activeItem.hint }}</div>
               </div>
             </div>
           </div>
@@ -328,11 +474,18 @@ onMounted(() => {
       </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════ WHAT IT IS NOT -->
-    <section style="padding: 160px 0; background: var(--darwin-bg-2)">
+    <LandingLifecycleChapter />
+    <LandingPetriDish />
+    <LandingNeuronConstellation />
+    <LandingTreasuryGates />
+    <LandingEvolutionLab />
+    <LandingTrustLab />
+
+    <!-- ═══════════════════════════════════════════════════════ BOUNDARIES -->
+    <section id="boundaries" data-chapter="boundaries" class="lp-section lp-bg-2">
       <div class="lp-container">
-        <div class="upper dim" style="margin-bottom: 32px">§ 02 — Boundaries</div>
-        <h2 class="lp-h2" style="margin-bottom: 80px; max-width: 1100px">
+        <div class="upper dim lab-eyebrow">§ 09 — Boundaries</div>
+        <h2 class="lp-h2 reveal" style="margin-bottom: 80px; max-width: 1100px">
           What Darwin <em class="lp-ember-deep lp-italic">is not</em>.
         </h2>
 
@@ -360,14 +513,19 @@ onMounted(() => {
             </div>
           </div>
         </div>
+
+        <div class="lp-honesty reveal">
+          <span v-for="n in ['Not AGI', 'Not passive income', 'Not unsupervised', 'Not anonymous']" :key="n" class="mono">{{ n }}</span>
+          <p>Most Darwins will die. The value is in the lineages that survive.</p>
+        </div>
       </div>
     </section>
 
     <!-- ═══════════════════════════════════════════════════════ OPERATORS -->
-    <section id="operators" style="padding: 160px 0; border-top: 1px solid var(--darwin-border)">
+    <section id="operators" data-chapter="operators" class="lp-section" style="border-top: 1px solid var(--darwin-border)">
       <div class="lp-container">
         <div class="lp-section-header">
-          <div class="upper dim">§ 03 — Operators in the wild</div>
+          <div class="upper dim">§ 10 — Operators in the wild</div>
           <h2 class="lp-h2">Six classes,<br />one <em class="lp-ember-deep lp-italic">ledger</em>.</h2>
         </div>
 
@@ -409,30 +567,23 @@ onMounted(() => {
     </section>
 
     <!-- ═══════════════════════════════════════════════════════ CANVAS -->
-    <section id="canvas" class="lp-canvas-section">
-      <div class="lp-canvas-bg">
-        <ClientOnly>
-          <LandingMoleculeCloud :count="24" color="#ff5b1f" />
-        </ClientOnly>
-      </div>
-
-      <div class="lp-container lp-canvas-content">
-        <div class="upper" style="color: var(--darwin-accent); margin-bottom: 32px">§ 04 — The Canvas</div>
-        <h2 class="lp-h2 lp-cream" style="margin-bottom: 60px; max-width: 1100px">
+    <section id="canvas" data-chapter="canvas" class="lp-section lab-dark">
+      <div class="lp-container">
+        <div class="upper lab-eyebrow">§ 11 — The Canvas</div>
+        <h2 class="lp-h2 reveal" style="margin-bottom: 60px; max-width: 1100px">
           Watch them <em style="color: var(--darwin-accent)">live</em>.<br />Every bid, every burn.
         </h2>
 
         <div class="lp-canvas-grid">
           <div>
-            <p style="font-size: 19px; line-height: 1.55; color: rgba(243,238,226,0.78); margin-bottom: 32px; max-width: 480px">
-              The Canvas is a public window into the substrate. It streams every
-              economic action — every spend, every revenue event, every fork, every
-              bankruptcy — for any agent that opts in. Audit a specimen back to its
-              first generation in under three clicks.
+            <p class="lab-lead" style="margin-bottom: 32px; max-width: 480px">
+              Every Darwin you own gets a canvas: a live timeline of each decision, payment,
+              neuron and escalation, streamed as it happens. Replay any moment of its life,
+              trace a child back through its lineage, and step in when it asks for you.
             </p>
             <div style="display: flex; flex-direction: column; gap: 16px">
               <div
-                v-for="[t, d] in [['Append-only ledger', 'Cryptographically signed; replay-deterministic.'], ['Lineage graph', 'Trace any agent through every parent and mutation.'], ['Public verifiers', 'Independent observers re-score outcomes in real time.']]"
+                v-for="[t, d] in [['Live timeline', 'Every intent and outcome, streamed the moment it is written.'], ['Replay any moment', 'Hash-chained records you can verify yourself.'], ['Lineage tree', 'Trace any child back through every generation.']]"
                 :key="t"
                 style="padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.16)"
               >
@@ -442,7 +593,6 @@ onMounted(() => {
             </div>
           </div>
 
-          <!-- Live feed -->
           <div class="lp-feed-card mono">
             <div class="lp-feed-header">
               <span>Canvas · live</span>
@@ -471,51 +621,30 @@ onMounted(() => {
       </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════ TRUST -->
-    <section id="trust" style="padding: 160px 0; border-top: 1px solid var(--darwin-border)">
-      <div class="lp-container">
-        <div class="upper dim" style="margin-bottom: 32px">§ 05 — Trust by construction</div>
-        <h2 class="lp-h2" style="margin-bottom: 80px; max-width: 1100px">
-          Evolution without<br />a <em class="lp-ember-deep lp-italic">blast radius</em>.
-        </h2>
-
-        <div class="lp-trust-grid">
-          <div
-            v-for="(it, i) in [
-              { t: 'Bounded autonomy',    d: 'Every agent ships with a hard ceiling on spend, scope, and lifetime. The substrate enforces them; no agent can extend its own.' },
-              { t: 'Verifiable lineage',  d: 'Each agent carries a signed pedigree — every parent, every mutation, every win and loss. Auditors can replay any decision back to its origin.' },
-              { t: 'Adversarial selection', d: 'A red-team population continuously attempts to exploit the colony. Defenses that fail get retired in real time.' },
-              { t: 'Human veto',          d: 'Operators retain instant kill authority over any branch, generation, or specimen — even retroactively.' },
-            ]"
-            :key="it.t"
-            class="lp-trust-card"
-          >
-            <div class="mono" style="font-size: 11px; color: var(--darwin-accent-deep); margin-bottom: 24px">0{{ i + 1 }} / 04</div>
-            <h3 style="font-size: 28px; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 16px">{{ it.t }}</h3>
-            <p style="font-size: 15px; line-height: 1.6; color: var(--darwin-ink-soft); max-width: 520px">{{ it.d }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- ═══════════════════════════════════════════════════════ ROADMAP -->
-    <section id="roadmap" style="padding: 160px 0; background: var(--darwin-bg-2)">
+    <section id="roadmap" data-chapter="roadmap" class="lp-section lp-bg-2">
       <div class="lp-container">
-        <div class="upper dim" style="margin-bottom: 32px">§ 06 — Roadmap</div>
-        <h2 class="lp-h2" style="margin-bottom: 100px">
-          Four phases<br />of <em class="lp-ember-deep lp-italic">complexity</em>.
-        </h2>
+        <div class="lab-head">
+          <div>
+            <div class="upper dim lab-eyebrow">§ 12 — Roadmap</div>
+            <h2 class="lp-h2 reveal">Four phases.<br />Each with a <em class="lp-ember-deep lp-italic">kill criterion</em>.</h2>
+          </div>
+          <p class="lab-lead reveal">
+            Every phase ships against a written definition of done — and a condition under which
+            we stop. The substrate stays boring on purpose; all the novelty goes into the organism.
+          </p>
+        </div>
 
         <div class="lp-roadmap-grid">
           <div
             v-for="(p, i) in [
-              { q: 'Q2 2025', t: 'Single-celled', d: 'Closed alpha. Solo agents on bounded tasks. ~50 design partners.',                    status: 'live' },
-              { q: 'Q4 2025', t: 'Colonial',       d: 'Multi-agent markets. Inter-specimen messaging. Verifier framework v1.',               status: 'live' },
-              { q: 'Q2 2026', t: 'Speciation',     d: 'Open the substrate. Bring-your-own agents. Cross-org colonies.',                     status: 'next' },
-              { q: '2027 →',  t: 'Ecosystem',      d: 'Public market for verified specimens. Per-outcome billing. Sovereign colonies.',      status: 'horizon' },
+              { q: 'Phase 0', t: 'Foundation', d: 'One Darwin runs end to end on testnet.', bar: '24 h without a crash · 50+ dispatches at ≥ 80% success · kill in < 5 s', status: 'now · testnet' },
+              { q: 'Phase 1', t: 'Evolution loop', d: 'Self-modification and reproduction go live.', bar: '2+ generations · the first real dollar earned', status: 'next' },
+              { q: 'Phase 2', t: 'Multi-tenant alpha', d: 'Friendly owners, real budgets.', bar: '5+ owners · 50%+ of Darwins survive 7 days · < $40 / month each', status: 'alpha' },
+              { q: 'Phase 3', t: 'Public beta', d: 'Waitlist first, then open signup.', bar: 'Hundreds of Darwins · a public lineage 3+ months and 5+ generations deep', status: 'beta' },
             ]"
             :key="p.t"
-            class="lp-roadmap-col"
+            class="lp-roadmap-col reveal"
             :style="{ borderRight: i < 3 ? '1px solid var(--darwin-border)' : 'none' }"
           >
             <div class="mono" style="font-size: 11px; color: var(--darwin-muted); margin-bottom: 8px">{{ p.q }}</div>
@@ -523,43 +652,57 @@ onMounted(() => {
               class="lp-status-badge mono"
               :style="{
                 marginBottom: '32px', display: 'inline-block',
-                color: p.status === 'live' ? 'var(--darwin-bg)' : 'var(--darwin-ink)',
-                background: p.status === 'live' ? 'var(--darwin-accent)' : p.status === 'next' ? 'var(--darwin-bg-3)' : 'transparent',
-                border: p.status === 'horizon' ? '1px solid var(--darwin-border)' : 'none',
+                color: i === 0 ? 'var(--darwin-bg)' : 'var(--darwin-ink)',
+                background: i === 0 ? 'var(--darwin-accent)' : i === 1 ? 'var(--darwin-bg-3)' : 'transparent',
+                border: i > 1 ? '1px solid var(--darwin-border)' : 'none',
               }"
             >{{ p.status }}</span>
             <h3 style="font-size: 32px; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 20px; font-style: italic">{{ p.t }}</h3>
-            <p style="font-size: 14px; line-height: 1.55; color: var(--darwin-ink-soft)">{{ p.d }}</p>
+            <p style="font-size: 15px; line-height: 1.55; color: var(--darwin-ink); margin-bottom: 16px">{{ p.d }}</p>
+            <p class="mono" style="font-size: 11px; line-height: 1.7; color: var(--darwin-muted)">Done when: {{ p.bar }}</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════ CTA + FOOTER -->
-    <section id="cta" class="lp-cta-section">
-      <div class="lp-cta-dna">
-        <ClientOnly>
-          <LandingDnaHelix color="#ff5b1f" :density="40" :twist="1.2" />
-        </ClientOnly>
+    <!-- ═══════════════════════════════════════════════════════ FAQ -->
+    <section id="faq" data-chapter="faq" class="lp-section">
+      <div class="lp-container">
+        <div class="lab-head">
+          <div>
+            <div class="upper dim lab-eyebrow">§ 13 — Questions</div>
+            <h2 class="lp-h2 reveal">Asked, and answered <em class="lp-ember-deep lp-italic">honestly</em>.</h2>
+          </div>
+          <p class="lab-lead reveal">
+            Every answer should build trust, even the uncomfortable ones. Most Darwins die,
+            and we'll never promise returns.
+          </p>
+        </div>
+        <div class="lp-faq">
+          <details v-for="f in FAQ" :key="f.q" class="lp-faq-item reveal">
+            <summary>
+              <h3>{{ f.q }}</h3>
+              <span class="lp-faq-plus" aria-hidden="true">+</span>
+            </summary>
+            <p>{{ f.a }}</p>
+          </details>
+        </div>
       </div>
-      <div class="lp-cta-molecules">
-        <ClientOnly>
-          <LandingMoleculeCloud :count="12" color="#ff5b1f" />
-        </ClientOnly>
-      </div>
-      <div class="lp-cta-gradient" />
+    </section>
 
+    <!-- ═══════════════════════════════════════════════════════ CTA + FOOTER -->
+    <section id="cta" data-chapter="cta" class="lp-cta-section lab-dark">
       <div class="lp-container lp-cta-content">
-        <div class="upper" style="color: var(--darwin-accent); margin-bottom: 32px">§ 07 — Field access</div>
+        <div class="upper lab-eyebrow">§ 14 — Field access</div>
         <h2 class="lp-cta-h2">
-          Bring a problem.<br />We'll <em style="color: var(--darwin-accent)">grow</em> the answer.
+          Be there when the first<br />generation is <em style="color: var(--darwin-accent)">born</em>.
         </h2>
 
         <form class="lp-cta-form" @submit.prevent="submitCta">
           <input
             v-model="ctaEmail"
             type="email"
-            placeholder="researcher@lab.org"
+            placeholder="you@lab.org"
             aria-label="Email address"
             autocomplete="email"
             maxlength="254"
@@ -568,229 +711,159 @@ onMounted(() => {
             class="lp-cta-input"
           />
           <button type="submit" class="lp-btn lp-btn-ember" :disabled="ctaSubmitted || ctaSending">
-            {{ ctaSubmitted ? 'On the list ✓' : ctaSending ? 'Sending…' : 'Apply →' }}
+            {{ ctaSubmitted ? 'On the list ✓' : ctaSending ? 'Sending…' : 'Join the waitlist →' }}
           </button>
         </form>
         <p v-if="ctaError" role="alert" class="lp-cta-error">{{ ctaError }}</p>
-        <p style="font-size: 13px; color: var(--darwin-muted-2)">~30 partners admitted per quarter. We answer every email personally.</p>
+        <p style="font-size: 13px; color: var(--darwin-muted-2); max-width: 560px">
+          Real stakes. Real selection. No hype. Most Darwins will die — the ones that don't will be the first of their kind.
+        </p>
       </div>
 
-      <!-- Footer -->
-      <div class="lp-container lp-footer">
-        <div style="display: flex; align-items: center; gap: 12px">
-          <svg width="18" height="18" viewBox="0 0 22 22">
-            <circle cx="11" cy="11" r="10" fill="none" stroke="#f3eee2" stroke-width="1.4" />
-            <circle cx="11" cy="11" r="3.5" fill="#ff5b1f" />
-          </svg>
-          <span style="font-size: 14px">Darwin · A field study by Specimen Labs</span>
+      <footer class="lp-container lp-footer">
+        <div class="lp-footer-brand">
+          <UiDarwinLogo :size="22" style="color: #f3eee2" />
+          <span>Darwin Agents · a <a href="https://nexow.studio" rel="noopener">Nexow Studio</a> product, in collaboration with <a href="https://specimenlabs.com" rel="noopener">Specimen Labs</a></span>
         </div>
         <div class="lp-footer-links">
-          <a href="#anatomy">Anatomy</a>
+          <a href="#thesis">Specimen</a>
           <a href="#trust">Trust</a>
-          <a href="#roadmap">Roadmap</a>
+          <a href="#faq">FAQ</a>
+          <a href="/llms.txt">llms.txt</a>
+          <a href="mailto:security@darwinagents.com">Security</a>
           <NuxtLink to="/login">Sign in</NuxtLink>
         </div>
-        <div class="mono" style="font-size: 11px; color: var(--darwin-muted)">© MMXXVI · est. on a small island</div>
-      </div>
+        <div class="mono" style="font-size: 11px; color: var(--darwin-muted)">© 2026 Nexow, Inc. · Specimen Labs, Inc.</div>
+      </footer>
     </section>
   </div>
 </template>
 
 <style scoped>
-/* ── Root — tokens come from global :root in main.css ───────────────────── */
-.lp-root {
-  background: var(--darwin-bg);
-  color: var(--darwin-ink);
-  font-size: 14px;
-  line-height: 1.45;
-  overflow-x: hidden;
-}
-
-/* ── Utility classes ────────────────────────────────────────────────────── */
-.mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
-.upper { text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; font-weight: 500; font-family: "JetBrains Mono", monospace; }
-.dim { color: var(--darwin-muted); }
-.lp-italic { font-style: italic; }
-.lp-light { font-weight: 300; }
-.lp-ember { color: var(--darwin-accent); }
-.lp-ember-deep { color: var(--darwin-accent-deep); }
-.lp-cream { color: var(--darwin-bg); }
-.lp-mute { color: var(--darwin-muted); }
-.lp-pos { color: #1f8a3e; font-weight: 500; }
-.lp-neg { color: #c93f0a; font-weight: 500; }
-
-/* ── Grain overlay ──────────────────────────────────────────────────────── */
+/* Shared lab typography/buttons live in assets/css/main.css (.lp-root …). */
 .grain {
   position: fixed; inset: 0; pointer-events: none; z-index: 1;
   opacity: 0.05; mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
-/* ── Container & eyebrow ────────────────────────────────────────────────── */
-.lp-container { max-width: 1440px; margin: 0 auto; padding: 0 64px; }
-@media (max-width: 720px) { .lp-container { padding: 0 24px; } }
-
-.eyebrow {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--darwin-muted); display: inline-flex; align-items: center; gap: 10px;
-}
-.eyebrow::before {
-  content: ""; width: 6px; height: 6px; border-radius: 50%;
-  background: var(--darwin-accent);
-}
-
-/* ── Buttons ────────────────────────────────────────────────────────────── */
-.lp-btn {
-  display: inline-flex; align-items: center; gap: 12px;
-  padding: 18px 32px;
-  font-family: "Inter Tight", sans-serif; font-weight: 500; font-size: 13px; letter-spacing: 0.01em;
-  background: var(--darwin-ink); color: var(--darwin-bg);
-  border: none; border-radius: 100px; cursor: pointer; text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.lp-btn:hover { background: var(--darwin-accent-deep); transform: translateY(-1px); }
-.lp-btn-ember { background: var(--darwin-accent) !important; }
-.lp-btn-outline {
-  padding: 18px 28px; border: 1px solid var(--darwin-ink); border-radius: 100px;
-  font-size: 13px; font-weight: 500; text-decoration: none; color: var(--darwin-ink);
-  background: transparent; transition: all 0.3s;
-}
-.lp-btn-outline:hover { background: var(--darwin-ink); color: var(--darwin-bg); }
-
-/* ── Typography ─────────────────────────────────────────────────────────── */
-.lp-h1 {
-  font-size: clamp(56px, 8.5vw, 144px);
-  line-height: 0.92; letter-spacing: -0.04em; font-weight: 400;
-  text-wrap: balance; margin-bottom: 40px;
-}
-.lp-h2 {
-  font-size: clamp(44px, 6.5vw, 96px);
-  line-height: 0.95; letter-spacing: -0.04em; font-weight: 400;
-  text-wrap: balance;
-}
-.lp-cta-h2 {
-  font-size: clamp(56px, 9vw, 168px);
-  line-height: 0.92; letter-spacing: -0.045em; font-weight: 400;
-  margin-bottom: 60px; max-width: 1300px; text-wrap: balance; color: var(--darwin-bg);
-}
-
-/* ── Header (fixed glassy bar) ───────────────────────────────────────────── */
+/* ── Header ──────────────────────────────────────────────────────────────── */
 .lp-header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 50;
-  background: rgba(243, 238, 226, 0.55);
+  background: rgba(243, 238, 226, 0.6); color: var(--darwin-ink);
   backdrop-filter: blur(16px) saturate(160%);
   -webkit-backdrop-filter: blur(16px) saturate(160%);
   border-bottom: 1px solid rgba(10, 10, 10, 0.08);
+  transition: background 0.6s, color 0.6s, border-color 0.6s;
 }
-.lp-nav {
-  display: flex; justify-content: space-between; align-items: center;
-  padding-top: 14px; padding-bottom: 14px;
-}
-.lp-logo { display: flex; align-items: center; gap: 12px; }
+.lp-header.is-dark { background: rgba(10, 10, 10, 0.55); color: var(--darwin-bg); border-color: rgba(243, 238, 226, 0.08); }
+.lp-nav { display: flex; justify-content: space-between; align-items: center; padding-top: 14px; padding-bottom: 14px; }
+.lp-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
 .lp-logo-name { font-weight: 500; letter-spacing: -0.01em; font-size: 15px; }
 .lp-logo-tag { margin-left: 8px; }
-.lp-navlinks { display: flex; gap: 36px; font-size: 13px; }
-.lp-navlinks a { text-decoration: none; color: var(--darwin-ink); transition: color 0.2s; }
+.lp-navlinks { display: flex; gap: 28px; font-size: 13px; }
+.lp-navlinks a { text-decoration: none; color: inherit; transition: color 0.2s; }
 .lp-navlinks a:hover { color: var(--darwin-accent); }
-.lp-nav-actions { display: flex; align-items: center; gap: 10px; }
-.lp-btn-ghost-ink {
-  display: inline-flex; align-items: center;
-  padding: 10px 18px; border-radius: 100px;
-  font-size: 13px; font-weight: 500; text-decoration: none;
-  color: var(--darwin-ink-soft); transition: color 0.2s, background 0.2s;
+.lp-nav-actions { display: flex; align-items: center; gap: 8px; }
+.lp-sound {
+  display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px;
+  border-radius: 50%; border: 1px solid currentColor; border-color: color-mix(in srgb, currentColor 25%, transparent);
+  background: transparent; color: inherit; cursor: pointer; transition: background 0.2s;
 }
-.lp-btn-ghost-ink:hover { color: var(--darwin-ink); background: rgba(10,10,10,0.06); }
+.lp-sound:hover { background: color-mix(in srgb, currentColor 10%, transparent); }
+.lp-sound[aria-pressed='true'] { color: var(--darwin-accent); border-color: var(--darwin-accent); }
+.lp-btn-ghost-ink {
+  display: inline-flex; align-items: center; padding: 10px 16px; border-radius: 100px;
+  font-size: 13px; font-weight: 500; text-decoration: none; color: inherit; opacity: 0.8; transition: opacity 0.2s, background 0.2s;
+}
+.lp-btn-ghost-ink:hover { opacity: 1; background: color-mix(in srgb, currentColor 8%, transparent); }
+.lp-nav-cta { padding: 12px 22px; }
+.is-dark .lp-nav-cta { background: var(--darwin-accent); color: var(--darwin-ink); }
 
 /* ── Hero ─────────────────────────────────────────────────────────────────── */
 .lp-hero { position: relative; min-height: 100vh; overflow: hidden; }
-.lp-hero-bg { position: absolute; inset: 0; top: 0; }
-.lp-hero-dna {
-  position: absolute; right: -12%; top: 0; bottom: 0; width: 55%; opacity: 0.55;
+.lp-hero-content { padding-top: calc(72px + 6vh); padding-bottom: 6vh; }
+.lp-status {
+  display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 100px;
+  border: 1px solid var(--darwin-border); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--darwin-ink-soft); background: rgba(243, 238, 226, 0.6); margin-bottom: 32px;
 }
-.lp-hero-molecules {
-  position: absolute; left: -5%; top: 15%; width: 45%; height: 70%; opacity: 0.35;
-}
-.lp-hero-radial {
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 28% 50%, var(--darwin-bg) 0%, transparent 55%);
-}
-.lp-hero-content { position: relative; z-index: 3; padding-top: calc(56px + 8vh); padding-bottom: 4vh; }
-.lp-hero-grid {
-  display: grid; grid-template-columns: 1.4fr 1fr; gap: 64px; align-items: start;
-}
-.lp-hero-body {
-  font-size: 19px; line-height: 1.55; color: var(--darwin-ink-soft); max-width: 540px; margin-bottom: 40px;
-}
+.lp-h1 { font-size: clamp(52px, 8vw, 136px); line-height: 0.92; letter-spacing: -0.04em; font-weight: 400; text-wrap: balance; margin-bottom: 28px; }
+.lp-hero-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: center; }
+.lp-hero-tagline { font-size: 24px; font-style: italic; letter-spacing: -0.01em; margin-bottom: 16px; }
+.lp-hero-body { font-size: 18px; line-height: 1.55; color: var(--darwin-ink-soft); max-width: 560px; margin-bottom: 36px; }
 .lp-hero-actions { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.lp-hero-specimen { position: relative; aspect-ratio: 1; width: 100%; max-width: 620px; justify-self: center; }
+.lp-callout {
+  position: absolute; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--darwin-ink-soft);
+  display: flex; align-items: center; gap: 8px; white-space: nowrap;
+  animation: lp-callout-in 0.8s ease both;
+}
+.lp-callout::before { content: ''; width: 28px; height: 1px; background: currentColor; opacity: 0.5; }
+.lp-callout-1 { top: 10%; right: 0; animation-delay: 0.6s; }
+.lp-callout-2 { top: 46%; left: -4%; flex-direction: row-reverse; animation-delay: 0.8s; }
+.lp-callout-2::before { width: 40px; }
+.lp-callout-3 { bottom: 16%; right: 2%; animation-delay: 1s; }
+.lp-callout-4 { bottom: 4%; left: 6%; animation-delay: 1.2s; }
+@keyframes lp-callout-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.lp-hero-bottom { display: grid; grid-template-columns: 1fr 460px; gap: 48px; align-items: end; margin-top: 56px; }
+.lp-meta-strip { display: grid; grid-template-columns: repeat(3, max-content); gap: 64px; padding-top: 32px; border-top: 1px solid var(--darwin-border); }
+.lp-specs { display: flex; flex-wrap: wrap; gap: 10px 32px; margin-top: 48px; font-size: 11px; color: var(--darwin-muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.lp-specs b { color: var(--darwin-ink); font-weight: 500; font-size: 13px; margin-right: 4px; }
+.lp-scroll-cue { display: inline-block; margin-top: 40px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--darwin-muted); text-decoration: none; animation: lp-bob 2.4s ease-in-out infinite; }
+@keyframes lp-bob { 50% { transform: translateY(6px); } }
 
 /* Live Ledger card */
 .lp-ledger-card {
   background: rgba(243, 238, 226, 0.7);
   border: 1px solid var(--darwin-border); border-radius: 14px;
-  padding: 24px; backdrop-filter: blur(12px);
+  padding: 22px; backdrop-filter: blur(12px);
   box-shadow: 0 30px 80px -40px rgba(10, 10, 10, 0.25);
 }
-.lp-ledger-header {
-  display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
-}
+.lp-ledger-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
 .lp-streaming-badge {
   display: flex; align-items: center; gap: 8px;
-  font-family: "JetBrains Mono", monospace; font-size: 11px;
+  font-family: var(--darwin-font-mono); font-size: 11px;
   text-transform: uppercase; letter-spacing: 0.18em; font-weight: 500; color: #1f8a3e;
 }
-.lp-pulse-dot {
-  width: 6px; height: 6px; border-radius: 50%; background: #1f8a3e;
-  animation: lp-pulse 1.4s infinite;
-}
+.lp-pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: #1f8a3e; animation: lp-pulse 1.4s infinite; }
 @keyframes lp-pulse { 0%, 100% { opacity: 1 } 50% { opacity: 0.3 } }
-.lp-ledger-rows { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; min-height: 224px; }
-.lp-ledger-row {
-  display: grid; grid-template-columns: auto 1fr auto; gap: 16px;
-  padding: 6px 0; font-size: 12px; align-items: center;
-  animation: lp-row-in 0.4s ease;
-}
+.lp-ledger-rows { display: flex; flex-direction: column; gap: 4px; margin-bottom: 18px; min-height: 196px; }
+.lp-ledger-row { display: grid; grid-template-columns: auto 1fr auto; gap: 16px; padding: 5px 0; font-size: 12px; align-items: center; animation: lp-row-in 0.4s ease; }
 @keyframes lp-row-in { from { opacity: 0; transform: translateY(-8px) } to { opacity: 1; transform: none } }
 .lp-ledger-id { color: var(--darwin-ink); font-weight: 500; }
 .lp-ledger-action { color: var(--darwin-ink-soft); }
-.lp-ledger-stats {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
-  padding-top: 20px; border-top: 1px solid var(--darwin-border);
-}
+.lp-ledger-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding-top: 16px; border-top: 1px solid var(--darwin-border); }
 
-/* Meta strip */
-.lp-meta-strip {
-  margin-top: 80px; display: grid; grid-template-columns: repeat(3, max-content);
-  gap: 80px; padding-top: 36px; border-top: 1px solid var(--darwin-border);
+/* ── Thesis ──────────────────────────────────────────────────────────────── */
+.th-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 64px; align-items: start; }
+.th-anchor { position: sticky; top: 18vh; aspect-ratio: 1; width: 100%; max-width: 520px; }
+.th-table { border-top: 1px solid var(--darwin-ink); }
+.th-row {
+  display: grid; grid-template-columns: 180px 1fr; gap: 24px; width: 100%; text-align: left;
+  padding: 18px 12px; border: none; border-bottom: 1px solid var(--darwin-border); background: transparent;
+  color: var(--darwin-ink); cursor: pointer; transition: background 0.25s, padding 0.25s;
 }
-
-/* ── Section shared ──────────────────────────────────────────────────────── */
-.lp-section-header {
-  display: grid; grid-template-columns: 1fr 2fr; gap: 80px;
-  margin-bottom: 100px; align-items: end;
-}
+.th-row:hover, .th-row.is-active { background: var(--darwin-bg); padding-left: 20px; }
+.th-bio { font-size: 20px; font-style: italic; letter-spacing: -0.01em; }
+.th-row.is-active .th-bio { color: var(--darwin-accent-deep); }
+.th-darwin { font-size: 15px; line-height: 1.5; color: var(--darwin-ink-soft); }
+.th-quote { margin-top: 80px; font-size: clamp(28px, 3.4vw, 48px); letter-spacing: -0.03em; text-align: center; font-style: italic; }
 
 /* ── Anatomy ─────────────────────────────────────────────────────────────── */
 .lp-anatomy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
 .lp-anatomy-btn {
   display: grid; grid-template-columns: 64px 1fr; gap: 24px;
-  width: 100%; text-align: left; padding: 32px 0;
+  width: 100%; text-align: left; padding: 28px 0;
   border: none; border-bottom: 1px solid var(--darwin-border);
-  background: transparent; cursor: pointer; transition: opacity 0.2s; color: var(--darwin-ink);
+  background: transparent; cursor: pointer; transition: opacity 0.2s; color: var(--darwin-ink); opacity: 0.5;
 }
-.lp-specimen-card {
-  position: relative; aspect-ratio: 4/5;
-  background: var(--darwin-bg-2); border: 1px solid var(--darwin-border); overflow: hidden;
-}
-.lp-specimen-visual {
-  position: absolute; inset: 0;
-}
-.lp-specimen-object {
-  position: absolute; inset: 0;
-}
-.lp-specimen-layer {
-  position: absolute; inset: 0;
-}
+.lp-anatomy-btn.is-active { opacity: 1; }
+.lp-anatomy-spec { font-size: 11px; color: var(--darwin-accent-deep); margin-top: 10px; letter-spacing: 0.02em; }
+.lp-specimen-sticky { position: sticky; top: 90px; }
+.lp-specimen-card { position: relative; aspect-ratio: 4/5; background: var(--darwin-bg-2); border: 1px solid var(--darwin-border); overflow: hidden; }
+.lp-specimen-visual, .lp-specimen-object { position: absolute; inset: 0; }
 .lp-specimen-grid-glow {
   position: absolute; inset: 0; pointer-events: none;
   background:
@@ -800,16 +873,9 @@ onMounted(() => {
   background-size: 32px 32px, 32px 32px, 100% 100%;
   opacity: 0.65;
 }
-.lp-specimen-fade-enter-active, .lp-specimen-fade-leave-active {
-  transition: opacity 280ms ease, transform 280ms ease;
-}
-.lp-specimen-fade-enter-from, .lp-specimen-fade-leave-to {
-  opacity: 0;
-  transform: scale(0.985);
-}
-.lp-specimen-orbit {
-  position: absolute; inset: 0; pointer-events: none; z-index: 1;
-}
+.lp-specimen-fade-enter-active, .lp-specimen-fade-leave-active { transition: opacity 280ms ease, transform 280ms ease; }
+.lp-specimen-fade-enter-from, .lp-specimen-fade-leave-to { opacity: 0; transform: scale(0.985); }
+.lp-specimen-orbit { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
 .lp-specimen-orbit-ring {
   position: absolute; width: 58%; aspect-ratio: 1 / 1;
   border: 1px solid color-mix(in srgb, var(--lp-specimen-hue) 38%, transparent);
@@ -817,137 +883,89 @@ onMounted(() => {
   transform: translate(-50%, -50%) rotate(18deg);
   animation: lp-orbit-spin 10s linear infinite;
 }
-.lp-specimen-orbit-ring:nth-child(2) {
-  width: 76%;
-  transform: translate(-50%, -50%) rotate(-24deg);
-}
-.lp-specimen-orbit-ring:nth-child(3) {
-  width: 92%;
-  transform: translate(-50%, -50%) rotate(42deg);
-}
-.lp-specimen-hint {
-  margin-top: 14px; font-size: 11px; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--darwin-muted);
-}
-@keyframes lp-orbit-spin {
-  from { rotate: 0deg; opacity: 0.45; }
-  50% { opacity: 0.16; }
-  to { rotate: 360deg; opacity: 0.45; }
-}
-.lp-specimen-top {
-  position: absolute; top: 24px; left: 24px; right: 24px;
-  display: flex; justify-content: space-between; z-index: 2;
-}
-.lp-specimen-bottom {
-  position: absolute; bottom: 24px; left: 24px; right: 24px; z-index: 2;
-}
+.lp-specimen-orbit-ring:nth-child(2) { width: 76%; transform: translate(-50%, -50%) rotate(-24deg); }
+.lp-specimen-orbit-ring:nth-child(3) { width: 92%; transform: translate(-50%, -50%) rotate(42deg); }
+.lp-specimen-hint { margin-top: 14px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--darwin-muted); }
+@keyframes lp-orbit-spin { from { rotate: 0deg; opacity: 0.45; } 50% { opacity: 0.16; } to { rotate: 360deg; opacity: 0.45; } }
+.lp-specimen-top { position: absolute; top: 24px; left: 24px; right: 24px; display: flex; justify-content: space-between; z-index: 2; }
+.lp-specimen-bottom { position: absolute; bottom: 24px; left: 24px; right: 24px; z-index: 2; }
 
-/* ── What It Is Not ─────────────────────────────────────────────────────── */
-.lp-wiinot-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 0; border-top: 1px solid var(--darwin-ink);
-}
-.lp-wiinot-col {
-  padding: 40px 28px 56px; min-height: 320px;
-}
+/* ── Boundaries ──────────────────────────────────────────────────────────── */
+.lp-wiinot-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid var(--darwin-ink); }
+.lp-wiinot-col { padding: 40px 28px 56px; min-height: 320px; }
+.lp-honesty { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 28px; margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--darwin-border); }
+.lp-honesty span { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: line-through; text-decoration-color: var(--darwin-accent); color: var(--darwin-ink-soft); }
+.lp-honesty p { flex-basis: 100%; font-size: clamp(22px, 2.4vw, 32px); letter-spacing: -0.02em; font-style: italic; margin-top: 12px; }
 
 /* ── Operators ───────────────────────────────────────────────────────────── */
-.lp-ops-row {
-  display: grid; grid-template-columns: 1.4fr 2fr 1fr 1fr 1fr 0.8fr;
-  padding: 18px 0; align-items: baseline;
-}
+.lp-section-header { display: grid; grid-template-columns: 1fr 2fr; gap: 80px; margin-bottom: 100px; align-items: end; }
+.lp-ops-row { display: grid; grid-template-columns: 1.4fr 2fr 1fr 1fr 1fr 0.8fr; padding: 18px 0; align-items: baseline; }
 .lp-ops-header { border-bottom: 1px solid var(--darwin-border); }
 .lp-ops-data { padding: 28px 0; }
 .lp-ops-num { font-size: 14px; text-align: right; }
-.lp-status-badge {
-  display: inline-block; font-size: 10px;
-  text-transform: uppercase; letter-spacing: 0.12em; padding: 3px 10px;
-}
+.lp-status-badge { display: inline-block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; padding: 3px 10px; }
 
-/* ── Canvas section ──────────────────────────────────────────────────────── */
-.lp-canvas-section {
-  padding: 160px 0; background: var(--darwin-ink); color: var(--darwin-bg);
-  position: relative; overflow: hidden;
-}
-.lp-canvas-bg { position: absolute; inset: 0; opacity: 0.5; }
-.lp-canvas-content { position: relative; z-index: 2; }
+/* ── Canvas ──────────────────────────────────────────────────────────────── */
 .lp-canvas-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; align-items: start; }
-
-/* Live feed card */
-.lp-feed-card {
-  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.14);
-  padding: 24px; font-size: 12px; min-height: 520px;
-}
-.lp-feed-header {
-  display: flex; justify-content: space-between; margin-bottom: 16px;
-  font-size: 11px; color: var(--darwin-muted-2); text-transform: uppercase; letter-spacing: 0.12em;
-}
-.lp-feed-row {
-  display: grid; grid-template-columns: 90px 1fr auto; gap: 12px;
-  padding: 5px 0;
-}
-
-/* ── Trust ───────────────────────────────────────────────────────────────── */
-.lp-trust-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
-  background: var(--darwin-border); border: 1px solid var(--darwin-border);
-}
-.lp-trust-card {
-  background: var(--darwin-bg); padding: 48px 40px; min-height: 280px;
-}
+.lp-feed-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.14); padding: 24px; font-size: 12px; min-height: 520px; backdrop-filter: blur(6px); }
+.lp-feed-header { display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 11px; color: var(--darwin-muted-2); text-transform: uppercase; letter-spacing: 0.12em; }
+.lp-feed-row { display: grid; grid-template-columns: 90px 1fr auto; gap: 12px; padding: 5px 0; }
 
 /* ── Roadmap ─────────────────────────────────────────────────────────────── */
-.lp-roadmap-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 0; border-top: 1px solid var(--darwin-ink);
-}
+.lp-roadmap-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid var(--darwin-ink); }
 .lp-roadmap-col { padding: 40px 28px 56px; position: relative; min-height: 320px; }
 
-/* ── CTA section ─────────────────────────────────────────────────────────── */
-.lp-cta-section {
-  padding: 180px 0 80px; background: var(--darwin-ink); color: var(--darwin-bg);
-  position: relative; overflow: hidden;
+/* ── FAQ ─────────────────────────────────────────────────────────────────── */
+.lp-faq { border-top: 1px solid var(--darwin-ink); max-width: 1000px; margin-left: auto; }
+.lp-faq-item { border-bottom: 1px solid var(--darwin-border); }
+.lp-faq-item summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 26px 0; }
+.lp-faq-item summary::-webkit-details-marker { display: none; }
+.lp-faq-item h3 { font-size: clamp(20px, 2vw, 26px); font-weight: 400; letter-spacing: -0.02em; }
+.lp-faq-item[open] h3 { color: var(--darwin-accent-deep); }
+.lp-faq-plus { font-size: 22px; transition: transform 0.25s; flex-shrink: 0; }
+.lp-faq-item[open] .lp-faq-plus { transform: rotate(45deg); }
+.lp-faq-item p { font-size: 17px; line-height: 1.6; color: var(--darwin-ink-soft); max-width: 760px; padding: 0 0 28px; }
+
+/* ── CTA + footer ────────────────────────────────────────────────────────── */
+.lp-cta-section { padding: 200px 0 80px; position: relative; overflow: hidden; }
+.lp-cta-h2 {
+  font-size: clamp(52px, 8.4vw, 156px); line-height: 0.92; letter-spacing: -0.045em; font-weight: 400;
+  margin-bottom: 60px; max-width: 1300px; text-wrap: balance; color: var(--darwin-bg);
 }
-.lp-cta-dna {
-  position: absolute; right: -15%; top: -10%; bottom: -10%; width: 55%; opacity: 0.85;
-}
-.lp-cta-molecules {
-  position: absolute; left: -5%; top: 0; bottom: 0; width: 60%; opacity: 0.5;
-}
-.lp-cta-gradient {
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 0%, rgba(10,10,10,0.5) 60%, var(--darwin-ink) 100%);
-}
-.lp-cta-content { position: relative; z-index: 2; }
 .lp-cta-form { display: flex; gap: 12px; max-width: 640px; margin-bottom: 32px; }
 .lp-cta-input {
   flex: 1; padding: 20px 24px; font-size: 16px; font-family: var(--darwin-font-sans);
-  background: transparent; color: var(--darwin-bg);
-  border: 1px solid rgba(255,255,255,0.24); border-radius: 100px; outline: none;
+  background: rgba(10, 10, 10, 0.4); color: var(--darwin-bg);
+  border: 1px solid rgba(255,255,255,0.24); border-radius: 100px; outline: none; backdrop-filter: blur(6px);
 }
 .lp-cta-input::placeholder { color: rgba(243,238,226,0.4); }
+.lp-cta-input:focus { border-color: var(--darwin-accent); }
 .lp-cta-input:disabled { opacity: 0.6; }
-.lp-btn:disabled { cursor: default; transform: none; }
 .lp-cta-error { margin: -20px 0 24px; font-size: 13px; color: #ff8a5b; }
-
-/* ── Footer ──────────────────────────────────────────────────────────────── */
 .lp-footer {
-  position: relative; z-index: 2; margin-top: 140px; padding-top: 40px;
-  border-top: 1px solid rgba(255,255,255,0.16);
-  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 24px;
+  margin-top: 160px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.16);
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px;
 }
-.lp-footer-links { display: flex; gap: 32px; font-size: 13px; color: var(--darwin-muted-2); }
+.lp-footer-brand { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+.lp-footer-brand a { color: var(--darwin-bg); text-decoration-color: rgba(243, 238, 226, 0.3); }
+.lp-footer-links { display: flex; gap: 28px; font-size: 13px; }
 .lp-footer-links a { text-decoration: none; color: var(--darwin-muted-2); transition: color 0.2s; }
 .lp-footer-links a:hover { color: var(--darwin-bg); }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .lp-hero-bottom { grid-template-columns: 1fr; }
+}
 @media (max-width: 1024px) {
-  .lp-hero-grid { grid-template-columns: 1fr; }
-  .lp-anatomy-grid { grid-template-columns: 1fr; }
+  .lp-hero-grid { grid-template-columns: 1fr; gap: 8px; }
+  .lp-hero-specimen { max-width: 360px; order: -1; }
+  .th-grid { grid-template-columns: 1fr; }
+  .th-anchor { display: none; }
+  .lp-anatomy-grid { grid-template-columns: 1fr; gap: 40px; }
+  .lp-specimen-sticky { position: static; }
   .lp-canvas-grid { grid-template-columns: 1fr; }
   .lp-wiinot-grid { grid-template-columns: repeat(2, 1fr); }
   .lp-roadmap-grid { grid-template-columns: repeat(2, 1fr); }
-  .lp-trust-grid { grid-template-columns: 1fr; }
   .lp-ops-row { grid-template-columns: 1fr 1fr; gap: 16px; }
   .lp-ops-header { display: none; }
   .lp-ops-num { text-align: left; }
@@ -955,19 +973,24 @@ onMounted(() => {
     content: attr(data-label); display: block; margin-bottom: 4px;
     font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--darwin-muted);
   }
-  .lp-section-header { grid-template-columns: 1fr; }
+  .lp-section-header { grid-template-columns: 1fr; gap: 28px; margin-bottom: 56px; }
 }
-
+@media (max-width: 900px) {
+  .lp-navlinks { display: none; }
+}
 @media (max-width: 720px) {
-  .lp-navlinks, .lp-logo-tag { display: none; }
-  .lp-hero-dna { opacity: 0.22; }
-  .lp-nav-actions .lp-btn { padding: 10px 18px; }
-  .lp-meta-strip { grid-template-columns: 1fr; gap: 32px; }
-  .lp-wiinot-grid { grid-template-columns: 1fr; }
-  .lp-roadmap-grid { grid-template-columns: 1fr; }
-  .lp-wiinot-col { border-right: none !important; border-bottom: 1px solid var(--darwin-border); }
-  .lp-roadmap-col { border-right: none !important; border-bottom: 1px solid var(--darwin-border); }
+  .lp-logo-tag, .lp-btn-ghost-ink { display: none; }
+  .lp-nav-cta { padding: 10px 16px; }
+  .lp-hero-specimen { max-width: 240px; }
+  .lp-callout { display: none; }
+  .lp-meta-strip { grid-template-columns: 1fr; gap: 24px; }
+  .th-row { grid-template-columns: 1fr; gap: 4px; }
+  .lp-wiinot-grid, .lp-roadmap-grid { grid-template-columns: 1fr; }
+  .lp-wiinot-col, .lp-roadmap-col { border-right: none !important; border-bottom: 1px solid var(--darwin-border); }
   .lp-cta-form { flex-direction: column; }
-  .lp-footer { flex-direction: column; }
+  .lp-footer { flex-direction: column; align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-scroll-cue, .lp-callout, .lp-pulse-dot, .lp-specimen-orbit-ring { animation: none; }
 }
 </style>

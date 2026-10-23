@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>Offline · Darwin Agents</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body {
+      display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box;
+      background: radial-gradient(ellipse at 50% 40%, #1a120d 0%, #0a0a0a 70%); color: #f3eee2;
+      font-family: 'Inter Tight', system-ui, sans-serif;
+    }
+    main { max-width: 440px; }
+    svg { animation: beat 1.6s ease-in-out infinite; margin-bottom: 28px; }
+    h1 { font-size: 40px; letter-spacing: -0.03em; font-weight: 400; margin: 0 0 12px; }
+    p { color: rgba(243, 238, 226, 0.65); line-height: 1.6; margin: 0 0 28px; }
+    button { padding: 14px 26px; border-radius: 100px; border: 0; background: #ff5b1f; color: #0a0a0a; font: 500 14px system-ui; cursor: pointer; }
+    @keyframes beat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.12); } 30% { transform: scale(1); } 42% { transform: scale(1.07); } }
+    @media (prefers-reduced-motion: reduce) { svg { animation: none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <svg width="56" height="56" viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0a0a0a"/><g transform="translate(4 4) scale(.875)"><circle cx="28" cy="36" r="18.5" stroke="#f3eee2" stroke-width="4.4"/><path d="M39.2 21.3 42.7 24.8" stroke="#f3eee2" stroke-width="6" stroke-linecap="round"/><circle cx="46.5" cy="17.5" r="8" stroke="#f3eee2" stroke-width="3.9"/><circle cx="28" cy="36" r="8.2" fill="#ff5b1f"/><circle cx="46.5" cy="17.5" r="3.2" fill="#ff5b1f"/></g></svg>
+    <h1>No signal from the lab.</h1>
+    <p>You're offline. Your Darwins keep living on our side — reconnect to watch them.</p>
+    <button type="button" onclick="location.reload()">Try again</button>
+  </main>
+</body>
+</html>

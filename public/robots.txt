@@ -1,2 +1,12 @@
-User-Agent: *
-Disallow:
+# Darwin Agents — search engines and AI answer engines are welcome on the public site.
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /spawn
+Disallow: /canvas/
+Disallow: /resolve
+Disallow: /confirm
+Disallow: /reset-password
+Disallow: /api/
+
+Sitemap: https://darwinagents.com/sitemap.xml
