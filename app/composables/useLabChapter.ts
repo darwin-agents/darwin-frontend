@@ -23,6 +23,7 @@ export const CHAPTERS = {
   operators: { label: 'Operators', dark: false, x: 0, scale: 0.5, presence: 0 },
   canvas: { label: 'Canvas', dark: true, x: -0.4, scale: 0.7, presence: 0 },
   roadmap: { label: 'Roadmap', dark: false, x: 0, scale: 0.5, presence: 0 },
+  faq: { label: 'FAQ', dark: false, x: 0, scale: 0.5, presence: 0 },
   cta: { label: 'Waitlist', dark: true, x: 0.5, scale: 1.0, presence: 1 },
 } satisfies Record<string, ChapterConfig>
 

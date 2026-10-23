@@ -38,7 +38,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
         <circle cx="11" cy="11" r="10" fill="none" stroke="#f3eee2" stroke-width="1.2" />
         <circle cx="11" cy="11" r="3.5" fill="#ff5b1f" />
       </svg>
-      <h1 id="lab-gate-title" class="lab-gate-title">Darwin Agents</h1>
+      <div id="lab-gate-title" class="lab-gate-title">Darwin Agents</div>
       <p class="lab-gate-sub">You are entering an observation lab for digital organisms.</p>
       <ol class="lab-gate-log">
         <li v-for="(line, i) in LOG" :key="line" :style="{ animationDelay: `${0.25 + i * 0.28}s` }">

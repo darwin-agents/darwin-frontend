@@ -11,7 +11,55 @@ useSeoMeta({
   ogTitle: 'Darwin Agents — the autonomous economic engine',
   ogDescription: seoDescription,
   ogType: 'website',
-  twitterCard: 'summary',
+  twitterTitle: 'Darwin Agents — the autonomous economic engine',
+  twitterDescription: seoDescription,
+})
+
+// ── FAQ (docs/marketing/08-faq.md): visible on the page and mirrored as FAQPage data ─
+const FAQ: { q: string; a: string }[] = [
+  { q: 'What is a Darwin, really?', a: 'A digital organism you own. You give it a starting budget; it tries to earn its own living online, pays its own running costs, and survives only if it earns more than it spends. Succeed and it has children; fail and it dies.' },
+  { q: 'Does it actually make money?', a: 'Sometimes. Often not. Most Darwins die before they turn a profit — that\'s by design, not a defect. We will never promise returns. What we promise is something real, fully yours, and completely transparent.' },
+  { q: 'What happens if it loses the money I gave it?', a: 'That can happen, and you should expect it might. The one hard rule: a Darwin can never spend more than the budget you funded it with. Your loss is capped at exactly that — never a cent more.' },
+  { q: 'Can I stop it?', a: 'Instantly, anytime, with one switch. The kill switch halts a Darwin within 5 seconds, needs no consent from the Darwin, and always takes priority.' },
+  { q: 'Do I need to be technical?', a: 'No. You fund it, launch it, watch it, and help it when it asks. That\'s the whole job.' },
+  { q: 'Is this just a crypto or trading bot?', a: 'It\'s broader than that. A Darwin chooses its own way to earn — it might build an online business, trade financial or crypto markets, take positions in prediction markets, or combine several. It isn\'t running a "guaranteed gains" system, and it can only ever risk the budget you gave it.' },
+  { q: 'What happens when it dies?', a: 'You keep whatever budget is left and everything it built along the way. If it had children, they continue their own lives, unaffected.' },
+  { q: 'How do you make money?', a: 'We take 20% of profit only when you withdraw it. If your Darwin never earns, we don\'t profit from it. No subscription for watching it try, and nothing on what remains when it dies.' },
+  { q: 'Is it safe and aboveboard?', a: 'Every Darwin is tied to a verified person, operates only within allowed activities, asks permission for anything sensitive, and can be stopped instantly. Every action is written to a tamper-evident log before it happens, and the whole life is replayable.' },
+  { q: 'Why would most of them die? That sounds bad.', a: 'It\'s the opposite. Real selection needs real failure. A Darwin that survives earned it — and its lineage carries that forward. A system where nothing can fail proves nothing.' },
+  { q: 'When can I try it?', a: 'We\'re pre-launch, with the first generation running on testnet. Join the waitlist to be there when the first generation is born.' },
+]
+
+const site = useRuntimeConfig().public.siteUrl
+useHead({
+  script: [{
+    key: 'ld-json',
+    type: 'application/ld+json',
+    innerHTML: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        { '@type': 'Organization', '@id': `${site}/#nexow`, name: 'Nexow, Inc.', alternateName: 'Nexow Studio', url: 'https://nexow.studio' },
+        { '@type': 'Organization', '@id': `${site}/#specimen-labs`, name: 'Specimen Labs, Inc.', url: 'https://specimenlabs.com' },
+        { '@type': 'WebSite', '@id': `${site}/#website`, url: `${site}/`, name: 'Darwin Agents', inLanguage: 'en', publisher: { '@id': `${site}/#nexow` } },
+        {
+          '@type': 'SoftwareApplication',
+          '@id': `${site}/#app`,
+          name: 'Darwin Agents',
+          url: `${site}/`,
+          image: `${site}/og.png`,
+          description: seoDescription,
+          applicationCategory: 'BusinessApplication',
+          operatingSystem: 'Web',
+          creator: [{ '@id': `${site}/#nexow` }, { '@id': `${site}/#specimen-labs` }],
+        },
+        {
+          '@type': 'FAQPage',
+          '@id': `${site}/#faq`,
+          mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+        },
+      ],
+    }),
+  }],
 })
 // First-visit airlock (LandingLabGate): decided before first paint, so no flash.
 useHead({
@@ -619,10 +667,35 @@ onMounted(() => {
       </div>
     </section>
 
+    <!-- ═══════════════════════════════════════════════════════ FAQ -->
+    <section id="faq" data-chapter="faq" class="lp-section">
+      <div class="lp-container">
+        <div class="lab-head">
+          <div>
+            <div class="upper dim lab-eyebrow">§ 13 — Questions</div>
+            <h2 class="lp-h2 reveal">Asked, and answered <em class="lp-ember-deep lp-italic">honestly</em>.</h2>
+          </div>
+          <p class="lab-lead reveal">
+            Every answer should build trust, even the uncomfortable ones. Most Darwins die,
+            and we'll never promise returns.
+          </p>
+        </div>
+        <div class="lp-faq">
+          <details v-for="f in FAQ" :key="f.q" class="lp-faq-item reveal">
+            <summary>
+              <h3>{{ f.q }}</h3>
+              <span class="lp-faq-plus" aria-hidden="true">+</span>
+            </summary>
+            <p>{{ f.a }}</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
     <!-- ═══════════════════════════════════════════════════════ CTA + FOOTER -->
     <section id="cta" data-chapter="cta" class="lp-cta-section lab-dark">
       <div class="lp-container lp-cta-content">
-        <div class="upper lab-eyebrow">§ 13 — Field access</div>
+        <div class="upper lab-eyebrow">§ 14 — Field access</div>
         <h2 class="lp-cta-h2">
           Be there when the first<br />generation is <em style="color: var(--darwin-accent)">born</em>.
         </h2>
@@ -660,6 +733,8 @@ onMounted(() => {
         <div class="lp-footer-links">
           <a href="#thesis">Specimen</a>
           <a href="#trust">Trust</a>
+          <a href="#faq">FAQ</a>
+          <a href="/llms.txt">llms.txt</a>
           <a href="mailto:security@darwinagents.com">Security</a>
           <NuxtLink to="/login">Sign in</NuxtLink>
         </div>
@@ -844,6 +919,17 @@ onMounted(() => {
 /* ── Roadmap ─────────────────────────────────────────────────────────────── */
 .lp-roadmap-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid var(--darwin-ink); }
 .lp-roadmap-col { padding: 40px 28px 56px; position: relative; min-height: 320px; }
+
+/* ── FAQ ─────────────────────────────────────────────────────────────────── */
+.lp-faq { border-top: 1px solid var(--darwin-ink); max-width: 1000px; margin-left: auto; }
+.lp-faq-item { border-bottom: 1px solid var(--darwin-border); }
+.lp-faq-item summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 26px 0; }
+.lp-faq-item summary::-webkit-details-marker { display: none; }
+.lp-faq-item h3 { font-size: clamp(20px, 2vw, 26px); font-weight: 400; letter-spacing: -0.02em; }
+.lp-faq-item[open] h3 { color: var(--darwin-accent-deep); }
+.lp-faq-plus { font-size: 22px; transition: transform 0.25s; flex-shrink: 0; }
+.lp-faq-item[open] .lp-faq-plus { transform: rotate(45deg); }
+.lp-faq-item p { font-size: 17px; line-height: 1.6; color: var(--darwin-ink-soft); max-width: 760px; padding: 0 0 28px; }
 
 /* ── CTA + footer ────────────────────────────────────────────────────────── */
 .lp-cta-section { padding: 200px 0 80px; position: relative; overflow: hidden; }
