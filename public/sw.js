@@ -1,7 +1,7 @@
 // Minimal service worker: makes Darwin installable and shows a branded offline page
 // when a navigation fails. Everything else goes straight to the network.
 // ponytail: no asset/API caching; add an app-shell cache if offline use ever matters.
-const CACHE = 'darwin-v1'
+const CACHE = 'darwin-v2'
 const OFFLINE = '/offline.html'
 
 self.addEventListener('install', (event) => {
