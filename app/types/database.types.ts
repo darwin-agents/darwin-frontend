@@ -21,6 +21,18 @@ export type Database = {
         }
         Insert: Omit<Database['public']['Tables']['darwin_events']['Row'], 'id' | 'created_at'>
         Update: Partial<Database['public']['Tables']['darwin_events']['Row']>
+        Relationships: []
+      }
+      waitlist: {
+        Row: {
+          id: number
+          email: string
+          source: string | null
+          created_at: string
+        }
+        Insert: { email: string; source?: string | null }
+        Update: Partial<Database['public']['Tables']['waitlist']['Row']>
+        Relationships: []
       }
     }
     Views: Record<string, never>
