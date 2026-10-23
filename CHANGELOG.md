@@ -17,6 +17,9 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   - New chapters built from the real `darwin-agents` design: sticky lifecycle scrubber over the 9 real graph nodes, petri-dish selection simulation, the 13 neurons, an interactive 6-gate treasury, the evolution pipeline with frozen fitness weights and lesson layers, and a trust lab with a guarded kill switch and a browser-hashed SHA-256 audit chain you can tamper with.
   - Real roadmap (Phase 0–3 with definitions of done), "what it is not" honesty strip, Lab notes with the technical spec per chapter, and a Nexow Studio × Specimen Labs footer.
   - `utils/labSim.ts` models the treasury gates and colony rules; `tests/labSim.test.ts` (`node --test`) checks them.
+  - **Lineage colony** — reproduction is no longer a single twin: the mother cell (with its 13 neurons) stays at the root while five children bud around it and the strongest bud a next generation, linked by lineage threads. Shown in the lifecycle Reproduction stage, the Evolution chapter's lineage slot (replacing the DNA helix) and the thesis Reproduction/Generation rows.
+- **SEO & GEO** — branded favicon set and 1200×630 Open Graph card; canonical/`og:url` per route, title template, Open Graph/Twitter defaults; JSON-LD (`Organization` ×2, `WebSite`, `SoftwareApplication`, `FAQPage`); visible FAQ chapter; `robots.txt` + `sitemap.xml`; `X-Robots-Tag: noindex` on app routes; `llms.txt` fact sheet for AI answer engines.
+- **PWA** — standalone web manifest with maskable icons, minimal service worker with a branded offline page, and an install button (native prompt on Chromium/Android, Add to Home Screen instructions on iOS) in the landing nav and dashboard.
 
 - **Landing waitlist** — the "Apply" form inserts into a Supabase `waitlist` table (`supabase/migrations/20261023000000_waitlist.sql`: unique email, insert-only RLS, no read policy) with sending/error states; duplicate emails count as success.
 - **`/confirm` page** — landing route for Google OAuth and sign-up confirmation links; waits for the session and forwards to `/dashboard`, with a fallback after 8 s.
@@ -41,7 +44,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Removed
 
 - Unused `NeuronInspectorCard`, `DarwinButton`, `DarwinBadge`, `DarwinCard`, `utils/eventColor`, `utils/formatCost`, `utils/tokenRoi`, `formatDuration()`, `types/finance`, stale spawn/list API types, `canvas.loadHistoricalEvents`, and the unused `APP_URL` env var.
-- `MoleculeCloud` and the five separate landing WebGL canvases (hero/feed/CTA helix and molecules), replaced by the single specimen; invented trust claims (public verifiers, red-team colony) and the invented roadmap.
+- `MoleculeCloud`, `DnaHelix` and the five separate landing WebGL canvases (hero/feed/CTA helix and molecules), replaced by the single specimen; invented trust claims (public verifiers, red-team colony) and the invented roadmap.
 
 ### Changed
 

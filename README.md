@@ -51,7 +51,7 @@ darwin-frontend/
 │   │   │                         # autonomy, kill switch)
 │   │   ├── landing/              # Lab chapters + 3D: SpecimenOrganism, LabGate, LabHud, LabTelemetry,
 │   │   │                         # LabNotes, LifecycleChapter, PetriDish, NeuronConstellation,
-│   │   │                         # TreasuryGates, EvolutionLab, TrustLab, DnaHelix, AnatomyOrganScene
+│   │   │                         # TreasuryGates, EvolutionLab, TrustLab, AnatomyOrganScene
 │   │   ├── mobile/               # MobileInterstitial (2FA / CAPTCHA / approval relay)
 │   │   ├── panels/               # Entity, Skills, Ledger, Assets slide-overs
 │   │   ├── spawn/                # SpawnForm (4-step wizard)
@@ -218,17 +218,28 @@ Environment variables are set in the Vercel dashboard.
 | 04 | Selection | `PetriDish` | Live colony on the real rules (`utils/labSim.ts`); spawn, kill, market pressure |
 | 05 | Neurons | `NeuronConstellation` | The 13 registered neurons and their capability tags |
 | 06 | Treasury | `TreasuryGates` | Send sample payments through the 6 checks of `treasury_policy` |
-| 07 | Evolution | `EvolutionLab` | Mutation pipeline, accepted vs rejected patch, frozen fitness weights, lesson layers |
+| 07 | Evolution | `EvolutionLab` | Mutation pipeline, accepted vs rejected patch, frozen fitness weights, lesson layers, and the specimen as a growing lineage colony |
 | 08 | Trust | `TrustLab` | Guarded kill switch; SHA-256 audit chain hashed in the browser that you can tamper with |
 | 09–13 | Boundaries, operators, canvas, roadmap, waitlist | `pages/index.vue` | Real Phase 0–3 roadmap; waitlist form |
 
 How it fits together:
 
-- **One organism.** `SpecimenOrganism` is a single fixed WebGL canvas (`z-index: 1`) between section backgrounds and section content (`.lp-container` is `z-index: 2`; sections must not create stacking contexts). It lerps toward `CHAPTERS[active]` in `composables/useLabChapter.ts`; a chapter can pin it to an element with `data-specimen-anchor` (`data-specimen-fill` = diameter / element width). It hides itself — and skips rendering — in chapters with `presence: 0`.
+- **One organism.** `SpecimenOrganism` is a single fixed WebGL canvas (`z-index: 1`) between section backgrounds and section content (`.lp-container` is `z-index: 2`; sections must not create stacking contexts). It lerps toward `CHAPTERS[active]` in `composables/useLabChapter.ts`; a chapter can pin it to an element with `data-specimen-anchor` (`data-specimen-fill` = diameter / element width). It hides itself — and skips rendering — in chapters with `presence: 0`. Its `split` parameter grows a lineage colony: the mother (with the 13 neurons) stays at the root while children bud around her and the strongest bud a next generation, linked by lineage threads (lifecycle reproduction stage, evolution chapter, thesis rows).
 - **Chapters.** Sections carry `data-chapter="<id>"`; `observeChapters()` tracks the one under the viewport's centre line. Reveals are pure CSS (`.reveal`, `animation-timeline: view()`).
 - **Sound.** `useLabAudio` synthesizes everything (drone, heartbeat, blips, flatline) — no audio files, nothing plays before an explicit opt-in, suspended when the tab is hidden.
-- **Accessibility & performance.** All experiments are real buttons/inputs; canvases are `aria-hidden` with text equivalents. Under `prefers-reduced-motion` nothing loops (verified: 0 rAF/s). At most 3 WebGL contexts, all paused off-screen via `useRenderLoop`.
+- **Accessibility & performance.** All experiments are real buttons/inputs; canvases are `aria-hidden` with text equivalents. Under `prefers-reduced-motion` nothing loops (verified: 0 rAF/s). At most 2 WebGL contexts, paused off-screen via `useRenderLoop`.
 - **Data on the page.** The ledger ticker, network stats and operator classes are illustrative. Everything else (caps, gates, neurons, fitness, reproduction, roadmap) matches the code; contested doc values use what the code enforces (20 % fee on withdrawn profit only, kill ≤ 5 s, parent survives reproduction).
+
+---
+
+## SEO, GEO & PWA
+
+- **Head & social.** `nuxt.config.ts` sets icons, manifest, theme colour and default Open Graph/Twitter tags (`/og.png`, 1200×630); `app.vue` adds the title template, canonical URL and `og:url` from `runtimeConfig.public.siteUrl` (`NUXT_PUBLIC_SITE_URL`, default `https://darwinagents.com`).
+- **Indexing.** `/` is the only indexable page (`public/sitemap.xml`). App routes send `X-Robots-Tag: noindex, nofollow` via `routeRules` and are disallowed in `public/robots.txt`.
+- **Structured data.** The landing page emits JSON-LD: both organizations (Nexow, Inc.; Specimen Labs, Inc.), `WebSite`, `SoftwareApplication`, and a `FAQPage` generated from the same `FAQ` array as the visible FAQ chapter (from `darwin-agents/docs/marketing/08-faq.md`).
+- **GEO (generative engine optimization).** `public/llms.txt` is a plain-markdown fact sheet for AI answer engines, linked from `<head>` and the footer; content is server-rendered, so crawlers that don't run JS see everything (the airlock gate only exists with JS). Keep its numbers in sync with the page.
+- **PWA.** `public/site.webmanifest` (standalone, maskable icons) + a minimal `public/sw.js` (registered in `plugins/pwa.client.ts`, production only) that makes the app installable and serves `public/offline.html` when a navigation fails; it caches nothing else. `<UiInstallButton>` (landing nav, dashboard) uses the native install prompt where supported and shows "Share → Add to Home Screen" on iOS. Bump `CACHE` in `sw.js` when `offline.html` changes.
+- **Icons** are generated (ink disc, cream ring, ember nucleus): `favicon.svg`, `favicon.ico` (16/32/48), `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`.
 
 ---
 
