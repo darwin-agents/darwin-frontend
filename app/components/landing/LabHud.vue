@@ -24,7 +24,7 @@ const chapters = CHAPTER_IDS.filter((id) => id !== 'hero')
 
 <style scoped>
 .lab-rail {
-  position: fixed; right: 20px; top: 50%; transform: translateY(-50%); z-index: 40;
+  position: fixed; right: 12px; top: 50%; transform: translateY(-50%); z-index: 40;
   display: flex; flex-direction: column; gap: 6px; align-items: flex-end;
 }
 .lab-rail-item {
@@ -40,7 +40,7 @@ const chapters = CHAPTER_IDS.filter((id) => id !== 'hero')
 .lab-rail-item::after {
   content: ''; width: 14px; height: 1px; background: currentColor; transition: width 0.25s;
 }
-.lab-rail-item.is-active::after { width: 28px; }
+.lab-rail-item.is-active::after { width: 22px; }
 .lab-rail-item:focus-visible { outline: 2px solid var(--darwin-accent); outline-offset: 2px; }
 
 /* Mobile: the rail collapses to a reading-progress bar (CSS scroll timeline). */
