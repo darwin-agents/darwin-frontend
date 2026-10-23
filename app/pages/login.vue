@@ -171,7 +171,7 @@ const subtitle = computed(() => ({
             class="w-12 h-12 rounded-xl flex items-center justify-center"
             style="background: var(--darwin-ink)"
           >
-            <UiDarwinLogo :size="20" style="color: #f3eee2" />
+            <UiDarwinLogo :size="30" style="color: #f3eee2" />
           </div>
         </div>
 
