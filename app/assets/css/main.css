@@ -242,6 +242,14 @@
 .slide-right-leave-to {
   transform: translateX(100%);
 }
+.fade-in-enter-active,
+.fade-in-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-in-enter-from,
+.fade-in-leave-to {
+  opacity: 0;
+}
 
 /* ─────────────────────────────────────────────────────────────────────────────
    KEYFRAMES

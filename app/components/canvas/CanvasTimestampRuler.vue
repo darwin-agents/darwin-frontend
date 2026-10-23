@@ -130,7 +130,7 @@ const stepHint = computed(() => {
 <template>
   <div
     ref="rulerEl"
-    class="relative z-20 shrink-0 h-9 border-b border-darwin-border bg-darwin-surface/92 backdrop-blur-md select-none"
+    class="relative z-20 shrink-0 h-9 border-b border-darwin-border bg-darwin-surface/90 backdrop-blur-md select-none"
   >
     <div class="pointer-events-none absolute inset-x-0 bottom-0 right-24 top-1">
       <div
