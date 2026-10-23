@@ -36,8 +36,8 @@ const STAGES = [
   },
   {
     title: 'Reproduction',
-    body: 'Profitable over a week? It spawns a child: the parent\'s genome plus one sealed layer of lessons, and half its surplus. The parent keeps living.',
-    fact: '≥ $25 profit · child gets 50% of surplus · lessons need ≥ 3 pieces of evidence',
+    body: 'Profitable over a week? It buds a child: its genome plus one sealed layer of lessons, and half its surplus. Children that thrive bud their own. The mother keeps living at the root of the lineage.',
+    fact: '≥ $25 profit · 50% of surplus per child · ≥ 3 pieces of evidence per lesson · ≤ 8 lessons per generation',
     balance: 78.2,
     nodes: ['check_reproduction'],
   },

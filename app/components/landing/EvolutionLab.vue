@@ -129,17 +129,21 @@ const NOTES: [string, string][] = [
       </div>
 
       <div class="ev-lineage">
-        <div class="ev-helix">
-          <ClientOnly>
-            <LandingDnaHelix color="#ff5b1f" :density="30" />
-          </ClientOnly>
+        <div>
+          <div class="ev-colony" data-specimen-anchor data-specimen-fill="0.5" aria-hidden="true" />
+          <ul class="ev-legend mono">
+            <li><span class="ev-dot" style="background: #ff5b1f" />Gen 0 · the mother — 13 neurons, keeps living</li>
+            <li><span class="ev-dot" style="background: #ff7a3d" />Gen 1 · buds at ≥ $25 profit with half the surplus</li>
+            <li><span class="ev-dot" style="background: #ffa26b" />Gen 2 · children that thrive bud again</li>
+          </ul>
         </div>
         <div>
           <h3 class="ev-lineage-title reveal">Children inherit <em>lessons</em>, not code.</h3>
           <p class="lab-lead reveal" style="margin-bottom: 32px">
-            At reproduction the parent distils what worked into a sealed, signed layer on top of its
-            genome. The child gets the full stack, half the parent's surplus, and a fresh body to evolve.
-            The parent keeps living.
+            Success spreads. At reproduction the mother distils what worked into a sealed, signed layer
+            on top of its genome. Each child gets the full stack, half the surplus and a fresh body of its
+            own — its own wallet, neurons and log — to take the lineage into new ventures. The ones that
+            thrive bud again; the mother stays alive at the root.
           </p>
           <ol class="ev-layers">
             <li v-for="layer in LAYERS" :key="layer.l" class="ev-layer reveal">
@@ -192,7 +196,9 @@ const NOTES: [string, string][] = [
 .ev-fitness-note { font-size: 15px; color: rgba(243, 238, 226, 0.7); }
 
 .ev-lineage { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 64px; align-items: center; }
-.ev-helix { height: 560px; }
+.ev-colony { aspect-ratio: 1; width: 100%; max-width: 560px; margin: 0 auto; }
+.ev-legend { list-style: none; padding: 0; margin: 8px 0 0; font-size: 11px; line-height: 2; color: var(--darwin-ink-soft); }
+.ev-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; vertical-align: 0; }
 .ev-lineage-title { font-size: clamp(32px, 3.6vw, 52px); letter-spacing: -0.03em; line-height: 1; margin-bottom: 20px; font-weight: 400; }
 .ev-layers { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column-reverse; gap: 6px; }
 .ev-layer { display: grid; grid-template-columns: 44px 1fr auto; gap: 16px; align-items: center; padding: 14px 18px; border: 1px solid var(--darwin-border); background: var(--darwin-bg); }
@@ -208,7 +214,7 @@ const NOTES: [string, string][] = [
   .ev-step:nth-child(3) { padding-left: 0; border-left: none; }
   .ev-panel { grid-template-columns: 1fr; }
   .ev-lineage { grid-template-columns: 1fr; }
-  .ev-helix { height: 320px; }
+  .ev-colony { max-width: 360px; }
   .ev-layer { grid-template-columns: 36px 1fr; }
   .ev-layer-h { grid-column: 2; }
 }

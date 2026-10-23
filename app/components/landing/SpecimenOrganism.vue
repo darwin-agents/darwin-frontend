@@ -26,8 +26,8 @@ const FOCUS: Record<string, Partial<Params>> = {
   food: { flow: 1, rate: 1.3 },
   hunger: { flow: -0.7, rate: 0.7 },
   death: { decay: 0.85, rate: 0 },
-  reproduction: { split: 1 },
-  generation: { split: 0.6 },
+  reproduction: { split: 0.5 },
+  generation: { split: 1 },
   mutation: { noise: 2.4 },
   selection: { alert: 0.5 },
   owner: { alert: 1 },
@@ -123,22 +123,58 @@ onMounted(() => {
     })
   const membraneMat = makeMat('#ff5b1f', 0, 1.25)
   const nucleusMat = makeMat('#c93f0a', 1, 2.6)
+  const childMat = makeMat('#ff7a3d', 0, 1.6)
+  const grandMat = makeMat('#ffa26b', 0, 1.9)
+  const mats = [membraneMat, nucleusMat, childMat, grandMat]
   const membraneGeo = new THREE.IcosahedronGeometry(1, mobile ? 24 : 64)
   const nucleusGeo = new THREE.IcosahedronGeometry(0.34, mobile ? 12 : 24)
 
-  function body() {
+  function body(membrane = membraneMat) {
     const g = new THREE.Group()
     const nucleus = new THREE.Mesh(nucleusGeo, nucleusMat)
-    const membrane = new THREE.Mesh(membraneGeo, membraneMat)
-    membrane.renderOrder = 1
-    g.add(nucleus, membrane)
+    const shell = new THREE.Mesh(membraneGeo, membrane)
+    shell.renderOrder = 1
+    g.add(nucleus, shell)
     return g
   }
   const root = new THREE.Group()
   const parent = body()
-  const twin = body()
-  root.add(parent, twin)
+  root.add(parent)
   scene.add(root)
+
+  // Lineage colony. The mother (with the 13 neurons) stays at the root; children bud
+  // around her, and the successful ones bud a next generation. `split` 0…1 grows it:
+  // children over the first half, grandchildren over the second. Threads = lineage.
+  const CHILD_R = 0.4
+  const GRAND_R = 0.2
+  const children = Array.from({ length: 5 }, (_, i) => {
+    const g = body(childMat)
+    root.add(g)
+    return { g, a: (i / 5) * Math.PI * 2 + 0.4, lift: i % 2 ? 0.3 : -0.22 }
+  })
+  const grands = [0, 0, 2, 2, 3, 3].map((p, j) => {
+    const g = body(grandMat)
+    root.add(g)
+    return { g, parent: p, off: j % 2 ? 0.6 : -0.6 }
+  })
+  const threadPos = new Float32Array((children.length + grands.length) * 6)
+  const threadGeo = new THREE.BufferGeometry()
+  threadGeo.setAttribute('position', new THREE.BufferAttribute(threadPos, 3))
+  const threadMat = new THREE.LineBasicMaterial({ color: '#ff5b1f', transparent: true, depthWrite: false })
+  root.add(new THREE.LineSegments(threadGeo, threadMat))
+  const tmp = new THREE.Vector3()
+  /** Thread i runs between the surfaces of two bodies, not their centres. */
+  function thread(i: number, a: THREE.Vector3, ra: number, b: THREE.Vector3, rb: number) {
+    tmp.subVectors(b, a)
+    const len = tmp.length() || 1
+    tmp.divideScalar(len)
+    const s = Math.min(ra, len / 2), e = Math.max(len - rb, len / 2)
+    threadPos.set([a.x + tmp.x * s, a.y + tmp.y * s, a.z + tmp.z * s, a.x + tmp.x * e, a.y + tmp.y * e, a.z + tmp.z * e], i * 6)
+  }
+  const bud = (s: number, start: number) => {
+    const x = Math.min(1, Math.max(0, (s - start) / 0.22))
+    return x * x * (3 - 2 * x)
+  }
 
   // 13 organelles = the 13 built-in neurons.
   const organelleMat = new THREE.MeshBasicMaterial({ color: '#0a0a0a', transparent: true })
@@ -182,6 +218,7 @@ onMounted(() => {
     }
     if (active.value === 'lifecycle') t = { ...t, ...STAGE[stage.value] }
     if (active.value === 'thesis' && focus.value) t = { ...t, ...FOCUS[focus.value] }
+    if (active.value === 'evolution') t.split = 1
     if (killed.value) t = { ...t, decay: 1, rate: 0, flow: 0, alert: 0, split: 0 }
     const r = anchor?.getBoundingClientRect()
     if (r && r.width > 0) {
@@ -238,8 +275,10 @@ onMounted(() => {
     const k = reduced ? 1 : 1 - Math.exp(-dt * 2.6)
     for (const key in t) {
       const p = key as keyof Params
-      cur[p] += (t[p] - cur[p]) * k
+      if (p !== 'split') cur[p] += (t[p] - cur[p]) * k
     }
+    // The colony grows slowly enough to watch each bud appear.
+    cur.split += (t.split - cur.split) * (reduced ? 1 : 1 - Math.exp(-dt * (t.split > cur.split ? 0.55 : 2.5)))
     pointer.lerp(pointerTarget, reduced ? 1 : 1 - Math.exp(-dt * 4))
 
     // Lub-dub pulse at `rate` beats per second.
@@ -259,7 +298,7 @@ onMounted(() => {
     }
 
     const time = now / 1000
-    for (const mat of [membraneMat, nucleusMat]) {
+    for (const mat of mats) {
       const u = mat.uniforms
       u.uTime!.value = time
       u.uPulse!.value = reduced ? 0 : pulse * (1 - cur.decay)
@@ -273,13 +312,32 @@ onMounted(() => {
 
     root.position.x = cur.x * halfW
     root.position.y = cur.y * halfH + Math.sin(time * 0.4) * 0.05 - cur.decay * 0.25
-    root.scale.setScalar(cur.scale * (1 - cur.decay * 0.3) * (1 + pulse * 0.015))
-    root.rotation.y = pointer.x * 0.25 + time * 0.05
+    // Shrink the whole colony as it spreads so it stays inside its slot.
+    root.scale.setScalar((cur.scale * (1 - cur.decay * 0.3) * (1 + pulse * 0.015)) / (1 + 1.25 * cur.split))
+    root.rotation.y = pointer.x * 0.25 + Math.sin(time * 0.05) * (1 - cur.split) * 0.6
     root.rotation.x = -pointer.y * 0.15
-    parent.position.x = -cur.split * 0.72
-    twin.position.x = cur.split * 0.72
-    twin.scale.setScalar(Math.max(cur.split * 0.82, 0.0001))
-    twin.visible = cur.split > 0.02
+
+    const spin = time * 0.07
+    children.forEach((c, i) => {
+      const k = bud(cur.split, i * 0.07)
+      const a = c.a + spin
+      c.g.visible = k > 0.01
+      c.g.position.set(Math.cos(a) * 1.95 * k, (Math.sin(a) * 0.62 + c.lift) * 1.95 * k, Math.sin(a) * 0.25 * k)
+      c.g.scale.setScalar(Math.max(0.0001, CHILD_R * k))
+      thread(i, parent.position, 1, c.g.position, CHILD_R * k)
+    })
+    grands.forEach((g, j) => {
+      const p = children[g.parent]!.g.position
+      const k = bud(cur.split, 0.55 + j * 0.06)
+      const a = children[g.parent]!.a + spin + g.off
+      g.g.visible = k > 0.01
+      g.g.position.set(p.x + Math.cos(a) * 0.72 * k, p.y + Math.sin(a) * 0.5 * k, p.z + Math.sin(a) * 0.12 * k)
+      g.g.scale.setScalar(Math.max(0.0001, GRAND_R * k))
+      thread(children.length + j, p, CHILD_R, g.g.position, GRAND_R * k)
+    })
+    threadGeo.attributes.position!.needsUpdate = true
+    threadMat.opacity = cur.presence * Math.min(1, cur.split * 4) * 0.55
+    threadMat.color.set(cur.dark > 0.5 ? '#ff8a5b' : '#c93f0a')
 
     organelleMat.color.set(cur.dark > 0.5 ? '#f3eee2' : '#0a0a0a')
     organelleMat.opacity = cur.presence * (1 - cur.decay * 0.6)
@@ -330,7 +388,7 @@ onMounted(() => {
     stopWatch()
     ro.disconnect()
     window.removeEventListener('pointermove', onMove)
-    for (const o of [membraneGeo, nucleusGeo, organelles.geometry, nutrientGeo, membraneMat, nucleusMat, organelleMat, nutrientMat]) o.dispose()
+    for (const o of [membraneGeo, nucleusGeo, organelles.geometry, nutrientGeo, threadGeo, ...mats, organelleMat, nutrientMat, threadMat]) o.dispose()
     renderer.dispose()
     mount.removeChild(renderer.domElement)
   })

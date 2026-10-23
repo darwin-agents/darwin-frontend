@@ -17,7 +17,7 @@ export const CHAPTERS = {
   selection: { label: 'Selection', dark: true, x: 0, scale: 0.5, presence: 0 },
   neurons: { label: 'Neurons', dark: false, x: 0.45, scale: 0.7, presence: 0 },
   treasury: { label: 'Treasury', dark: false, x: -0.45, scale: 0.6, presence: 0 },
-  evolution: { label: 'Evolution', dark: false, x: 0.45, scale: 0.6, presence: 0 },
+  evolution: { label: 'Evolution', dark: false, x: 0.45, scale: 0.6, presence: 1 }, // only inside its lineage slot
   trust: { label: 'Trust', dark: true, x: 0.45, scale: 0.85, presence: 0.9 },
   boundaries: { label: 'Boundaries', dark: false, x: 0, scale: 0.5, presence: 0 },
   operators: { label: 'Operators', dark: false, x: 0, scale: 0.5, presence: 0 },

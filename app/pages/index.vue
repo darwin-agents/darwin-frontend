@@ -267,7 +267,7 @@ onMounted(() => {
             <circle cx="11" cy="11" r="3.5" fill="#ff5b1f" />
           </svg>
           <span class="lp-logo-name">Darwin</span>
-          <span class="upper dim lp-logo-tag">Agents · v0.4</span>
+          <span class="upper dim lp-logo-tag">Agents · v0.7</span>
         </a>
         <nav class="lp-navlinks" aria-label="Sections">
           <a href="#thesis">Specimen</a>
