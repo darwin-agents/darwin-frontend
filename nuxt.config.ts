@@ -2,23 +2,34 @@
 const siteUrl = (process.env.NUXT_PUBLIC_SITE_URL || 'https://darwinagents.com').replace(/\/$/, '')
 // App routes are private: keep them out of search and AI indexes.
 const noindex = { 'x-robots-tag': 'noindex, nofollow' }
+// The 8 most-spoken languages. Only the landing page gets per-language URLs (/es, /zh…);
+// app routes keep one URL and follow the visitor's saved language (plugins/locale.client.ts).
+const locales = [
+  { code: 'en', language: 'en-US', name: 'English', file: 'en.json' },
+  { code: 'zh', language: 'zh-CN', name: '中文', file: 'zh.json' },
+  { code: 'hi', language: 'hi-IN', name: 'हिन्दी', file: 'hi.json' },
+  { code: 'es', language: 'es-ES', name: 'Español', file: 'es.json' },
+  { code: 'ar', language: 'ar', name: 'العربية', file: 'ar.json', dir: 'rtl' as const },
+  { code: 'fr', language: 'fr-FR', name: 'Français', file: 'fr.json' },
+  { code: 'bn', language: 'bn-BD', name: 'বাংলা', file: 'bn.json' },
+  { code: 'pt', language: 'pt-BR', name: 'Português', file: 'pt.json' },
+]
+const appPages = ['login', 'dashboard', 'spawn', 'canvas-id', 'resolve', 'confirm', 'reset-password']
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
-  modules: ['@pinia/nuxt', '@nuxtjs/supabase', '@nuxtjs/tailwindcss'],
+  modules: ['@pinia/nuxt', '@nuxtjs/supabase', '@nuxtjs/tailwindcss', '@nuxtjs/i18n'],
 
   css: ['~/assets/css/main.css'],
 
   app: {
     head: {
-      htmlAttrs: { lang: 'en' },
       meta: [
         { name: 'description', content: 'Raise a digital organism that earns its own living.' },
         { name: 'theme-color', content: '#f3eee2' },
         { property: 'og:site_name', content: 'Darwin Agents' },
-        { property: 'og:locale', content: 'en_US' },
         { property: 'og:image', content: `${siteUrl}/og.png` },
         { property: 'og:image:width', content: '1200' },
         { property: 'og:image:height', content: '630' },
@@ -44,7 +55,8 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/': { isr: 60 },
-    '/login': { isr: 60, headers: noindex },
+    ...Object.fromEntries(locales.slice(1).map((l) => [`/${l.code}`, { isr: 60 }])),
+    '/login': { ssr: false, headers: noindex },
     '/dashboard': { ssr: false, headers: noindex },
     '/spawn': { ssr: false, headers: noindex },
     '/canvas/**': { ssr: false, headers: noindex },
@@ -71,8 +83,20 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/login',
       callback: '/confirm',
-      exclude: ['/', '/login', '/confirm', '/resolve', '/reset-password'],
+      exclude: ['/', ...locales.slice(1).map((l) => `/${l.code}`), '/login', '/confirm', '/resolve', '/reset-password'],
     },
+  },
+
+  i18n: {
+    baseUrl: siteUrl,
+    defaultLocale: 'en',
+    strategy: 'prefix_except_default',
+    locales,
+    customRoutes: 'config',
+    pages: Object.fromEntries(appPages.map((p) => [p, false])),
+    // '/' is ISR-cached: a server-side redirect by cookie or Accept-Language would be
+    // cached for every visitor, so plugins/locale.client.ts detects in the browser.
+    detectBrowserLanguage: false,
   },
 
   imports: {

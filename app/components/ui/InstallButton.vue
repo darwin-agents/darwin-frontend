@@ -3,6 +3,7 @@ import { Download, Share } from 'lucide-vue-next'
 
 // Shows only when the app can actually be installed and isn't already.
 defineProps<{ compact?: boolean }>()
+const { t } = useI18n()
 const { canInstall, installed, iosManual, install } = usePwaInstall()
 const showIosHint = ref(false)
 
@@ -18,16 +19,18 @@ function onClick() {
       type="button"
       class="install-btn"
       :class="{ 'is-compact': compact }"
-      :aria-label="compact ? 'Install the Darwin app' : undefined"
+      :aria-label="compact ? t('pwa.installAria') : undefined"
       :aria-expanded="iosManual ? showIosHint : undefined"
       @click="onClick"
     >
       <Download :size="15" />
-      <span v-if="!compact">Install app</span>
+      <span v-if="!compact">{{ t('pwa.install') }}</span>
     </button>
-    <p v-if="showIosHint" class="install-hint" role="status">
-      Tap <Share :size="13" class="install-hint-icon" /> <b>Share</b>, then <b>Add to Home Screen</b>.
-    </p>
+    <i18n-t v-if="showIosHint" keypath="pwa.iosHint" tag="p" class="install-hint" role="status" scope="global">
+      <template #icon><Share :size="13" class="install-hint-icon" /></template>
+      <template #share><b>{{ t('pwa.share') }}</b></template>
+      <template #addToHome><b>{{ t('pwa.addToHome') }}</b></template>
+    </i18n-t>
   </div>
 </template>
 

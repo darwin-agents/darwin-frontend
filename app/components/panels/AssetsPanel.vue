@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { X, FileBox } from 'lucide-vue-next'
 
+const { t } = useI18n()
 const panels = useCanvasPanels()
 </script>
 
@@ -13,7 +14,7 @@ const panels = useCanvasPanels()
       <div class="flex items-center justify-between px-5 py-4 border-b border-darwin-border shrink-0">
         <h2 class="text-sm font-semibold text-darwin-ink flex items-center gap-2">
           <FileBox :size="14" class="text-darwin-accent" />
-          Assets
+          {{ t('panels.assets.title') }}
         </h2>
         <button type="button" class="text-darwin-muted hover:text-darwin-ink p-1.5 rounded-md hover:bg-darwin-bg-3 transition-all" @click="panels.closeAssetsPanel()">
           <X :size="16" />
@@ -22,7 +23,7 @@ const panels = useCanvasPanels()
       <div class="flex-1 flex items-center justify-center">
         <div class="text-center px-6">
           <FileBox :size="32" class="text-darwin-muted mx-auto mb-3" />
-          <p class="text-xs text-darwin-muted">Uploaded files will appear here when the agent produces assets.</p>
+          <p class="text-xs text-darwin-muted">{{ t('panels.assets.empty') }}</p>
         </div>
       </div>
     </div>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
+const { t } = useI18n()
+
 const route = useRoute()
 const darwinId = computed(() => String(route.params.id ?? ''))
 
@@ -12,7 +14,7 @@ const panels = useCanvasPanels()
 const notifications = useNotificationStore()
 const toast = useToast()
 
-useHead({ title: () => agent.agent?.name ?? 'Canvas' })
+useHead({ title: () => agent.agent?.name ?? t('canvas.title') })
 
 async function loadCanvas(id: string) {
   realtime.unsubscribe()
@@ -22,7 +24,7 @@ async function loadCanvas(id: string) {
   try {
     await agent.fetchAgent(id)
   } catch {
-    toast('Could not load this agent.', 'error')
+    toast(t('canvas.errors.loadAgent'), 'error')
     await navigateTo('/dashboard')
     return
   }
@@ -38,7 +40,7 @@ async function loadCanvas(id: string) {
     // Route history like live events so pending approvals get banners and buttons.
     for (const e of data.events ?? []) realtime.routeEvent(e, false)
   } catch {
-    toast('Could not load event history.', 'error')
+    toast(t('canvas.errors.loadHistory'), 'error')
   }
 }
 

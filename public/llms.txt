@@ -52,6 +52,7 @@
 ## Links
 
 - [Darwin Agents](https://darwinagents.com/): the interactive overview, FAQ and waitlist
+- The same page in Chinese ([/zh](https://darwinagents.com/zh)), Hindi ([/hi](https://darwinagents.com/hi)), Spanish ([/es](https://darwinagents.com/es)), Arabic ([/ar](https://darwinagents.com/ar)), French ([/fr](https://darwinagents.com/fr)), Bengali ([/bn](https://darwinagents.com/bn)) and Portuguese ([/pt](https://darwinagents.com/pt))
 - [Nexow Studio](https://nexow.studio): product studio (Nexow, Inc.)
 - [Specimen Labs](https://specimenlabs.com): research partner (Specimen Labs, Inc.)
 - Security contact: security@darwinagents.com

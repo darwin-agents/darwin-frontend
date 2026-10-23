@@ -3,6 +3,7 @@ import { Skull, Loader2 } from 'lucide-vue-next'
 
 const props = defineProps<{ darwinId: string }>()
 
+const { t } = useI18n()
 const agent = useAgentStore()
 const toast = useToast()
 const showKillConfirm = ref(false)
@@ -13,7 +14,7 @@ async function confirmTerminate() {
   try {
     await agent.terminate(props.darwinId)
   } catch {
-    toast('Termination failed. The agent is still running.', 'error')
+    toast(t('console.kill.failed'), 'error')
   } finally {
     terminating.value = false
     showKillConfirm.value = false
@@ -30,18 +31,17 @@ async function confirmTerminate() {
       @click="showKillConfirm = true"
     >
       <Skull :size="14" />
-      Terminate Agent
+      {{ t('console.kill.button') }}
     </button>
-    <UiDarwinModal v-model="showKillConfirm" title="Terminate Agent">
+    <UiDarwinModal v-model="showKillConfirm" :title="t('console.kill.button')">
       <p class="text-sm text-darwin-ink-soft leading-relaxed">
-        This is permanent. The container will be stopped, the VCC frozen,
-        and the session archived. The agent cannot be revived.
+        {{ t('console.kill.confirm') }}
       </p>
       <template #footer>
-        <button type="button" class="darwin-btn-ghost" @click="showKillConfirm = false">Cancel</button>
+        <button type="button" class="darwin-btn-ghost" @click="showKillConfirm = false">{{ t('console.kill.cancel') }}</button>
         <button type="button" class="darwin-btn-danger" :disabled="terminating" @click="confirmTerminate">
           <Loader2 v-if="terminating" :size="14" class="animate-spin" />
-          Terminate
+          {{ t('console.kill.terminate') }}
         </button>
       </template>
     </UiDarwinModal>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{ darwinId: string }>()
 
+const { t } = useI18n()
 const auth = useAuthStore()
 
 const form = reactive({
@@ -47,24 +48,24 @@ async function saveSecret() {
       class="flex items-center justify-between text-xs bg-darwin-bg/60 border border-darwin-border rounded p-2"
     >
       <span class="font-mono text-darwin-ink-soft">{{ maskRef(secret.ref) }}</span>
-      <span class="text-darwin-muted">{{ secret.type }} · ${{ secret.spend_limit ?? '—' }} limit</span>
+      <span class="text-darwin-muted">{{ t('console.vault.savedLimit', { type: secret.type, amount: secret.spend_limit ?? '—' }) }}</span>
     </div>
     <div class="space-y-2 border-t border-darwin-border pt-3">
       <select v-model="form.secret_type" class="darwin-input w-full text-sm">
-        <option value="vcc">Virtual Credit Card</option>
-        <option value="stripe_key">Stripe API Key</option>
-        <option value="broker_api_key">Broker API Key</option>
-        <option value="iban">IBAN</option>
+        <option value="vcc">{{ t('console.vault.types.vcc') }}</option>
+        <option value="stripe_key">{{ t('console.vault.types.stripeKey') }}</option>
+        <option value="broker_api_key">{{ t('console.vault.types.brokerApiKey') }}</option>
+        <option value="iban">{{ t('console.vault.types.iban') }}</option>
       </select>
       <template v-if="form.secret_type === 'vcc'">
         <input v-model="form.pan" type="text" maxlength="19" placeholder="4111…" class="darwin-input w-full font-mono" />
         <div class="grid grid-cols-2 gap-2">
-          <input v-model="form.cvv" type="password" maxlength="4" placeholder="CVV" class="darwin-input" />
-          <input v-model="form.expiry" type="text" maxlength="5" placeholder="MM/YY" class="darwin-input" />
+          <input v-model="form.cvv" type="password" maxlength="4" :placeholder="t('console.vault.cvv')" class="darwin-input" />
+          <input v-model="form.expiry" type="text" maxlength="5" :placeholder="t('console.vault.expiry')" class="darwin-input" />
         </div>
-        <input v-model.number="form.spend_limit" type="number" placeholder="Spend limit ($)" class="darwin-input w-full" />
+        <input v-model.number="form.spend_limit" type="number" :placeholder="t('console.vault.spendLimit')" class="darwin-input w-full" />
       </template>
-      <button type="button" class="darwin-btn-primary w-full text-sm" @click="saveSecret">Save to Vault</button>
+      <button type="button" class="darwin-btn-primary w-full text-sm" @click="saveSecret">{{ t('console.vault.save') }}</button>
     </div>
   </div>
 </template>

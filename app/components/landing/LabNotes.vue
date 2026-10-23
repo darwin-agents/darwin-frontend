@@ -1,13 +1,14 @@
 <script setup lang="ts">
 // "Lab notes": the technical layer under each chapter's plain-language story.
 defineProps<{ items: [string, string][]; title?: string }>()
+const { t } = useI18n()
 </script>
 
 <template>
   <details class="lab-notes">
     <summary>
-      <span class="lab-notes-label">Lab notes</span>
-      <span class="lab-notes-title">{{ title ?? 'Specification' }}</span>
+      <span class="lab-notes-label">{{ t('lab.notes.label') }}</span>
+      <span class="lab-notes-title">{{ title ?? t('lab.notes.defaultTitle') }}</span>
       <span class="lab-notes-plus" aria-hidden="true">+</span>
     </summary>
     <dl>

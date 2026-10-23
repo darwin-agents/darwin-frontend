@@ -59,6 +59,11 @@
   a { color: inherit; }
 }
 
+/* Non-Latin scripts: tracking breaks Arabic letter joins and crowds Indic conjuncts, these
+   fonts have no true italics, and Indic/Arabic marks need taller display lines. */
+:is(:lang(ar), :lang(hi), :lang(bn), :lang(zh)) * { letter-spacing: 0 !important; font-style: normal !important; }
+:is(:lang(ar), :lang(hi), :lang(bn), :lang(zh)) :is(h1, h2, h3) { line-height: 1.25 !important; }
+
 /* ─────────────────────────────────────────────────────────────────────────────
    COMPONENT CLASSES
    ───────────────────────────────────────────────────────────────────────────── */

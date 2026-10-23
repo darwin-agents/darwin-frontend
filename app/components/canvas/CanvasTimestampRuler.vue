@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { pickTimelineTickStepMs, useCanvasLayout } from '~/composables/useCanvasLayout'
 
+const { locale } = useI18n()
 const canvas = useCanvasStore()
 const { zoomLevel, scrollX } = storeToRefs(canvas)
 const { timestampToX, xToTimestampMs } = useCanvasLayout()
@@ -38,13 +39,13 @@ onUnmounted(() => {
 function formatTickLabel(ms: number, stepMs: number): string {
   const d = new Date(ms)
   if (stepMs >= 7 * 86_400_000) {
-    return d.toLocaleDateString(undefined, { month: 'short', year: 'numeric' })
+    return d.toLocaleDateString(locale.value, { month: 'short', year: 'numeric' })
   }
   if (stepMs >= 86_400_000) {
-    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+    return d.toLocaleDateString(locale.value, { month: 'short', day: 'numeric' })
   }
   if (stepMs < 1000) {
-    const t = d.toLocaleTimeString(undefined, {
+    const t = d.toLocaleTimeString(locale.value, {
       hour12: false,
       hour: '2-digit',
       minute: '2-digit',
@@ -54,14 +55,14 @@ function formatTickLabel(ms: number, stepMs: number): string {
     return `${t}.${frac}`
   }
   if (stepMs < 60_000) {
-    return d.toLocaleTimeString(undefined, {
+    return d.toLocaleTimeString(locale.value, {
       hour12: false,
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
     })
   }
-  return d.toLocaleString(undefined, {
+  return d.toLocaleString(locale.value, {
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
@@ -116,14 +117,18 @@ const ticks = computed(() => {
   return subsampleByScreenGap(raw, MIN_LABEL_GAP_PX)
 })
 
-const zoomLabel = computed(() => `${Math.round(zoomLevel.value * 100)}%`)
+const zoomLabel = computed(() =>
+  new Intl.NumberFormat(locale.value, { style: 'percent' }).format(Math.round(zoomLevel.value * 100) / 100),
+)
 const stepHint = computed(() => {
   const s = pickTimelineTickStepMs(zoomLevel.value, rulerWidthPx.value)
-  if (s < 1000) return `${s} ms`
-  if (s < 60_000) return `${Math.round(s / 1000)} s`
-  if (s < 3600_000) return `${Math.round(s / 60_000)} min`
-  if (s < 86_400_000) return `${Math.round(s / 3600_000)} h`
-  return `${Math.round(s / 86_400_000)} d`
+  const [n, unit]: [number, string] =
+    s < 1000 ? [s, 'millisecond']
+    : s < 60_000 ? [Math.round(s / 1000), 'second']
+    : s < 3600_000 ? [Math.round(s / 60_000), 'minute']
+    : s < 86_400_000 ? [Math.round(s / 3600_000), 'hour']
+    : [Math.round(s / 86_400_000), 'day']
+  return new Intl.NumberFormat(locale.value, { style: 'unit', unit, unitDisplay: 'short' }).format(n)
 })
 </script>
 

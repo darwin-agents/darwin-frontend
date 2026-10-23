@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { AlertTriangle, X } from 'lucide-vue-next'
 
+const { t } = useI18n()
 const notifications = useNotificationStore()
 
 function dismiss(id: string) {
   notifications.dismiss(id)
 }
 
-const eventLabels: Record<string, string> = {
-  ASK_HUMAN_SENT: 'Human input requested',
-  APPROVAL_REQUESTED: 'Approval required',
-  CAPTCHA_DELEGATED: 'CAPTCHA needs solving',
+const eventLabelIds: Record<string, string> = {
+  ASK_HUMAN_SENT: 'askHuman',
+  APPROVAL_REQUESTED: 'approval',
+  CAPTCHA_DELEGATED: 'captcha',
 }
 </script>
 
@@ -23,7 +24,7 @@ const eventLabels: Record<string, string> = {
     >
       <AlertTriangle :size="14" class="text-darwin-accent shrink-0 animate-pulse" />
       <span class="text-darwin-ink flex-1 font-medium">
-        {{ eventLabels[n.event_type] ?? n.event_type }}
+        {{ eventLabelIds[n.event_type] ? t(`canvas.banner.${eventLabelIds[n.event_type]}`) : n.event_type }}
       </span>
       <span class="font-mono text-[10px] text-darwin-muted">{{ n.event_type }}</span>
       <button

@@ -1,12 +1,9 @@
 <script setup lang="ts">
-const route = useRoute()
-const site = useRuntimeConfig().public.siteUrl
 // Title template lives here: functions in nuxt.config `app.head` aren't serialized.
-useHead({
-  titleTemplate: (title) => (title ? `${title} · Darwin Agents` : 'Darwin Agents'),
-  link: [{ rel: 'canonical', href: () => site + route.path }],
-})
-useSeoMeta({ ogUrl: () => site + route.path })
+useHead({ titleTemplate: (title) => (title ? `${title} · Darwin Agents` : 'Darwin Agents') })
+// lang/dir, canonical, og:url, og:locale and hreflang alternates for the current language.
+const i18nHead = useLocaleHead()
+useHead(() => ({ htmlAttrs: i18nHead.value.htmlAttrs, link: i18nHead.value.link, meta: i18nHead.value.meta }))
 </script>
 
 <template>

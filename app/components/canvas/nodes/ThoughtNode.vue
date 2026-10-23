@@ -31,7 +31,7 @@ const modelClass = computed(() => {
 
 <template>
   <g>
-    <NodeShell :event="event" accent="#534AB7" label="Thought" />
+    <NodeShell :event="event" accent="#534AB7" label-id="thought" />
     <foreignObject x="-10" y="-10" width="20" height="20">
       <Brain :size="14" style="display: block; margin: auto; color: #4338a8" />
     </foreignObject>

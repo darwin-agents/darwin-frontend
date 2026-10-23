@@ -4,6 +4,7 @@ import {
   Loader2, Check, Info,
 } from 'lucide-vue-next'
 
+const { t, locale } = useI18n()
 const api = useApi()
 const step = ref(1)
 const loading = ref(false)
@@ -22,25 +23,29 @@ const form = reactive({
 })
 
 const models = [
-  { id: 'claude-sonnet-4-6',  label: 'Claude Sonnet 4.6',  note: 'Balanced — recommended',         color: 'border-model-sonnet/40 bg-model-sonnet/10' },
-  { id: 'claude-haiku-4-5',   label: 'Claude Haiku 4.5',   note: 'Fast — cheapest',                color: 'border-model-haiku/40 bg-model-haiku/10' },
-  { id: 'claude-opus-4-6',    label: 'Claude Opus 4.6',    note: 'Highest intelligence — expensive', color: 'border-model-opus/40 bg-model-opus/10' },
-  { id: 'gpt-4o',             label: 'GPT-4o',             note: 'Best vision capabilities',        color: 'border-model-gpt4o/40 bg-model-gpt4o/10' },
-  { id: 'gpt-4o-mini',        label: 'GPT-4o Mini',        note: 'Fast vision — low cost',          color: 'border-model-gpt4omini/40 bg-model-gpt4omini/10' },
+  { id: 'claude-sonnet-4-6',  label: 'Claude Sonnet 4.6',  note: 'sonnet',    color: 'border-model-sonnet/40 bg-model-sonnet/10' },
+  { id: 'claude-haiku-4-5',   label: 'Claude Haiku 4.5',   note: 'haiku',     color: 'border-model-haiku/40 bg-model-haiku/10' },
+  { id: 'claude-opus-4-6',    label: 'Claude Opus 4.6',    note: 'opus',      color: 'border-model-opus/40 bg-model-opus/10' },
+  { id: 'gpt-4o',             label: 'GPT-4o',             note: 'gpt4o',     color: 'border-model-gpt4o/40 bg-model-gpt4o/10' },
+  { id: 'gpt-4o-mini',        label: 'GPT-4o Mini',        note: 'gpt4oMini', color: 'border-model-gpt4omini/40 bg-model-gpt4omini/10' },
 ]
 
 const toolDefs = [
-  { key: 'browser' as const,  label: 'Browser',  desc: 'Navigate, click, type, screenshot. Full Browserbase sessions.' },
-  { key: 'finance' as const,  label: 'Finance',   desc: 'Virtual credit card, bank transfers, crypto transactions.' },
-  { key: 'code' as const,     label: 'Code',      desc: 'Read, write, and execute code in sandboxed environments.' },
+  { key: 'browser' as const },
+  { key: 'finance' as const },
+  { key: 'code' as const },
 ]
 
 const steps = [
-  { num: 1, label: 'Identity', icon: User },
-  { num: 2, label: 'Budget',   icon: DollarSign },
-  { num: 3, label: 'Tools',    icon: Wrench },
-  { num: 4, label: 'Review',   icon: Rocket },
+  { num: 1, id: 'identity', icon: User },
+  { num: 2, id: 'budget',   icon: DollarSign },
+  { num: 3, id: 'tools',    icon: Wrench },
+  { num: 4, id: 'review',   icon: Rocket },
 ]
+
+function usd(v: number) {
+  return v.toLocaleString(locale.value, { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 })
+}
 
 const promptPreview = computed(() => form.directive.slice(0, 400))
 const selectedModel = computed(() => models.find(m => m.id === form.model))
@@ -61,11 +66,11 @@ async function deploy() {
   const name = form.name.trim()
   const directive = form.directive.trim()
   if (name.length < 1 || name.length > 100) {
-    errorMsg.value = 'Agent name must be between 1 and 100 characters.'
+    errorMsg.value = t('spawn.form.errors.nameLength')
     return
   }
   if (directive.length < 10) {
-    errorMsg.value = 'Directive must be at least 10 characters.'
+    errorMsg.value = t('spawn.form.errors.directiveLength')
     return
   }
 
@@ -88,16 +93,16 @@ async function deploy() {
     const agentStore = useAgentStore()
     agentStore.setInitialBudgetFromSpawn(form.budget)
     if (res.darwin_id) await navigateTo(`/canvas/${res.darwin_id}`)
-    else errorMsg.value = 'Spawn accepted but no agent id came back. Check the dashboard.'
+    else errorMsg.value = t('spawn.form.errors.noAgentId')
   } catch (e: any) {
     const detail = e?.data?.detail
     if (Array.isArray(detail) && detail.length) {
       const first = detail[0]
-      const field = Array.isArray(first?.loc) ? String(first.loc[first.loc.length - 1]) : 'field'
-      const msg = typeof first?.msg === 'string' ? first.msg : 'invalid value'
-      errorMsg.value = `Spawn validation failed: ${field} ${msg}`
+      const field = Array.isArray(first?.loc) ? String(first.loc[first.loc.length - 1]) : t('spawn.form.errors.unknownField')
+      const msg = typeof first?.msg === 'string' ? first.msg : t('spawn.form.errors.invalidValue')
+      errorMsg.value = t('spawn.form.errors.validation', { field, message: msg })
     } else {
-      errorMsg.value = e instanceof Error ? e.message : 'Spawn failed'
+      errorMsg.value = e instanceof Error ? e.message : t('spawn.form.errors.failed')
     }
   } finally {
     loading.value = false
@@ -131,7 +136,7 @@ async function deploy() {
             <Check v-if="step > s.num" :size="10" />
             <span v-else>{{ s.num }}</span>
           </div>
-          <span class="hidden sm:inline">{{ s.label }}</span>
+          <span class="hidden sm:inline">{{ t(`spawn.form.steps.${s.id}`) }}</span>
         </button>
         <ChevronRight v-if="i < steps.length - 1" :size="12" class="text-darwin-muted shrink-0" />
       </template>
@@ -140,29 +145,29 @@ async function deploy() {
     <!-- Step 1: Identity -->
     <div v-if="step === 1" class="space-y-5 animate-fade-in">
       <div>
-        <h2 class="text-lg font-semibold text-darwin-ink mb-1">Identity</h2>
-        <p class="text-sm text-darwin-muted">Name your agent and define its mission.</p>
+        <h2 class="text-lg font-semibold text-darwin-ink mb-1">{{ t('spawn.form.identity.title') }}</h2>
+        <p class="text-sm text-darwin-muted">{{ t('spawn.form.identity.subtitle') }}</p>
       </div>
 
       <div>
-        <label class="text-xs text-darwin-muted mb-1.5 block">Agent name</label>
-        <input v-model="form.name" placeholder="e.g. Market Scout Alpha" class="darwin-input" />
+        <label class="text-xs text-darwin-muted mb-1.5 block">{{ t('spawn.form.identity.nameLabel') }}</label>
+        <input v-model="form.name" :placeholder="t('spawn.form.identity.namePlaceholder')" class="darwin-input" />
       </div>
 
       <div>
-        <label class="text-xs text-darwin-muted mb-1.5 block">Mission directive</label>
+        <label class="text-xs text-darwin-muted mb-1.5 block">{{ t('spawn.form.identity.directiveLabel') }}</label>
         <textarea
           v-model="form.directive"
-          placeholder="Describe what this agent should accomplish..."
+          :placeholder="t('spawn.form.identity.directivePlaceholder')"
           class="darwin-input min-h-[160px] resize-y"
         />
         <p class="text-[11px] text-darwin-muted mt-1.5">
-          This becomes the seed of the agent's system prompt. Be specific about goals and constraints (minimum 10 characters).
+          {{ t('spawn.form.identity.directiveHint') }}
         </p>
       </div>
 
       <div>
-        <label class="text-xs text-darwin-muted mb-2 block">LLM model (trunk default)</label>
+        <label class="text-xs text-darwin-muted mb-2 block">{{ t('spawn.form.identity.modelLabel') }}</label>
         <div class="space-y-2">
           <label
             v-for="m in models"
@@ -175,13 +180,13 @@ async function deploy() {
             <input v-model="form.model" type="radio" :value="m.id" class="accent-darwin-accent" />
             <div class="flex-1">
               <span class="text-sm text-darwin-ink">{{ m.label }}</span>
-              <span class="text-xs text-darwin-muted ml-2">{{ m.note }}</span>
+              <span class="text-xs text-darwin-muted ms-2">{{ t(`spawn.form.modelNotes.${m.note}`) }}</span>
             </div>
           </label>
         </div>
         <div class="flex items-start gap-2 mt-3 text-[11px] text-darwin-muted">
           <Info :size="12" class="shrink-0 mt-0.5" />
-          <span>The agent may upgrade or downgrade this model per neuron or thought based on task complexity.</span>
+          <span>{{ t('spawn.form.identity.modelHint') }}</span>
         </div>
       </div>
     </div>
@@ -189,14 +194,14 @@ async function deploy() {
     <!-- Step 2: Budget -->
     <div v-if="step === 2" class="space-y-5 animate-fade-in">
       <div>
-        <h2 class="text-lg font-semibold text-darwin-ink mb-1">Budget</h2>
-        <p class="text-sm text-darwin-muted">Set the spending cap for this agent.</p>
+        <h2 class="text-lg font-semibold text-darwin-ink mb-1">{{ t('spawn.form.budget.title') }}</h2>
+        <p class="text-sm text-darwin-muted">{{ t('spawn.form.budget.subtitle') }}</p>
       </div>
 
       <div class="darwin-card p-6">
         <div class="flex items-baseline justify-between mb-4">
-          <label class="text-xs text-darwin-muted">Initial budget</label>
-          <span class="text-2xl font-semibold text-darwin-ink font-mono">${{ form.budget }}</span>
+          <label class="text-xs text-darwin-muted">{{ t('spawn.form.budget.initialLabel') }}</label>
+          <span class="text-2xl font-semibold text-darwin-ink font-mono">{{ usd(form.budget) }}</span>
         </div>
         <input
           v-model.number="form.budget"
@@ -207,48 +212,48 @@ async function deploy() {
           class="w-full accent-darwin-accent cursor-pointer"
         />
         <div class="flex justify-between text-[10px] text-darwin-muted mt-1">
-          <span>$5</span>
-          <span>$500</span>
+          <span>{{ usd(5) }}</span>
+          <span>{{ usd(500) }}</span>
         </div>
       </div>
 
       <div class="flex items-start gap-2 text-[11px] text-darwin-muted bg-darwin-bg-2 rounded-lg p-3 border border-darwin-border">
         <Info :size="12" class="shrink-0 mt-0.5" />
-        <span>Charges are hard-capped by the Visa network when a VCC is configured. The agent cannot exceed this budget.</span>
+        <span>{{ t('spawn.form.budget.capNote') }}</span>
       </div>
     </div>
 
     <!-- Step 3: Tools -->
     <div v-if="step === 3" class="space-y-5 animate-fade-in">
       <div>
-        <h2 class="text-lg font-semibold text-darwin-ink mb-1">Tools</h2>
-        <p class="text-sm text-darwin-muted">Select which capabilities the agent has access to.</p>
+        <h2 class="text-lg font-semibold text-darwin-ink mb-1">{{ t('spawn.form.tools.title') }}</h2>
+        <p class="text-sm text-darwin-muted">{{ t('spawn.form.tools.subtitle') }}</p>
       </div>
 
       <div class="space-y-2">
         <label
-          v-for="t in toolDefs"
-          :key="t.key"
+          v-for="tool in toolDefs"
+          :key="tool.key"
           class="flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-all"
-          :class="form.tools[t.key]
+          :class="form.tools[tool.key]
             ? 'border-darwin-accent/20 bg-darwin-accent/[0.04]'
             : 'border-darwin-border bg-darwin-bg-2 hover:bg-darwin-bg-3'"
         >
           <div>
-            <p class="text-sm font-medium text-darwin-ink">{{ t.label }}</p>
-            <p class="text-xs text-darwin-muted mt-0.5">{{ t.desc }}</p>
+            <p class="text-sm font-medium text-darwin-ink">{{ t(`spawn.form.toolOptions.${tool.key}.label`) }}</p>
+            <p class="text-xs text-darwin-muted mt-0.5">{{ t(`spawn.form.toolOptions.${tool.key}.desc`) }}</p>
           </div>
           <div
-            class="w-9 h-5 rounded-full relative transition-colors cursor-pointer shrink-0 ml-4"
-            :class="form.tools[t.key] ? 'bg-darwin-accent' : 'bg-darwin-bg-3'"
-            @click.prevent="form.tools[t.key] = !form.tools[t.key]"
+            class="w-9 h-5 rounded-full relative transition-colors cursor-pointer shrink-0 ms-4"
+            :class="form.tools[tool.key] ? 'bg-darwin-accent' : 'bg-darwin-bg-3'"
+            @click.prevent="form.tools[tool.key] = !form.tools[tool.key]"
           >
             <span
               class="absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform"
-              :class="form.tools[t.key] ? 'translate-x-[18px]' : 'translate-x-0.5'"
+              :class="form.tools[tool.key] ? 'translate-x-[18px]' : 'translate-x-0.5'"
             />
           </div>
-          <input v-model="form.tools[t.key]" type="checkbox" class="sr-only" />
+          <input v-model="form.tools[tool.key]" type="checkbox" class="sr-only" />
         </label>
       </div>
     </div>
@@ -256,35 +261,35 @@ async function deploy() {
     <!-- Step 4: Review -->
     <div v-if="step === 4" class="space-y-5 animate-fade-in">
       <div>
-        <h2 class="text-lg font-semibold text-darwin-ink mb-1">Review & Deploy</h2>
-        <p class="text-sm text-darwin-muted">Confirm the configuration before spawning.</p>
+        <h2 class="text-lg font-semibold text-darwin-ink mb-1">{{ t('spawn.form.review.title') }}</h2>
+        <p class="text-sm text-darwin-muted">{{ t('spawn.form.review.subtitle') }}</p>
       </div>
 
       <div class="darwin-card divide-y divide-darwin-border">
         <div class="p-4 flex items-center justify-between">
-          <span class="text-xs text-darwin-muted">Name</span>
+          <span class="text-xs text-darwin-muted">{{ t('spawn.form.review.name') }}</span>
           <span class="text-sm text-darwin-ink font-medium">{{ form.name }}</span>
         </div>
         <div class="p-4 flex items-center justify-between">
-          <span class="text-xs text-darwin-muted">Model</span>
+          <span class="text-xs text-darwin-muted">{{ t('spawn.form.review.model') }}</span>
           <span class="text-sm text-darwin-ink">{{ selectedModel?.label }}</span>
         </div>
         <div class="p-4 flex items-center justify-between">
-          <span class="text-xs text-darwin-muted">Budget</span>
-          <span class="text-sm text-darwin-ink font-mono">${{ form.budget }}</span>
+          <span class="text-xs text-darwin-muted">{{ t('spawn.form.review.budget') }}</span>
+          <span class="text-sm text-darwin-ink font-mono">{{ usd(form.budget) }}</span>
         </div>
         <div class="p-4 flex items-center justify-between">
-          <span class="text-xs text-darwin-muted">Tools</span>
+          <span class="text-xs text-darwin-muted">{{ t('spawn.form.review.tools') }}</span>
           <div class="flex gap-1.5">
             <span
-              v-for="t in enabledTools"
-              :key="t"
+              v-for="tool in enabledTools"
+              :key="tool"
               class="darwin-badge text-darwin-accent-deep bg-darwin-accent/10 border-darwin-accent/20"
-            >{{ t }}</span>
+            >{{ t(`spawn.form.toolOptions.${tool}.label`) }}</span>
           </div>
         </div>
         <div class="p-4">
-          <span class="text-xs text-darwin-muted block mb-2">Directive preview</span>
+          <span class="text-xs text-darwin-muted block mb-2">{{ t('spawn.form.review.directivePreview') }}</span>
           <pre class="text-xs text-darwin-ink-soft whitespace-pre-wrap leading-relaxed max-h-32 overflow-auto font-mono">{{ promptPreview || '—' }}</pre>
         </div>
       </div>
@@ -303,9 +308,9 @@ async function deploy() {
         @click="step--"
       >
         <ChevronLeft :size="16" />
-        Back
+        {{ t('spawn.form.back') }}
       </button>
-      <NuxtLink v-else to="/dashboard" class="darwin-btn-ghost text-xs">Cancel</NuxtLink>
+      <NuxtLink v-else to="/dashboard" class="darwin-btn-ghost text-xs">{{ t('spawn.form.cancel') }}</NuxtLink>
 
       <button
         v-if="step < 4"
@@ -314,7 +319,7 @@ async function deploy() {
         :disabled="!canProceed"
         @click="step++"
       >
-        Continue
+        {{ t('spawn.form.continue') }}
         <ChevronRight :size="16" />
       </button>
       <button
@@ -326,7 +331,7 @@ async function deploy() {
       >
         <Loader2 v-if="loading" :size="16" class="animate-spin" />
         <Rocket v-else :size="16" />
-        {{ loading ? 'Deploying...' : 'Deploy Agent' }}
+        {{ loading ? t('spawn.form.deploying') : t('spawn.form.deploy') }}
       </button>
     </div>
   </div>

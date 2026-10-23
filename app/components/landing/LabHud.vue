@@ -1,11 +1,12 @@
 <script setup lang="ts">
 // Fixed chapter rail (right edge); collapses to a reading-progress bar on small screens.
+const { t } = useI18n()
 const { active } = useLabChapter()
 const chapters = CHAPTER_IDS.filter((id) => id !== 'hero')
 </script>
 
 <template>
-  <nav class="lab-rail" aria-label="Chapters">
+  <nav class="lab-rail" :aria-label="t('lab.hud.chapters')">
     <a
       v-for="(id, i) in chapters"
       :key="id"
@@ -14,7 +15,7 @@ const chapters = CHAPTER_IDS.filter((id) => id !== 'hero')
       :class="{ 'is-active': active === id, 'is-dark': CHAPTERS[active].dark }"
       :aria-current="active === id ? 'true' : undefined"
     >
-      <span class="lab-rail-label">{{ CHAPTERS[id].label }}</span>
+      <span class="lab-rail-label">{{ t(`lab.chapters.${id}`) }}</span>
       <span class="lab-rail-num">{{ String(i + 1).padStart(2, '0') }}</span>
     </a>
   </nav>

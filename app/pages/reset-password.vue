@@ -2,7 +2,8 @@
 import { Lock, Loader2, Eye, EyeOff, CheckCircle } from 'lucide-vue-next'
 
 definePageMeta({ layout: false })
-useHead({ title: 'Reset password' })
+const { t } = useI18n()
+useHead({ title: () => t('auth.reset.pageTitle') })
 
 const auth = useAuthStore()
 const supabase = useSupabaseClient()
@@ -62,7 +63,7 @@ function setupRecoveryListener() {
     }
     checking.value = false
     if (!ready.value) {
-      error.value = 'This link is invalid or has expired. Request a new reset from the sign-in page.'
+      error.value = t('auth.reset.invalidLink')
     }
   })()
 }
@@ -81,11 +82,11 @@ async function submit() {
   if (loading.value) return
   error.value = ''
   if (password.value !== confirm.value) {
-    error.value = 'Passwords do not match.'
+    error.value = t('auth.errors.passwordMismatch')
     return
   }
   if (password.value.length < 8) {
-    error.value = 'Password must be at least 8 characters.'
+    error.value = t('auth.errors.passwordTooShort')
     return
   }
 
@@ -123,50 +124,50 @@ async function submit() {
 
           <div v-if="checking" class="text-center py-8">
             <Loader2 :size="28" class="text-darwin-accent animate-spin mx-auto" />
-            <p class="text-sm text-darwin-muted mt-4">Verifying reset link…</p>
+            <p class="text-sm text-darwin-muted mt-4">{{ t('auth.reset.verifying') }}</p>
           </div>
 
           <div v-else-if="done" class="text-center py-2">
             <CheckCircle :size="36" class="text-darwin-accent mx-auto mb-4" />
-            <h1 class="text-xl font-semibold text-darwin-ink mb-2">Password updated</h1>
-            <p class="text-sm text-darwin-muted mb-6">You can now sign in with your new password.</p>
+            <h1 class="text-xl font-semibold text-darwin-ink mb-2">{{ t('auth.reset.doneTitle') }}</h1>
+            <p class="text-sm text-darwin-muted mb-6">{{ t('auth.reset.doneBody') }}</p>
             <NuxtLink to="/login" class="darwin-btn-primary w-full justify-center inline-flex">
-              Go to sign in
+              {{ t('auth.reset.goToSignIn') }}
             </NuxtLink>
           </div>
 
           <div v-else-if="!ready" class="text-center py-2">
-            <h1 class="text-xl font-semibold text-darwin-ink mb-2">Link not valid</h1>
+            <h1 class="text-xl font-semibold text-darwin-ink mb-2">{{ t('auth.reset.invalidTitle') }}</h1>
             <p class="text-sm text-darwin-muted mb-6">{{ error }}</p>
             <NuxtLink to="/login" class="darwin-btn-secondary w-full justify-center inline-flex">
-              Back to sign in
+              {{ t('auth.backToSignIn') }}
             </NuxtLink>
           </div>
 
           <template v-else>
             <div class="text-center mb-6">
-              <h1 class="text-xl font-semibold text-darwin-ink mb-1">Set new password</h1>
-              <p class="text-sm text-darwin-muted">Choose a strong password for your account.</p>
+              <h1 class="text-xl font-semibold text-darwin-ink mb-1">{{ t('auth.reset.title') }}</h1>
+              <p class="text-sm text-darwin-muted">{{ t('auth.reset.subtitle') }}</p>
             </div>
 
             <form class="space-y-3" novalidate @submit.prevent="submit">
               <div>
-                <label class="text-xs text-darwin-muted mb-1.5 block" for="rp-pw">New password</label>
+                <label class="text-xs text-darwin-muted mb-1.5 block" for="rp-pw">{{ t('auth.fields.newPassword') }}</label>
                 <div class="relative">
-                  <Lock :size="14" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-darwin-muted pointer-events-none" />
+                  <Lock :size="14" class="absolute start-3.5 top-1/2 -translate-y-1/2 text-darwin-muted pointer-events-none" />
                   <input
                     id="rp-pw"
                     v-model="password"
                     :type="showPw ? 'text' : 'password'"
                     autocomplete="new-password"
-                    placeholder="At least 8 characters"
-                    class="darwin-input pl-9 pr-10"
+                    :placeholder="t('auth.fields.newPasswordPlaceholder')"
+                    class="darwin-input ps-9 pe-10"
                     :disabled="loading"
                   >
                   <button
                     type="button"
                     tabindex="-1"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-darwin-muted hover:text-darwin-ink transition-colors"
+                    class="absolute end-3 top-1/2 -translate-y-1/2 text-darwin-muted hover:text-darwin-ink transition-colors"
                     @click="showPw = !showPw"
                   >
                     <EyeOff v-if="showPw" :size="14" />
@@ -176,22 +177,22 @@ async function submit() {
               </div>
 
               <div>
-                <label class="text-xs text-darwin-muted mb-1.5 block" for="rp-cf">Confirm password</label>
+                <label class="text-xs text-darwin-muted mb-1.5 block" for="rp-cf">{{ t('auth.fields.confirmPassword') }}</label>
                 <div class="relative">
-                  <Lock :size="14" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-darwin-muted pointer-events-none" />
+                  <Lock :size="14" class="absolute start-3.5 top-1/2 -translate-y-1/2 text-darwin-muted pointer-events-none" />
                   <input
                     id="rp-cf"
                     v-model="confirm"
                     :type="showConf ? 'text' : 'password'"
                     autocomplete="new-password"
-                    placeholder="Repeat password"
-                    class="darwin-input pl-9 pr-10"
+                    :placeholder="t('auth.fields.confirmPlaceholder')"
+                    class="darwin-input ps-9 pe-10"
                     :disabled="loading"
                   >
                   <button
                     type="button"
                     tabindex="-1"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-darwin-muted hover:text-darwin-ink transition-colors"
+                    class="absolute end-3 top-1/2 -translate-y-1/2 text-darwin-muted hover:text-darwin-ink transition-colors"
                     @click="showConf = !showConf"
                   >
                     <EyeOff v-if="showConf" :size="14" />
@@ -202,7 +203,7 @@ async function submit() {
 
               <button type="submit" class="darwin-btn-primary w-full mt-1" :disabled="loading">
                 <Loader2 v-if="loading" :size="15" class="animate-spin" />
-                <span v-else>Update password</span>
+                <span v-else>{{ t('auth.reset.submit') }}</span>
               </button>
             </form>
 
