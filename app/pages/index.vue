@@ -262,10 +262,7 @@ onMounted(() => {
     <header class="lp-header" :class="{ 'is-dark': navDark }">
       <div class="lp-container lp-nav">
         <a href="#top" class="lp-logo">
-          <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
-            <circle cx="11" cy="11" r="10" fill="none" stroke="currentColor" stroke-width="1.4" />
-            <circle cx="11" cy="11" r="3.5" fill="#ff5b1f" />
-          </svg>
+          <UiDarwinLogo :size="26" />
           <span class="lp-logo-name">Darwin</span>
           <span class="upper dim lp-logo-tag">Agents · v0.7</span>
         </a>
@@ -725,10 +722,7 @@ onMounted(() => {
 
       <footer class="lp-container lp-footer">
         <div class="lp-footer-brand">
-          <svg width="18" height="18" viewBox="0 0 22 22" aria-hidden="true">
-            <circle cx="11" cy="11" r="10" fill="none" stroke="#f3eee2" stroke-width="1.4" />
-            <circle cx="11" cy="11" r="3.5" fill="#ff5b1f" />
-          </svg>
+          <UiDarwinLogo :size="22" style="color: #f3eee2" />
           <span>Darwin Agents · a <a href="https://nexow.studio" rel="noopener">Nexow Studio</a> product, in collaboration with <a href="https://specimenlabs.com" rel="noopener">Specimen Labs</a></span>
         </div>
         <div class="lp-footer-links">

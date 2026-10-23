@@ -34,10 +34,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 <template>
   <div class="lab-gate" role="dialog" aria-modal="true" aria-labelledby="lab-gate-title">
     <div class="lab-gate-inner">
-      <svg width="40" height="40" viewBox="0 0 22 22" class="lab-gate-logo" aria-hidden="true">
-        <circle cx="11" cy="11" r="10" fill="none" stroke="#f3eee2" stroke-width="1.2" />
-        <circle cx="11" cy="11" r="3.5" fill="#ff5b1f" />
-      </svg>
+      <UiDarwinLogo :size="52" class="lab-gate-logo" style="color: #f3eee2" />
       <div id="lab-gate-title" class="lab-gate-title">Darwin Agents</div>
       <p class="lab-gate-sub">You are entering an observation lab for digital organisms.</p>
       <ol class="lab-gate-log">

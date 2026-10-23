@@ -72,10 +72,7 @@ function formatRelativeTime(dateStr: string | null) {
       <div class="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <NuxtLink to="/" class="flex items-center gap-2">
-            <svg width="28" height="28" viewBox="0 0 22 22">
-              <circle cx="11" cy="11" r="10" fill="none" stroke="var(--darwin-ink)" stroke-width="1.4" />
-              <circle cx="11" cy="11" r="3.5" fill="var(--darwin-accent)" />
-            </svg>
+            <UiDarwinLogo :size="28" />
           </NuxtLink>
           <div class="h-4 w-px bg-darwin-border" />
           <h1 class="text-sm font-medium text-darwin-ink">Dashboard</h1>
@@ -111,10 +108,7 @@ function formatRelativeTime(dateStr: string | null) {
           class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
           style="background: var(--darwin-bg-2); border: 1px solid var(--darwin-border)"
         >
-          <svg width="28" height="28" viewBox="0 0 22 22">
-            <circle cx="11" cy="11" r="10" fill="none" stroke="var(--darwin-muted)" stroke-width="1.4" />
-            <circle cx="11" cy="11" r="3.5" fill="var(--darwin-muted)" />
-          </svg>
+          <UiDarwinLogo :size="28" mono class="text-darwin-muted" />
         </div>
         <h2 class="text-lg font-semibold text-darwin-ink mb-2">No agents yet</h2>
         <p class="text-sm text-darwin-muted mb-6 max-w-sm mx-auto">
