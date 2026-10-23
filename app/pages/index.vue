@@ -278,6 +278,7 @@ onMounted(() => {
         </nav>
         <div class="lp-nav-actions">
           <LandingLabTelemetry />
+          <UiInstallButton compact />
           <button
             type="button"
             class="lp-sound"

@@ -81,6 +81,7 @@ function formatRelativeTime(dateStr: string | null) {
           <h1 class="text-sm font-medium text-darwin-ink">Dashboard</h1>
         </div>
         <div class="flex items-center gap-2">
+          <UiInstallButton class="text-darwin-ink" />
           <NuxtLink to="/spawn" class="darwin-btn-primary text-xs py-2">
             <Plus :size="14" />
             Spawn agent
