@@ -5,9 +5,9 @@ export const useAuthStore = defineStore('auth', () => {
   const user = useSupabaseUser()
   const session = useSupabaseSession()
 
-  /** Prefer session.user; JWT claims from useSupabaseUser use `sub`, not `id`. */
+  /** Prefer session.user (present at runtime, omitted from the module's types); JWT claims use `sub`. */
   const userId = computed(
-    () => session.value?.user?.id
+    () => (session.value as { user?: { id?: string } } | null)?.user?.id
       ?? (user.value as { sub?: string; id?: string } | null)?.sub
       ?? (user.value as { id?: string } | null)?.id
       ?? null,
@@ -24,7 +24,7 @@ export const useAuthStore = defineStore('auth', () => {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
+        emailRedirectTo: `${window.location.origin}/confirm`,
       },
     })
   }

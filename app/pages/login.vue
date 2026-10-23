@@ -3,8 +3,14 @@ import { Mail, Lock, Loader2, Eye, EyeOff } from 'lucide-vue-next'
 
 type Mode = 'signin' | 'signup' | 'forgot'
 
+useHead({ title: 'Sign in' })
+
 const auth = useAuthStore()
 const supabase = useSupabaseClient()
+
+// Already signed in: skip the form.
+const user = useSupabaseUser()
+watch(user, (u) => { if (u) void navigateTo('/dashboard', { replace: true }) }, { immediate: true })
 
 const mode = ref<Mode>('signin')
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ layout: false })
+useHead({ title: 'Spawn a Darwin' })
 
 const auth = useAuthStore()
 </script>
