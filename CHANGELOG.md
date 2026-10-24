@@ -51,6 +51,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - **`/login` is client-rendered** (was ISR) so it can render in the visitor's saved language; it stays `noindex`.
+- **Landing nav breakpoints** — to fit the language switcher in every language, the specimen telemetry readout shows above 1500 px (was 1360 px) and the section links above 1200 px (was 900 px; the chapter rail covers 900–1200 px).
 - **Spawn form validation UX** — frontend now enforces backend `SpawnRequest` constraints at input time (directive min length **10**, name max **100**) and surfaces FastAPI 422 details (`detail[0].loc/msg`) as a readable inline message instead of a generic spawn failure.
 - **Canvas viewport layout** — timeline SVG height follows the visible pane (`ResizeObserver`) so the dotted canvas fills the area below the header; page shell uses `h-dvh` for reliable full-viewport height. Genesis timeline adds `CANVAS_ORIGIN_PAD_X` horizontal inset so the first event node is not clipped at the left edge.
 - **Canvas “Latest” control** — floating button on the chart pans scroll so the newest event sits near the right edge (clamped to content); it appears when you’ve panned away from the tail and ignores drag capture (`mousedown` stopped).
