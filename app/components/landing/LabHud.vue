@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Fixed chapter rail (right edge); collapses to a reading-progress bar on small screens.
+// Fixed chapter rail (inline-end edge: right, or left in RTL); collapses to a reading-progress bar on small screens.
 const { t } = useI18n()
 const { active } = useLabChapter()
 const chapters = CHAPTER_IDS.filter((id) => id !== 'hero')
@@ -25,7 +25,7 @@ const chapters = CHAPTER_IDS.filter((id) => id !== 'hero')
 
 <style scoped>
 .lab-rail {
-  position: fixed; right: 12px; top: 50%; transform: translateY(-50%); z-index: 40;
+  position: fixed; inset-inline-end: 12px; top: 50%; transform: translateY(-50%); z-index: 40;
   display: flex; flex-direction: column; gap: 6px; align-items: flex-end;
 }
 .lab-rail-item {
@@ -36,7 +36,7 @@ const chapters = CHAPTER_IDS.filter((id) => id !== 'hero')
 .lab-rail-item.is-dark { color: rgba(243, 238, 226, 0.45); }
 .lab-rail-label { opacity: 0; transform: translateX(6px); transition: opacity 0.25s, transform 0.25s; }
 .lab-rail:hover .lab-rail-label, .lab-rail-item:focus-visible .lab-rail-label { opacity: 1; transform: none; }
-.lab-rail-num { width: 22px; text-align: right; }
+.lab-rail-num { width: 22px; text-align: end; }
 .lab-rail-item.is-active { color: var(--darwin-accent); }
 .lab-rail-item::after {
   content: ''; width: 14px; height: 1px; background: currentColor; transition: width 0.25s;
