@@ -16,8 +16,9 @@ export default defineNuxtPlugin({
       if (i18n.locale.value !== i18n.defaultLocale) saved.value = i18n.locale.value
       watch(i18n.locale, (l) => { saved.value = l })
     }
-    // Server-rendered pages must hydrate in their own language before switching.
-    if (nuxtApp.payload.serverRendered) onNuxtReady(apply)
+    // Server-rendered pages must hydrate in their own language before switching. Not
+    // onNuxtReady: it waits for an idle frame, which the landing's render loop can starve.
+    if (nuxtApp.payload.serverRendered) nuxtApp.hooks.hookOnce('app:suspense:resolve', apply)
     else await apply()
   },
 })

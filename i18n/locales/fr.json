@@ -505,8 +505,8 @@
       "sections": "Sections",
       "soundOn": "Activer le son du labo",
       "soundOff": "Couper le son du labo",
-      "signIn": "Se connecter",
-      "join": "Rejoindre la liste d’attente"
+      "signIn": "Connexion",
+      "join": "Rejoindre la liste"
     },
     "hero": {
       "status": "Liste d’attente ouverte · première génération sur testnet",

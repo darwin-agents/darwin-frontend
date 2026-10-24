@@ -726,7 +726,7 @@ onMounted(() => {
 .lp-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
 .lp-logo-name { font-weight: 500; letter-spacing: -0.01em; font-size: 15px; }
 .lp-logo-tag { margin-inline-start: 8px; }
-.lp-navlinks { display: flex; gap: 28px; font-size: 13px; }
+.lp-navlinks { display: flex; gap: 22px; font-size: 13px; white-space: nowrap; }
 .lp-navlinks a { text-decoration: none; color: inherit; transition: color 0.2s; }
 .lp-navlinks a:hover { color: var(--darwin-accent); }
 .lp-nav-actions { display: flex; align-items: center; gap: 8px; }
@@ -940,7 +940,8 @@ onMounted(() => {
   }
   .lp-section-header { grid-template-columns: 1fr; gap: 28px; margin-bottom: 56px; }
 }
-@media (max-width: 900px) {
+/* Below 1200px the chapter rail (≥ 900px) and the footer carry section navigation. */
+@media (max-width: 1200px) {
   .lp-navlinks { display: none; }
 }
 @media (max-width: 720px) {

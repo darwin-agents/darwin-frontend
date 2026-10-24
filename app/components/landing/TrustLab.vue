@@ -234,7 +234,8 @@ const notes = computed(() => NOTE_IDS.map((id): [string, string] => [t(`lab.trus
   position: relative; padding: 14px; border: 1px solid rgba(122, 208, 143, 0.35); font-size: 10.5px; line-height: 1.6;
   background: rgba(122, 208, 143, 0.04); transition: all 0.35s;
 }
-.tl-rec:not(:last-child)::after { content: '→'; position: absolute; right: -10px; top: 50%; transform: translateY(-50%); color: rgba(243, 238, 226, 0.4); }
+.tl-rec:not(:last-child)::after { content: '→'; position: absolute; inset-inline-end: -10px; top: 50%; transform: translateY(-50%); color: rgba(243, 238, 226, 0.4); }
+.tl-rec:not(:last-child):dir(rtl)::after { content: '←'; }
 .tl-rec-head { display: flex; justify-content: space-between; margin-bottom: 6px; }
 .tl-rec-kind { color: var(--darwin-accent); word-break: break-all; }
 .tl-rec-payload { color: rgba(243, 238, 226, 0.7); word-break: break-all; margin: 4px 0 8px; }

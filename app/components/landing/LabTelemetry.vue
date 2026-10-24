@@ -40,6 +40,6 @@ const state = computed(() => {
 .lab-tm-dot { width: 6px; height: 6px; border-radius: 50%; background: #1f8a3e; animation: lab-tm-blink 1s infinite; }
 .lab-tm-dot.is-dead { background: #8a857a; animation: none; }
 @keyframes lab-tm-blink { 50% { opacity: 0.3; } }
-@media (max-width: 1360px) { .lab-tm { display: none; } }
+@media (max-width: 1500px) { .lab-tm { display: none; } }
 @media (prefers-reduced-motion: reduce) { .lab-tm-dot { animation: none; } }
 </style>
